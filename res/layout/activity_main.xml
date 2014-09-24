@@ -1,0 +1,263 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity" >
+    
+    <LinearLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/button1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="84dp"
+                android:src="@android:drawable/ic_btn_speak_now"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_marginBottom="84dp"
+                android:src="@android:drawable/ic_btn_speak_now"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent" >
+
+            <LinearLayout
+                android:id="@+id/scrollLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
+                
+                
+                
+            </LinearLayout>
+        </ScrollView>
+
+        <GridView
+            android:id="@+id/gridView1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:horizontalSpacing="1dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="1dp" >
+
+        </GridView>
+        
+        </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="33dp"
+        android:layout_marginTop="36dp"
+        android:src="@android:drawable/sym_def_app_icon"
+        android:visibility="invisible" />
+    
+    <ImageButton
+        android:id="@+id/button2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+
+   <!--  <TextView
+        android:id="@+id/text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button2"
+        android:layout_centerHorizontal="true"
+         android:layout_gravity="bottom" />
+        android:text="..." />
+ 	-->
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="90dp"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/button2"
+        android:layout_alignLeft="@+id/imageView1"
+        android:layout_below="@+id/imageView1"
+        android:layout_marginTop="30dp" >
+
+        <LinearLayout
+            android:id="@+id/scrollLayout"
+            android:layout_width="match_parent"
+            android:layout_height="75dp"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
+
+    <ScrollView
+        android:id="@+id/scrollView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button2"
+        android:layout_alignParentTop="true" >
+
+        <LinearLayout
+            android:id="@+id/hscrollVerticalLayout"
+            android:layout_width="match_parent"
+            android:layout_height="1088dp"
+            android:orientation="vertical" >
+
+                 <!--  android:layout_marginLeft="@android:dimen/app_icon_size"-->
+
+             <LinearLayout
+                 android:id="@+id/videoLayout"
+                 android:layout_width="match_parent"
+                 android:layout_height="200dp"
+                 android:gravity="center" >
+
+                 <RelativeLayout
+                     android:layout_width="wrap_content"
+                     android:layout_height="match_parent" >
+
+                     <VideoView
+                         android:id="@+id/videoView1"
+                         android:layout_width="match_parent"
+                         android:layout_height="200dp" 
+                         android:layout_gravity="center"
+                         android:layout_centerInParent="true"
+                         />
+
+                     <TextView
+                         android:id="@+id/textViewOnVideo"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_alignParentLeft="true"
+                         android:layout_alignParentTop="true"
+                         android:text="Vesperanto by Ateraction" />
+
+                 </RelativeLayout>
+
+             </LinearLayout>
+
+             <HorizontalScrollView android:id="@+id/horizontalScrollView1" android:layout_width="wrap_content" android:layout_height="33dp" android:layout_gravity="center">
+
+                 <LinearLayout android:id="@+id/hscrollLayout1" android:layout_width="wrap_content" android:layout_height="match_parent" android:orientation="horizontal">
+                 </LinearLayout>
+             </HorizontalScrollView>
+
+             <HorizontalScrollView android:id="@+id/horizontalScrollView2" android:layout_width="wrap_content" android:layout_height="60dp" android:layout_gravity="center">
+
+                 <LinearLayout android:id="@+id/hscrollLayout2" android:layout_width="wrap_content" android:layout_height="match_parent" android:orientation="horizontal">
+                 </LinearLayout>
+             </HorizontalScrollView>
+                <HorizontalScrollView android:id="@+id/horizontalScrollView5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:layout_centerInParent="true">
+
+                 <LinearLayout android:id="@+id/hscrollLayout5" android:layout_width="wrap_content" android:layout_height="match_parent" android:orientation="horizontal">
+                 </LinearLayout>
+             </HorizontalScrollView>
+             
+              <ScrollView android:id="@+id/horizontalScrollView4" 
+                  android:layout_width="fill_parent" android:layout_height="480dp">
+
+                 <LinearLayout android:id="@+id/textScrollLayout"
+                      android:layout_width="fill_parent"
+                       android:layout_height="fill_parent"
+                       android:orientation="vertical">
+
+                     <WebView
+                         android:id="@+id/webView1"
+                         android:layout_width="match_parent"
+                         android:layout_height="wrap_content"
+                         android:visibility="gone" />
+                        
+                         <TextView
+                             android:id="@+id/text1"
+                             android:layout_width="wrap_content"
+                             android:layout_height="wrap_content"
+                             android:layout_above="@+id/button2"
+                             android:layout_centerHorizontal="true"
+                             android:layout_gravity="center"
+                             android:text="vEsperanto by Ateraction" />
+                      
+                 </LinearLayout>
+             </ScrollView>
+             
+      
+                  <ImageButton
+        
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+                  
+                             <ImageButton
+        
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+                                        <ImageButton
+        
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+                                                   <ImageButton
+        
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+
+                                                              <ImageButton
+        
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="10dp"
+        android:layout_marginBottom="84dp"
+        android:src="@android:drawable/ic_btn_speak_now" />
+              
+         </LinearLayout>
+    </ScrollView>
+
+         
+     
+           
+         
+         
+</RelativeLayout>
