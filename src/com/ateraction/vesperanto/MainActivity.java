@@ -2,7 +2,7 @@ package com.ateraction.vesperanto;
 
 //vEsperanto
 //Stand alone mode: use only available media
-
+//https://github.com/Ateraction/vEsperanto
 
 //-----------things to do-------------
 
