@@ -4,7 +4,7 @@ package com.ateraction.vesperanto;
 //Stand alone mode: use only available media
 //https://github.com/Ateraction/vEsperanto
 //https://play.google.com/store/apps/details?id=com.ateraction.vesperanto
-
+//Commit error git :boom: :camel: 
 //-----------things to do-------------
 
 //TODO remove signsWritting before rewriting(useful for debug)
@@ -3887,6 +3887,24 @@ presence_online*/
 							//safe=active&
 							//https://www.google.com/search?safe=active&site=&tbm=isch&source=hp&biw=1280&bih=737&q=le
 							//https://www.google.com/setprefs?safeui=on&sig=0_EVIG9EwSjr0dzC9neeioTyjaIRk%3D&prev=https://www.google.com/search?biw%3D1280%26bih%3D737%26tbm%3Disch%26q%3Dle%26oq%3Dle%26gs_l%3Dimg.3...0.0.0.6778.0.0.0.0.0.0.0.0..0.0....0...1c..53.img..0.0.0.tCzG74xWTiY%26bav%3Don.2,or.r_cp.r_qf.%26bvm%3Dbv.75775273,d.d2s,pv.xjs.s.fr.75dLYdktc4I.O%26dpr%3D1
+							
+							//www.google.com/search?   parameters  as_st=y & tbm=isch & as_q= & as_epq=", 										"&as_oq=&as_eq=&cr=&as_sitesearch=&safe=images&tbs=isz:m&gws_rd=ssl
+							//image Size izs
+							//tbs=izs:l   large image
+							//tbs=izs:m   medium image
+							//tbs=izs:i   icon image
+							//safe=active safesearch
+							//image Type itp
+							//face photo clipart lineart animated
+							// image Color ic
+							//color gray trans (transparent
+							//image Time  qdr
+							//d (day)  w(week)
+							//Image Licence sur
+							//fmc Labeled for reuse with modification
+							//fc Labeled for reuse
+							//fm Labeled for noncommercial reuse with modification
+							//f Labeled for noncommercial reuse
 							if (SafeSearchActivated){
 							advancedDownload(
 									true,
