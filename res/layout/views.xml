@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scrollView1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+      
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical" >
+
+            <ToggleButton
+                android:id="@+id/VideoViewTogglebutton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="onVideoToggleClicked"
+                android:textOff="Video off"
+                android:textOn="Video on" />
+        
+             <ToggleButton
+                 android:id="@+id/SWSpellViewTogglebutton"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:onClick="onSWSpellToggleClicked"
+                 android:textOff="SW Spell off"
+                 android:textOn="SW Spell on" />
+            
+                <ToggleButton
+                    android:id="@+id/SecurityViewTogglebutton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:onClick="onSecurityToggleClicked"
+                    android:textOff="SecurityView off"
+                    android:textOn="SecurityView on" />
+                
+             <ToggleButton
+                 android:id="@+id/GoogleViewTogglebutton"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:onClick="onGoogleToggleClicked"
+                 android:textOff="GoogleView off"
+                 android:textOn="GoogleView on" />
+ 
+    <!-- <TextView
+                android:id="@+id/options_lang"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="web"
+                android:paddingTop="20dip"
+                android:text="@string/app_credits"
+                android:textColor="#ff0000"
+                android:textSize="16sp" 
+           />
+    -->
+        </LinearLayout>
+     
+        
+        
+        
+    </ScrollView>
+
+</LinearLayout>
