@@ -1304,18 +1304,34 @@ presence_online*/
 			
 		}
 		if (item.toString() == "ReloadImage"){
-		File file = new File(Environment
+		
+			File file = new File(Environment
 					.getExternalStorageDirectory()
 					+ File.separator
-					+ "hexasense"
+					+ "hexasense/fr"
 					+ File.separator
 					+ lastOnMediaLongClick
 					+ ".jpg");
-		
+			if (!file.exists()){
+				/* path = Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+"video"+ File.separator
+						 + File.separator
+						+ lastOnMediaLongClick + ".mp4";*/
+				 file=new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense/"
+							+ File.separator
+							+ lastOnMediaLongClick
+							+ ".jpg");
+				 }
+			
 		 // Erase the old File and reload it
 		  if  (file.exists())file.delete();
 		  processRequest(lastRequest);			
 		}
+		
 		if (item.toString() == "ReloadVideo"){
 			File file = new File(lastOnVideoLongClick);/*Environment
 						.getExternalStorageDirectory()
@@ -2620,6 +2636,15 @@ presence_online*/
 								oldItemName);
 						}
 						
+						/*if (!fileOut.exists()){
+							 path = Environment.getExternalStorageDirectory()
+									+ File.separator + "hexasense" + File.separator
+									+"video"+ File.separator
+									 + File.separator
+									+ lastOnMediaLongClick + ".mp4";
+							 fileOut=new File(path);
+							
+						}*/
 						copyFile2File(file, fileOut);
 						
 					} catch (IOException e) {
@@ -2743,10 +2768,11 @@ presence_online*/
 				Log.d("","result"+result);
 				
 				if (result != null) {
+					
 					File file = new File(result);
 					String path = Environment.getExternalStorageDirectory()
 							+ File.separator + "hexasense" + File.separator
-							+ lastOnMediaLongClick + ".jpg";// +
+							+"fr" + File.separator+ lastOnMediaLongClick + ".jpg";// +
 					// "userPhoto"
 					// +
 					// ".jpg";//"userPhoto"
@@ -2772,7 +2798,19 @@ presence_online*/
 								Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/image/",
 								"ImageList.txt",lastOnMediaLongClick,
 								oldItemName);
+							//path=result.
+							
+							
 						}
+						if (!fileOut.exists()){
+							 path = Environment.getExternalStorageDirectory()
+									+ File.separator + "hexasense" + File.separator
+									+ lastOnMediaLongClick + ".jpg";
+							 fileOut=new File(path);
+							
+						}
+						
+				//		fileOut=new File(lastOnMediaLongClick);
 						
 						copyFile2File(file, fileOut);
 						
@@ -7585,13 +7623,14 @@ presence_online*/
 						+ " file " + fileName);
 				
 				String path=e.getMessage();
+			if (debug>0){
 				path=path.substring( path.indexOf("http"));
 				//findViewById(R.id.webView1).setVisibility(View.VISIBLE);
 				//((WebView)findViewById(R.id.webView1)).loadUrl("http://slashdot.org/");//.loadUrl("http://www.aecom.org/");
 				//.loadUrl("http://slashdot.org/");
-				runBrowser("");
+				runBrowser(path);
 				//addVideoWebViewFromPath("http://www.aecom.org");// path);
-				
+			}
 				
 				
 				return null;
@@ -9123,7 +9162,7 @@ presence_online*/
 	   
  }
  void runBrowser(String url){
-	 Uri uri = Uri.parse("http://www.ateraction.com");
+	 Uri uri = Uri.parse(url);//"http://www.ateraction.com");
 	 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
 	 startActivity(intent);
 
