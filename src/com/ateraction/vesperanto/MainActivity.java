@@ -624,7 +624,7 @@ return new ComponentName(pkg, cls);
 	     //<uses-permission android:name="android.permission.RECORD_AUDIO" />
 		
         //SpeechRecognizer     speechRecognizer;
-       if (ListenActivated){
+       if (true){//ListenActivated){
 		speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getBaseContext());
         MyRecognitionListener speechListener=new MyRecognitionListener();
         speechRecognizer.setRecognitionListener(speechListener);
@@ -635,6 +635,9 @@ return new ComponentName(pkg, cls);
         Log.i("speechRecognizer"," "+        		SpeechRecognizer.isRecognitionAvailable(getBaseContext())
         		);
        }
+       if (!ListenActivated){
+    	   speechRecognizer.stopListening();//(createRecognizerIntent("fr", "fr"));
+       };
 		/*
 		//CompospeechRecognizernentName serviceComponent = getServiceComponent();
 		//if (serviceComponent == null) {
@@ -1535,7 +1538,7 @@ presence_online*/
 		}
 		
 		if (item.toString() == "TakePhoto"){
-			 File file;
+			
 			 
 			// AlertDialog.Builder alertDialogBuilder;
 			// alertDialogBuilder=new AlertDialog.Builder(MainActivity.);
@@ -1554,30 +1557,47 @@ presence_online*/
 						+ ".jpg");
 				*/
 
-			 Log.d("takingPicture",Environment
-						.getExternalStorageDirectory()
+				String path= 
+						Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense/fr"
 						+ File.separator
-						+ "hexasense"
+						+ lastOnMediaLongClick + ".jpg";
+				File file= new File(path);
+			if(!file.exists()){
+				path= 
+						Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense"
 						+ File.separator
-						+ lastOnMediaLongClick
-						+ ".jpg");
+						+ lastOnMediaLongClick + ".jpg";
+				
+			};
 			 
-				file = new File(Environment
+			 
+			 Log.d("takingPicture",path);
+			 /*Environment
 						.getExternalStorageDirectory()
 						+ File.separator
 						+ "hexasense"
 						+ File.separator
 						+ lastOnMediaLongClick
 						+ ".jpg");
+			 */
+			/*	File file = new File(Environment
+						.getExternalStorageDirectory()
+						+ File.separator
+						+ "hexasense"
+						+ File.separator
+						+ lastOnMediaLongClick
+						+ ".jpg");*/
 			
 			 // Erase the old File and make a photo to replace it
 			  if  (file.exists())file.delete();
 			  
-			  getPhoto(Environment
+			  getPhoto(path);/*Environment
 			  .getExternalStorageDirectory() +
 			  File.separator + "hexasense" +
 			  File.separator
-			  +lastOnMediaLongClick+".jpg");
+			  +lastOnMediaLongClick+".jpg");*/
 			  			 
 			  if(debug>1)Toast.makeText(getApplicationContext(),
 			 "Long click on Image: "
@@ -1630,13 +1650,15 @@ presence_online*/
 			
 			 // Erase the old File and make a photo to replace it
 			  if  (file.exists())file.delete();
-			  ListenActivated=false;
+			 if (ListenActivated){
+				 ListenActivated=false;
 			  writeSharedPrefBool("ListenActivated",ListenActivated);
 				//((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.BLUE);
 				//speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));
 				((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.GRAY);
 				speechRecognizer.stopListening();//createRecognizerIntent("fr", "fr"));
 				speechRecognizer.cancel();
+				}
 				//speechRecognizer.destroy();
 				
 			  getVideo(lastOnVideoLongClick.toString());/*Environment
@@ -7231,15 +7253,29 @@ presence_online*/
 	
 	void rotateFromEXIF(ImageView imageView,String fileName){
 	
-	ExifInterface exif;
-	// btnImageView4.setRotation(90);
-
-	try {
-		exif = new ExifInterface(
+		ExifInterface exif;
+		// btnImageView4.setRotation(90);
+		String path= 
 				Environment.getExternalStorageDirectory()
+				+ File.separator + "hexasense/fr"
+				+ File.separator
+				+ fileName + ".jpg";
+		File file= new File(path);
+	if(!file.exists()){
+		path= 
+				Environment.getExternalStorageDirectory()
+				+ File.separator + "hexasense"
+				+ File.separator
+				+ fileName + ".jpg";
+		
+	};
+	
+	try {
+		exif = new ExifInterface(path);
+				/*Environment.getExternalStorageDirectory()
 						+ File.separator + "hexasense"
 						+ File.separator
-						+ fileName + ".jpg");
+						+ fileName + ".jpg");*/
 
 		Log.v("Searching EXIF",
 				""
