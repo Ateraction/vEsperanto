@@ -1358,6 +1358,87 @@ presence_online*/
 			
 		}
 		
+		if (item.toString() == "ValidateVideo"){
+			 File file;
+			 
+				// AlertDialog.Builder alertDialogBuilder;
+				// alertDialogBuilder=new AlertDialog.Builder(MainActivity.);
+				// alertDialogBuilder.show();
+				// AlertDialog alertDialog;
+				 
+				// alertDialog.show();
+				 //alertDialog=new AlertDialog();
+				 
+					/*file = new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense"
+							+ File.separator
+							+ v.getContentDescription()
+							+ ".jpg");
+					*/
+
+				 Log.d("validate Video",Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense/video"
+							+ File.separator
+							+ lastOnVideoLongClick //+lastOnMediaLongClick
+							+ ".mp4");
+				 
+					file = new File( lastOnVideoLongClick );
+						/*	Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense/video"
+							+ File.separator
+							+lastOnMediaLongClick
+							+ ".mp4");*/
+				
+					String videoName =file.getName().substring(0, file.getName().length()-4);
+				 // Erase the old File and make a photo to replace it
+				  if  (file.exists()){
+					  File validationPath=new File(Environment
+								.getExternalStorageDirectory()
+								+ File.separator
+								+ "hexasense/video"
+								+ File.separator
+								+ "fr"
+								);
+					  if (!validationPath.isDirectory())validationPath.mkdirs();
+					  
+					  
+					  
+					 File newPath=new File(Environment
+								.getExternalStorageDirectory()
+								+ File.separator
+								+ "hexasense/video"
+								+ File.separator
+								+ "fr"
+								+ File.separator
+								+ videoName//lastOnVideoLongClick
+								+ ".mp4");
+					  
+					  if (file.renameTo(newPath)) file.delete();
+					 
+				  
+				  
+				  
+				  }
+				  
+				 /* getPhoto(Environment
+				  .getExternalStorageDirectory() +
+				  File.separator + "hexasense" +
+				  File.separator
+				  +lastOnMediaLongClick+".jpg");*/
+				  			 
+				  if(debug>1)Toast.makeText(getApplicationContext(),
+				 "Long click on Video:For Validation "
+				  +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick,
+				 Toast.LENGTH_SHORT).show();
+				 
+				
+		}
 		if (item.toString() == "Validate"){
 			 File file;
 			 
@@ -3769,10 +3850,25 @@ presence_online*/
 
 		for (int foundWord = 0; foundWord < wordsYouSaidCounter; foundWord++) {
 			
-			File file = new File(Environment.getExternalStorageDirectory()
+			String fileFullPathString=Environment.getExternalStorageDirectory()
 					+ File.separator + "hexasense" + File.separator
-					+ wordsYouSaid[foundWord] + ".jpg");
-
+					+ "fr" + File.separator
+					+ wordsYouSaid[foundWord] + ".jpg";
+			
+			File file = new File(fileFullPathString);
+				/*Environment.getExternalStorageDirectory()
+					+ File.separator + "hexasense" + File.separator
+					+ "fr" + File.separator
+					+ wordsYouSaid[foundWord] + ".jpg");*/
+			
+			
+			if (!file.exists()) {
+				fileFullPathString=Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+ "fr" + File.separator
+						+ wordsYouSaid[foundWord] + ".jpg";
+				file = new File(fileFullPathString);
+				}
 			
 			
 			if (GoogleActivated) {
@@ -3807,13 +3903,14 @@ presence_online*/
 					btnImageView4.setImageBitmap(
 					// Environment.getExternalStorageDirectory()+File.separator+"hexasense"
 					// +File.separator + wordsYouSaid[foundWord]+".jpg"
-							BitmapFactory.decodeFile(Environment
+							BitmapFactory.decodeFile(fileFullPathString));
+							/*Environment
 									.getExternalStorageDirectory()
 									+ File.separator
 									+ "hexasense"
 									+ File.separator
 									+ wordsYouSaid[foundWord]
-									+ ".jpg"));
+									+ ".jpg"));*/
 					Log.d("trying to print", Environment
 							.getExternalStorageDirectory().getAbsolutePath()
 							.toString()
@@ -4141,14 +4238,28 @@ presence_online*/
 
 			if (SLVideoActivated) {
 				// /////////////Video
-				file = new File(Environment.getExternalStorageDirectory()
-						+ File.separator + "hexasense/video");
-				if (!file.isDirectory())
-					file.mkdir();
+				
+				String videoFileFullPathString=Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense/video/fr";
+				file = new File(videoFileFullPathString);//Environment.getExternalStorageDirectory()+ File.separator + "hexasense/video");
+				if (!file.isDirectory())file.mkdir();
+				
 
-				file = new File(Environment.getExternalStorageDirectory()
-						+ File.separator + "hexasense/video/" + File.separator
-						+ wordsYouSaid[foundWord] + ".mp4");
+				videoFileFullPathString=Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense/video/fr"+ File.separator
+						+ wordsYouSaid[foundWord] + ".mp4";
+				file = new File(videoFileFullPathString);
+				//Environment.getExternalStorageDirectory()
+						//+ File.separator + "hexasense/video/" + File.separator
+						//+ wordsYouSaid[foundWord] + ".mp4");
+				
+				if (!file.exists()){
+					videoFileFullPathString=Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense/video"+ File.separator
+						+ wordsYouSaid[foundWord] + ".mp4";
+				file = new File(videoFileFullPathString);
+				}
+				
 				if (file.exists()) {
 					// addVideoViewFromPath(Environment.getExternalStorageDirectory().getAbsolutePath()
 					// +"/"+"hexasense/video/"+wordsYouSaid[foundWord]+".mp4"
@@ -4174,13 +4285,14 @@ presence_online*/
 						// signVideosignLanguageVideoCounter
 						// tempSignLanguageVideo=signLanguageVideo;
 						signLanguageVideo = new String[1];
-						signLanguageVideo[0] = Environment
+						signLanguageVideo[0] =videoFileFullPathString; 
+								/*Environment
 								.getExternalStorageDirectory()
 								.getAbsolutePath()
 								+ "/"
 								+ "hexasense/video/"
 								+ wordsYouSaid[foundWord] + ".mp4";// wordsYouSaid[foundWord];
-						 
+						 */
 						Uri video = Uri.parse("android.resource://" + getPackageName() + "/" 
 								+ R.raw.ateraction); //do not add any extension
 								//if your file is named xxx.mp4 and placed in /raw
@@ -4217,12 +4329,13 @@ presence_online*/
 							signLanguageVideo[j] = tempSignLanguageVideo[j];
 
 						}
-						signLanguageVideo[tempSignLanguageVideo.length] = Environment
+						signLanguageVideo[tempSignLanguageVideo.length] =videoFileFullPathString;
+						/*Environment
 								.getExternalStorageDirectory()
 								.getAbsolutePath()
 								+ "/"
 								+ "hexasense/video/"
-								+ wordsYouSaid[foundWord] + ".mp4";
+								+ wordsYouSaid[foundWord] + ".mp4";*/
 					}
 
 				}// if File exist
@@ -4556,7 +4669,12 @@ presence_online*/
 	  }
 	  else menu.add(0, v.getId(), 21, "TakePhoto");
 	 
-	  menu.add("Validate");
+	  if (v.getId()==videoLayout.getId()){
+			 
+		  menu.add(0, v.getId(), 22, "ValidateVideo");
+	  }
+	  else  menu.add("Validate");// menu.add(0, v.getId(), 21, "TakePhoto");
+	 
 	  
 	  if (v.getId()==videoLayout.getId()){
 		  menu.add(0, v.getId(), 24, "HideVideo");
