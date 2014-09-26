@@ -256,10 +256,12 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -1356,6 +1358,83 @@ presence_online*/
 			
 		}
 		
+		if (item.toString() == "Validate"){
+			 File file;
+			 
+				// AlertDialog.Builder alertDialogBuilder;
+				// alertDialogBuilder=new AlertDialog.Builder(MainActivity.);
+				// alertDialogBuilder.show();
+				// AlertDialog alertDialog;
+				 
+				// alertDialog.show();
+				 //alertDialog=new AlertDialog();
+				 
+					/*file = new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense"
+							+ File.separator
+							+ v.getContentDescription()
+							+ ".jpg");
+					*/
+
+				 Log.d("validate Picture",Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense"
+							+ File.separator
+							+ lastOnMediaLongClick
+							+ ".jpg");
+				 
+					file = new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense"
+							+ File.separator
+							+ lastOnMediaLongClick
+							+ ".jpg");
+				
+				 // Erase the old File and make a photo to replace it
+				  if  (file.exists()){
+					  File validationPath=new File(Environment
+								.getExternalStorageDirectory()
+								+ File.separator
+								+ "hexasense"
+								+ File.separator
+								+ "fr"
+								);
+					  if (!validationPath.isDirectory())validationPath.mkdirs();
+					  
+					 File newPath=new File(Environment
+								.getExternalStorageDirectory()
+								+ File.separator
+								+ "hexasense"
+								+ File.separator
+								+ "fr"
+								+ File.separator
+								+ lastOnMediaLongClick
+								+ ".jpg");
+					  
+					  if (file.renameTo(newPath)) file.delete();
+					 
+				  
+				  
+				  
+				  }
+				  
+				 /* getPhoto(Environment
+				  .getExternalStorageDirectory() +
+				  File.separator + "hexasense" +
+				  File.separator
+				  +lastOnMediaLongClick+".jpg");*/
+				  			 
+				  if(debug>1)Toast.makeText(getApplicationContext(),
+				 "Long click on Image:For Validation "
+				  +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick,
+				 Toast.LENGTH_SHORT).show();
+				 
+				
+		}
 		
 		if (item.toString() == "TakePhoto"){
 			 File file;
@@ -1668,6 +1747,13 @@ presence_online*/
 			
 			
 		}
+		if (item.toString() == "Validation"){
+			showValidation();
+			
+				
+			
+		}
+		
 		if (item.toString() == "About"){
 			showAbout();
 			
@@ -1887,7 +1973,7 @@ presence_online*/
 			
 		menu.add("Help").setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add("SafeSearch").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		
 		menu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		// languagePref =
@@ -3682,10 +3768,13 @@ presence_online*/
 				LayoutParams.WRAP_CONTENT);
 
 		for (int foundWord = 0; foundWord < wordsYouSaidCounter; foundWord++) {
+			
 			File file = new File(Environment.getExternalStorageDirectory()
 					+ File.separator + "hexasense" + File.separator
 					+ wordsYouSaid[foundWord] + ".jpg");
 
+			
+			
 			if (GoogleActivated) {
 				if (file.exists()) {
 					// advancedDownload(wordsYouSaid[foundWord]);
@@ -4467,6 +4556,7 @@ presence_online*/
 	  }
 	  else menu.add(0, v.getId(), 21, "TakePhoto");
 	 
+	  menu.add("Validate");
 	  
 	  if (v.getId()==videoLayout.getId()){
 		  menu.add(0, v.getId(), 24, "HideVideo");
@@ -7932,6 +8022,643 @@ presence_online*/
 	        builder.show();
 	    }
 	   
+	   protected void showValidation() {//show and cleanTxtFile related to images
+	        // Inflate the about message contents
+	        View messageView = getLayoutInflater().inflate(R.layout.validation, null, false);
+	 
+	        // When linking text, force to always use default color. This works
+	        // around a pressed color state bug.
+	        TextView textView = (TextView) messageView.findViewById(R.id.about_credits);
+	        int defaultColor = textView.getTextColors().getDefaultColor();
+	        textView.setTextColor(defaultColor);
+	       
+	  	  //ImageView image = new ImageView(this);
+		  LinearLayout linearLayout=new LinearLayout(this);		
+		  
+		  View view=new View(this);
+		  ScrollView scrollView=new ScrollView(this);
+	        
+	        
+	        
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setIcon(R.drawable.ic_launcher);
+	        builder.setTitle(R.string.app_name);
+	   
+	    	linearLayout.setOrientation(1);
+	        scrollView.addView(linearLayout);
+	        builder.setView(scrollView);
+	        //builder.setView(messageView);
+	       builder.create();
+	        builder.show();
+	        
+	    	LayoutParams lparams = new LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT);
+
+	    	File path =new File(Environment.getExternalStorageDirectory()
+					+ File.separator + "hexasense");
+	    	//FileFilter fFilter;
+	    	//fFilter.accept(path);
+	    	
+	    	File [] files= path.listFiles(); //	path.list(fFilter);
+	    	
+			for (int foundWord = 0; foundWord <  500; foundWord++) {//files.length; foundWord++) {//
+				//wordsYouSaidCounter; foundWord++) {
+				File file=files[foundWord];
+				//String fileName=
+				/*File file = new File(Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+ wordsYouSaid[foundWord] + ".jpg");
+				*/
+				//at com.google.android.speech.embedded.Greco3RecognitionEngine.startRecognition(Greco3RecognitionEngine.java:118)
+				//android.speech.embedded.Greeco3RecognitionEngine
+				 //android.speech.RecognitionService   speechembedded;
+				 //speechembedded.
+				String filename=file.getName().substring(0, file.getName().length()-4);
+				if (file.getName().toLowerCase().endsWith(".txt")) {
+					if (file.exists()) {
+						// advancedDownload(wordsYouSaid[foundWord]);
+						file.delete();
+					}}
+				
+				if (file.getName().toLowerCase().endsWith(".jpg")) {
+					if (file.exists()) {
+						// advancedDownload(wordsYouSaid[foundWord]);
+						
+						//lparams.height = LayoutParams.MATCH_PARENT;
+						if ( imageSizePref>0)lparams.height=imageSizePref;
+						
+						
+						//lparams.width = lparams.height + 200;
+						lparams.width = lparams.height ;
+
+						//ImageView btnImageView4 = new ImageView(this);
+						
+						//btnImageView4.setLayoutParams(lparams);
+						// lparams.height=100;
+						// lparams.width=100;//LayoutParams.MATCH_PARENT;//LayoutParams.WRAP_CONTENT*2;//
+						// lparams.height=LayoutParams.MATCH_PARENT;
+						// lparams.height=LayoutParams.MATCH_PARENT;
+						// lparams.width=lparams.height*2;
+						ImageView image = new ImageView(this);
+						image.setScaleType(ScaleType.FIT_CENTER);//FIT_XY);// FIT_CENTER);//.CENTER_CROP);//.CENTER_INSIDE);//.FIT_XY);
+						// btnImageView4.setBackgroundResource(
+						// words2ImageResult[i].imageID);
+						
+						//rotateFromEXIF(btnImageView4,file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						
+						/////////////////////////////////
+						//hscrollLayout2.addView(btnImageView4,0 );
+						
+						
+						//btnImageView4.
+						Log.v("setGoogleImageBitmap", "" +file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						/*	btnImageView4.setImageBitmap(
+						// Environment.getExternalStorageDirectory()+File.separator+"hexasense"
+						// +File.separator + wordsYouSaid[foundWord]+".jpg"
+								
+								BitmapFactory.decodeFile(Environment
+										.getExternalStorageDirectory().getAbsolutePath()
+										.toString()
+										+ File.separator
+										+ "hexasense"
+										+ File.separator
+										+"bonjour.jpg"));//filename));//file.getName()));
+										//file.toString()));
+										 * 
+										 */
+								/*Environment
+										.getExternalStorageDirectory()
+										+ File.separator
+										+ "hexasense"
+										+ File.separator
+										+ wordsYouSaid[foundWord]
+										+ ".jpg"));*/
+						Log.d("trying to print", Environment
+								.getExternalStorageDirectory().getAbsolutePath()
+								.toString()
+								+ File.separator
+								+ "hexasense"
+								+ File.separator
+								+file.getName());// wordsYouSaid[foundWord] + ".jpg");
+
+						 image.setImageBitmap(BitmapFactory.decodeFile(Environment
+									.getExternalStorageDirectory().getAbsolutePath()
+									.toString()
+									+ File.separator
+									+ "hexasense"
+									+ File.separator
+									+filename+".jpg"));
+					        
+					        rotateFromEXIF(image,filename);//file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						
+						
+						image
+								.setContentDescription(filename);//file.getName());//wordsYouSaid[foundWord]);
+						
+						//ScrollView scrollViewList = (ScrollView) findViewById(R.id.scrollViewList);
+						//View linearLayoutDir = (View) findViewById(R.id.linearLayoutDir);
+						
+						//((ViewGroup) messageView).addView(btnImageView4);
+						// messageView.buildDrawingCache();//.btnImageView4.bringToFront();
+						//((ViewGroup) linearLayoutDir).addView(btnImageView4);
+						//this.addViews(btnImageView4);//messageView);
+						//scrollViewList.addView(btnImageView4);
+						//scrollViewList.addView(btnImageView4,0 );
+					
+						image.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								// Toast.makeText(getApplicationContext(),
+								// "clickon Image"+hscrollLayout5.getChildCount(),
+								// Toast.LENGTH_SHORT).setView(v);
+
+								Toast.makeText(
+										getApplicationContext(),
+										"clickon Image" + v.getContentDescription()
+												+ " " + v.toString(),
+										Toast.LENGTH_SHORT).show();
+
+							}
+						});
+						
+						registerForContextMenu(image);
+					
+						
+						//Works but interfer with context menu
+						image
+								.setOnLongClickListener(new OnLongClickListener() {
+
+									@Override
+									public boolean onLongClick(View v) {
+										/*File file;
+										file = new File(Environment
+												.getExternalStorageDirectory()
+												+ File.separator
+												+ "hexasense"
+												+ File.separator
+												+ v.getContentDescription()
+												+ ".jpg");
+
+										showFileChooser();
+										*/
+										lastOnMediaLongClick = v
+												.getContentDescription().toString();// v.getContentDescription.;
+										
+										
+										
+										
+										/*
+										 * Erase the old File and make a photo to
+										 * replace it if
+										 * (file.exists())file.delete();
+										 * getPhoto(Environment
+										 * .getExternalStorageDirectory() +
+										 * File.separator + "hexasense" +
+										 * File.separator
+										 * +v.getContentDescription()+".jpg");
+										 * 
+										 * Toast.makeText(getApplicationContext(),
+										 * "Long click on Image: "
+										 * +v.getContentDescription
+										 * ()+"    toString "+v.toString(),
+										 * Toast.LENGTH_SHORT).show();
+										 */
+						
+						
+									return false;
+									}
+								});
+						//builder.create();
+						// builder.show();
+						linearLayout.addView(image);
+						linearLayout.refreshDrawableState();
+						linearLayout.invalidate();
+						}
+					
+				}
+				
+			}
+
+	        
+	        
+			//ScrollView scrollView1 = (ScrollView) findViewById(R.id.scrollView1);
+			//scrollView1.addView(btnImageView4,0 );
+			//(ScrollView) findViewById(R.id.scrollView1).addView(btnImageView4,0 );
+	        //findViewbyId();
+			//hscrollLayout2.addView(btnImageView4,0 );
+			
+			
+	        
+			//messageView.getParent().
+		
+		 //builder.setView(btnImageView4);
+//	processRequest(filename);
+		// builder.getContext().
+		//this.removeDialog(R.)
+		
+			//builder.create();
+	     //  builder.show();
+		// builder
+			//linearLayout.(image);
+		      //  builder.create();
+		        //builder.show();
+	        
+	        
+	        
+	    }
+	   protected void showValidation4(){//display hardcoded images
+		   
+			  ImageView image = new ImageView(this);
+			  ImageView image2 = new ImageView(this);
+			  ImageView image3 = new ImageView(this);
+			  ImageView image4 = new ImageView(this);
+			  LinearLayout linearLayout=new LinearLayout(this);		
+			  
+			  View view=new View(this);
+			  ScrollView scrollView=new ScrollView(this);
+		//scrollView.arrowScroll(direction)
+			  scrollView.setOnClickListener(new OnClickListener(){
+				  @Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						// Toast.makeText(getApplicationContext(),
+						// "clickon Image"+hscrollLayout5.getChildCount(),
+						// Toast.LENGTH_SHORT).setView(v);
+
+						Toast.makeText(
+								getApplicationContext(),
+								"clickon View" + v.getContentDescription()
+										+ " " + v.toString(),
+								Toast.LENGTH_SHORT).show();
+
+					}
+				});
+			  
+			  //scrollView.addView(image,0);
+			 // scrollView.addView(image2,1);
+		    
+			  // image.setImageResource(R.drawable.virolo);
+		        File file = new File(Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+ "bonjour.jpg");// wordsYouSaid[foundWord] + ".jpg");
+		      //  image2.setBackgroundResource(R.drawable.acid);// resid);(file);// wordsYouSaid[foundWord]+".jpg");
+		        image2.setImageResource(R.drawable.aller);
+		        image4.setImageResource(R.drawable.bact);
+		        image3.setImageResource(R.drawable.incendi);
+		        image.setImageBitmap(BitmapFactory.decodeFile(Environment
+						.getExternalStorageDirectory().getAbsolutePath()
+						.toString()
+						+ File.separator
+						+ "hexasense"
+						+ File.separator
+						+"bonjour.jpg"));
+		        
+		        rotateFromEXIF(image,"bonjour");//file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+		       
+		        image
+				.setContentDescription("bonjour");//file.getName());//wordsYouSaid[foundWord]);
+		        image.setOnClickListener(new OnClickListener() {
+
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						// Toast.makeText(getApplicationContext(),
+						// "clickon Image"+hscrollLayout5.getChildCount(),
+						// Toast.LENGTH_SHORT).setView(v);
+
+						Toast.makeText(
+								getApplicationContext(),
+								"clickon Image" + v.getContentDescription()
+										+ " " + v.toString(),
+								Toast.LENGTH_SHORT).show();
+
+					}
+				});
+				
+				registerForContextMenu(image);
+			
+				
+				//Works but interfer with context menu
+				image
+						.setOnLongClickListener(new OnLongClickListener() {
+
+							@Override
+							public boolean onLongClick(View v) {
+								/*File file;
+								file = new File(Environment
+										.getExternalStorageDirectory()
+										+ File.separator
+										+ "hexasense"
+										+ File.separator
+										+ v.getContentDescription()
+										+ ".jpg");
+
+								showFileChooser();
+								*/
+								lastOnMediaLongClick = v
+										.getContentDescription().toString();// v.getContentDescription.;
+								
+								
+								
+								
+								/*
+								 * Erase the old File and make a photo to
+								 * replace it if
+								 * (file.exists())file.delete();
+								 * getPhoto(Environment
+								 * .getExternalStorageDirectory() +
+								 * File.separator + "hexasense" +
+								 * File.separator
+								 * +v.getContentDescription()+".jpg");
+								 * 
+								 * Toast.makeText(getApplicationContext(),
+								 * "Long click on Image: "
+								 * +v.getContentDescription
+								 * ()+"    toString "+v.toString(),
+								 * Toast.LENGTH_SHORT).show();
+								 */
+				
+				
+							return false;
+							}
+						});
+		        
+		        
+		        //this.addViews(view);
+				linearLayout.setClickable(true);
+				linearLayout.setLongClickable(true);
+				linearLayout.setMotionEventSplittingEnabled(true);
+				//linearLayout.setOnTouchListener(l)
+				linearLayout.setOrientation(1);
+				
+				 linearLayout.addView(image3, 0);
+		        linearLayout.addView(image2, 1);
+				 linearLayout.addView(image, 2);
+				 linearLayout.addView(image4, 3);
+				 scrollView.addView(linearLayout);
+				 
+		        AlertDialog.Builder builder = 
+		                new AlertDialog.Builder(this).
+		                setMessage("Message above the image").
+		                setPositiveButton("sdf", new DialogInterface.OnClickListener() {                     
+		                    @Override
+		                    public void onClick(DialogInterface dialog, int which) {
+		                            dialog.dismiss();
+		                    }
+		                }).
+		                
+		                setView(scrollView);
+		        builder.create().show();
+			 
+		 }
+	   
+	 protected void showValidation3(){//RealName Showimage
+		  ImageView image = new ImageView(this);
+	       // image.setImageResource(R.drawable.virolo);
+	        File file = new File(Environment.getExternalStorageDirectory()
+					+ File.separator + "hexasense" + File.separator
+					+ "bonjour.jpg");// wordsYouSaid[foundWord] + ".jpg");
+	        //image.setBackgroundResource(R.drawable.acid);// resid);(file);// wordsYouSaid[foundWord]+".jpg");
+	       
+	        image.setImageBitmap(BitmapFactory.decodeFile(Environment
+					.getExternalStorageDirectory().getAbsolutePath()
+					.toString()
+					+ File.separator
+					+ "hexasense"
+					+ File.separator
+					+"bonjour.jpg"));
+	        
+	        rotateFromEXIF(image,"bonjour");//file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+	        
+	        AlertDialog.Builder builder = 
+	                new AlertDialog.Builder(this).
+	                setMessage("Message above the image").
+	                setPositiveButton("sdf", new DialogInterface.OnClickListener() {                     
+	                    @Override
+	                    public void onClick(DialogInterface dialog, int which) {
+	                            dialog.dismiss();
+	                    }
+	                }).
+	                
+	                setView(image);
+	        builder.create().show();
+		 
+	 }
+	   protected void showValidation2() {//cleanTxtFile related to images
+	        // Inflate the about message contents
+	        View messageView = getLayoutInflater().inflate(R.layout.validation, null, false);
+	 
+	        // When linking text, force to always use default color. This works
+	        // around a pressed color state bug.
+	        TextView textView = (TextView) messageView.findViewById(R.id.about_credits);
+	        int defaultColor = textView.getTextColors().getDefaultColor();
+	        textView.setTextColor(defaultColor);
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setIcon(R.drawable.ic_launcher);
+	        builder.setTitle(R.string.app_name);
+	        //builder.setView(messageView);
+	        //builder.create();
+	       // builder.show();
+        
+	      
+	        
+	    	LayoutParams lparams = new LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT);
+
+	    	File path =new File(Environment.getExternalStorageDirectory()
+					+ File.separator + "hexasense");
+	    	//FileFilter fFilter;
+	    	//fFilter.accept(path);
+	    	
+	    	File [] files= path.listFiles(); //	path.list(fFilter);
+	    	
+			for (int foundWord = 0; foundWord < files.length; foundWord++) {
+				//wordsYouSaidCounter; foundWord++) {
+				File file=files[foundWord];
+				//String fileName=
+				/*File file = new File(Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+ wordsYouSaid[foundWord] + ".jpg");
+				*/
+				//at com.google.android.speech.embedded.Greco3RecognitionEngine.startRecognition(Greco3RecognitionEngine.java:118)
+				//android.speech.embedded.Greeco3RecognitionEngine
+				 //android.speech.RecognitionService   speechembedded;
+				 //speechembedded.
+				String filename=file.getName().substring(0, file.getName().length()-4);
+				if (file.getName().toLowerCase().endsWith(".txt")) {
+					if (file.exists()) {
+						// advancedDownload(wordsYouSaid[foundWord]);
+						file.delete();
+					}}
+				
+				if (file.getName().toLowerCase().endsWith(".jpg")) {
+					if (file.exists()) {
+						// advancedDownload(wordsYouSaid[foundWord]);
+						
+						//lparams.height = LayoutParams.MATCH_PARENT;
+						if ( imageSizePref>0)lparams.height=imageSizePref;
+						
+						
+						//lparams.width = lparams.height + 200;
+						lparams.width = lparams.height ;
+
+						ImageView btnImageView4 = new ImageView(this);
+						
+						btnImageView4.setLayoutParams(lparams);
+						// lparams.height=100;
+						// lparams.width=100;//LayoutParams.MATCH_PARENT;//LayoutParams.WRAP_CONTENT*2;//
+						// lparams.height=LayoutParams.MATCH_PARENT;
+						// lparams.height=LayoutParams.MATCH_PARENT;
+						// lparams.width=lparams.height*2;
+						btnImageView4.setScaleType(ScaleType.FIT_XY);// FIT_CENTER);//.CENTER_CROP);//.CENTER_INSIDE);//.FIT_XY);
+						// btnImageView4.setBackgroundResource(
+						// words2ImageResult[i].imageID);
+						
+						//rotateFromEXIF(btnImageView4,file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						
+						/////////////////////////////////
+						//hscrollLayout2.addView(btnImageView4,0 );
+						
+						
+						//btnImageView4.
+						Log.v("setGoogleImageBitmap", "" +file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						/*	btnImageView4.setImageBitmap(
+						// Environment.getExternalStorageDirectory()+File.separator+"hexasense"
+						// +File.separator + wordsYouSaid[foundWord]+".jpg"
+								
+								BitmapFactory.decodeFile(Environment
+										.getExternalStorageDirectory().getAbsolutePath()
+										.toString()
+										+ File.separator
+										+ "hexasense"
+										+ File.separator
+										+"bonjour.jpg"));//filename));//file.getName()));
+										//file.toString()));
+										 * 
+										 */
+								/*Environment
+										.getExternalStorageDirectory()
+										+ File.separator
+										+ "hexasense"
+										+ File.separator
+										+ wordsYouSaid[foundWord]
+										+ ".jpg"));*/
+						Log.d("trying to print", Environment
+								.getExternalStorageDirectory().getAbsolutePath()
+								.toString()
+								+ File.separator
+								+ "hexasense"
+								+ File.separator
+								+file.getName());// wordsYouSaid[foundWord] + ".jpg");
+
+						btnImageView4
+								.setContentDescription(file.getName());//wordsYouSaid[foundWord]);
+						//ScrollView scrollViewList = (ScrollView) findViewById(R.id.scrollViewList);
+						//View linearLayoutDir = (View) findViewById(R.id.linearLayoutDir);
+						
+						((ViewGroup) messageView).addView(btnImageView4);
+						 messageView.buildDrawingCache();//.btnImageView4.bringToFront();
+						//((ViewGroup) linearLayoutDir).addView(btnImageView4);
+						//this.addViews(btnImageView4);//messageView);
+						//scrollViewList.addView(btnImageView4);
+						//scrollViewList.addView(btnImageView4,0 );
+						 builder.setView(btnImageView4);
+						 //builder.setView(btnImageView4);
+				//	processRequest(filename);
+						// builder.getContext().
+						//this.removeDialog(R.)
+						 builder.create();
+					       builder.show();
+						// builder
+						btnImageView4.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								// Toast.makeText(getApplicationContext(),
+								// "clickon Image"+hscrollLayout5.getChildCount(),
+								// Toast.LENGTH_SHORT).setView(v);
+
+								Toast.makeText(
+										getApplicationContext(),
+										"clickon Image" + v.getContentDescription()
+												+ " " + v.toString(),
+										Toast.LENGTH_SHORT).show();
+
+							}
+						});
+						
+						registerForContextMenu(btnImageView4);
+					
+						
+						//Works but interfer with context menu
+						btnImageView4
+								.setOnLongClickListener(new OnLongClickListener() {
+
+									@Override
+									public boolean onLongClick(View v) {
+										/*File file;
+										file = new File(Environment
+												.getExternalStorageDirectory()
+												+ File.separator
+												+ "hexasense"
+												+ File.separator
+												+ v.getContentDescription()
+												+ ".jpg");
+
+										showFileChooser();
+										*/
+										lastOnMediaLongClick = v
+												.getContentDescription().toString();// v.getContentDescription.;
+										
+										
+										
+										
+										/*
+										 * Erase the old File and make a photo to
+										 * replace it if
+										 * (file.exists())file.delete();
+										 * getPhoto(Environment
+										 * .getExternalStorageDirectory() +
+										 * File.separator + "hexasense" +
+										 * File.separator
+										 * +v.getContentDescription()+".jpg");
+										 * 
+										 * Toast.makeText(getApplicationContext(),
+										 * "Long click on Image: "
+										 * +v.getContentDescription
+										 * ()+"    toString "+v.toString(),
+										 * Toast.LENGTH_SHORT).show();
+										 */
+						
+						
+									return false;
+									}
+								});}}}
+
+	        
+	        
+			//ScrollView scrollView1 = (ScrollView) findViewById(R.id.scrollView1);
+			//scrollView1.addView(btnImageView4,0 );
+			//(ScrollView) findViewById(R.id.scrollView1).addView(btnImageView4,0 );
+	        //findViewbyId();
+			//hscrollLayout2.addView(btnImageView4,0 );
+			
+			
+	        
+			//messageView.getParent().
+	        
+			  
+		      //  builder.create();
+		        //builder.show();
+	        
+	        
+	        
+	    }
+	   
+	   
 	   protected void showHelp() {
 	        // Inflate the about message contents
 	        View messageView = getLayoutInflater().inflate(R.layout.options, null, false);
@@ -7944,6 +8671,8 @@ presence_online*/
 	        int defaultColor = textView.getTextColors().getDefaultColor();
 	        textView.setTextColor(defaultColor);
 	 
+	        
+	        
 	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	        builder.setIcon(R.drawable.ic_launcher);
 	        builder.setTitle(R.string.app_name);
