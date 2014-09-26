@@ -351,6 +351,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -502,7 +503,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	
 	Boolean bWebActivated = true;
 	Boolean SafeSearchActivated=true;
-	Boolean Listen=false;
+	Boolean ListenActivated=false;
 	
 	
 	Boolean AutoHideActivated = true;
@@ -589,7 +590,7 @@ return new ComponentName(pkg, cls);
 		SLSpellingActivated = readSharedPrefBoolean("SLSpellingActivated");
 		SecurityActivated = readSharedPrefBoolean("SecurityActivated");
 		GoogleActivated = readSharedPrefBoolean("GoogleActivated",true);
-		
+		ListenActivated= readSharedPrefBoolean("ListenActivated",ListenActivated);
 	
 		 bWebActivated = readSharedPrefBoolean("bWebActivated",bWebActivated);
 		 SafeSearchActivated=readSharedPrefBoolean("SafeSearchActivated",SafeSearchActivated);
@@ -623,7 +624,7 @@ return new ComponentName(pkg, cls);
 	     //<uses-permission android:name="android.permission.RECORD_AUDIO" />
 		
         //SpeechRecognizer     speechRecognizer;
-       
+       if (ListenActivated){
 		speechRecognizer = SpeechRecognizer.createSpeechRecognizer(getBaseContext());
         MyRecognitionListener speechListener=new MyRecognitionListener();
         speechRecognizer.setRecognitionListener(speechListener);
@@ -633,7 +634,7 @@ return new ComponentName(pkg, cls);
         speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));
         Log.i("speechRecognizer"," "+        		SpeechRecognizer.isRecognitionAvailable(getBaseContext())
         		);
-        
+       }
 		/*
 		//CompospeechRecognizernentName serviceComponent = getServiceComponent();
 		//if (serviceComponent == null) {
@@ -1613,7 +1614,8 @@ presence_online*/
 			
 			 // Erase the old File and make a photo to replace it
 			  if  (file.exists())file.delete();
-			  Listen=false;
+			  ListenActivated=false;
+			  writeSharedPrefBool("ListenActivated",ListenActivated);
 				//((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.BLUE);
 				//speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));
 				((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.GRAY);
@@ -3865,7 +3867,7 @@ presence_online*/
 			if (!file.exists()) {
 				fileFullPathString=Environment.getExternalStorageDirectory()
 						+ File.separator + "hexasense" + File.separator
-						+ "fr" + File.separator
+						+ File.separator
 						+ wordsYouSaid[foundWord] + ".jpg";
 				file = new File(fileFullPathString);
 				}
@@ -7578,9 +7580,20 @@ presence_online*/
 								+ " sec");
 				return baf;
 			} catch (Exception e) {
+				//Error: java.io.FileNotFoundException: https://ipv4.google.com/sorry/IndexRedirect?continue=https://www.google.com/search%3Fsafe%3Dactive%26as_st%3Dy%26tbm%3Disch%26as_q%3D%26as_epq%3Dle%26as_oq%3D%26as_eq%3D%26cr%3D%26as_sitesearch%3D%26tbs%3Disz:m%26gws_rd%3Dsslurlhttps://www.google.com/search?safe=active&as_st=y&tbm=isch&as_q=&as_epq=le&as_oq=&as_eq=&cr=&as_sitesearch=&tbs=isz:m&gws_rd=ssl file letext.txt
 				Log.d("ImageManager", "Error: " + e + "url" + imageURL
 						+ " file " + fileName);
-
+				
+				String path=e.getMessage();
+				path=path.substring( path.indexOf("http"));
+				//findViewById(R.id.webView1).setVisibility(View.VISIBLE);
+				//((WebView)findViewById(R.id.webView1)).loadUrl("http://slashdot.org/");//.loadUrl("http://www.aecom.org/");
+				//.loadUrl("http://slashdot.org/");
+				runBrowser("");
+				//addVideoWebViewFromPath("http://www.aecom.org");// path);
+				
+				
+				
 				return null;
 			}
 
@@ -7882,7 +7895,8 @@ presence_online*/
 		
 	//showFileChooser();
 
-		
+		getWindow().requestFeature(Window.FEATURE_PROGRESS);
+
 		//this.showFileChooser();
 		File file;
 		if (fileName==""){
@@ -7997,6 +8011,8 @@ presence_online*/
 		       // Toast.makeText(this,line.substring(0,line.indexOf(" ")) ,Toast.LENGTH_SHORT).show();
 		        Log.i("processingTextFile",lineCount +": "+ line);
 		        lineCount++;
+		       // getWindow().requestFeature(Window.FEATURE_PROGRESS);
+		        //this.setProgress(lineCount);
 		    }
 		    Log.i("processingTextFile","Text file is fully loaded");
 		   // processRequest("chargement liste correcte");
@@ -9106,7 +9122,12 @@ presence_online*/
 	   Log.d ("writeBool SharedPref",""+ key+" "+value+ "  "+sharedPref.toString());
 	   
  }
- 
+ void runBrowser(String url){
+	 Uri uri = Uri.parse("http://www.ateraction.com");
+	 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+	 startActivity(intent);
+
+ }
 	   
 	   
 }// EOF
