@@ -269,6 +269,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -347,6 +349,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
@@ -509,6 +512,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	Boolean AutoHideActivated = true;
 	Boolean AutoScrollActivated = true;
 	Boolean VibratorActivated = true;
+	Boolean DebugActivated=false;
+	Boolean ShowSearchResultsActivated=true;
 	int imageSizePref;
 	
 	// Image&Video tool
@@ -591,13 +596,14 @@ return new ComponentName(pkg, cls);
 		SecurityActivated = readSharedPrefBoolean("SecurityActivated");
 		GoogleActivated = readSharedPrefBoolean("GoogleActivated",true);
 		ListenActivated= readSharedPrefBoolean("ListenActivated",ListenActivated);
-	
+		DebugActivated= readSharedPrefBoolean("DebugActivated",DebugActivated);
 		 bWebActivated = readSharedPrefBoolean("bWebActivated",bWebActivated);
 		 SafeSearchActivated=readSharedPrefBoolean("SafeSearchActivated",SafeSearchActivated);
-		
+		 
+		 ShowSearchResultsActivated=readSharedPrefBoolean("ShowSearchResultsActivated",ShowSearchResultsActivated);
 		
 		 AutoHideActivated = readSharedPrefBoolean("AutoHideActivated");
-		 AutoScrollActivated = readSharedPrefBoolean("AutoScrollActivated");
+		 AutoScrollActivated = true;//readSharedPrefBoolean("AutoScrollActivated");
 		 VibratorActivated = readSharedPrefBoolean("VibratorActivated");
 		 imageSizePref= readSharedPrefInt("imageSizePref");
 		
@@ -937,7 +943,7 @@ presence_online*/
 			 if (matches.isEmpty()) {
 			 //toast("ERROR: No results"); // TODO
 			 } else {
-			 // TODO: we just take the first result for the time being
+			 // TODO: we just  the first result for the time being
 			 // TODO: confidence scores support is in API 14
 			 String result = matches.iterator().next();
 			// int dist = Utils.phraseDistance(mPhrase, result);
@@ -1008,7 +1014,7 @@ presence_online*/
 		
 		i.putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 9000L );//return  realTime Analysis
 		//EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS  API8
-		//The amount of time that it should take after we stop hearing speech to consider the input complete.
+		//The amount of time that it should  after we stop hearing speech to consider the input complete.
 		//Note that it is extremely rare you'd want to specify this value in an intent.
 		
 		//If you don't have a very good reason to change these, you should leave them as they are.
@@ -1285,7 +1291,7 @@ presence_online*/
 		
 		
 		 /* menu.add(0, v.getId(), 20, "Change");
-		  menu.add(0, v.getId(), 21, "TakePhoto");
+		  menu.add(0, v.getId(), 21, "Photo");
 		  menu.add(0, v.getId(), 22, "Hide");
 		  menu.add(0, v.getId(), 23, "AutoScroll");
 		  menu.add(0, v.getId(), 24, "ReloadImage");
@@ -1294,7 +1300,8 @@ presence_online*/
 			
 				
 				(findViewById(R.id.horizontalScrollView5)).setVisibility(View.GONE);
-				
+				 writeSharedPrefBool("GoogleActivated",false);
+				 GoogleActivated=false;
 				//if (mVideoView.getVisibility() == View.GONE){
 				/*	findViewById(R.id.videoLayout).setVisibility(View.VISIBLE);
 					SLVideoActivated=true;}
@@ -1357,7 +1364,31 @@ presence_online*/
 			writeSharedPrefBool("SLVideoActivated",SLVideoActivated);
 		}	
 		
+		if (item.toString() == "SearchResults"){
+			ShowSearchResultsActivated=!ShowSearchResultsActivated;
+			writeSharedPrefBool("ShowSearchResultsActivated",ShowSearchResultsActivated);
+			
+		}
+		if (item.toString() == "SearchWeb"){
+			bWebActivated=!bWebActivated;
+			writeSharedPrefBool("bWebActivated",bWebActivated);
+			
+		}
 		if (item.toString() == "debug"){
+			if (DebugActivated){
+				
+				debug=0;
+			}else debug=1;
+			
+			DebugActivated=!DebugActivated;
+			writeSharedPrefBool("DebugActivated",DebugActivated);
+			
+			
+			
+			bWebActivated=!bWebActivated;
+			writeSharedPrefBool("bWebActivated",bWebActivated);
+			
+			
 			//to handle API2.0 to 4
 			//1 use V7support ActionBar could be replaced by action bar Sherlock
 			//2 Or fir API3.0to4 use GoogleActionBar
@@ -1373,7 +1404,7 @@ presence_online*/
 			
 			
 			
-			debug=1;
+			
 			//writeSharedPrefBool("debug",debug);
 			
 		}
@@ -1459,6 +1490,13 @@ presence_online*/
 				 
 				
 		}
+		
+		if (item.toString() == "ViewOptions"){
+			/*Toast.makeText(getApplicationContext(),
+					 "Long click onViewOptions:For Validation "
+					  +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick,
+					 Toast.LENGTH_SHORT).show();*/
+		}
 		if (item.toString() == "Validate"){
 			 File file;
 			 
@@ -1537,7 +1575,7 @@ presence_online*/
 				
 		}
 		
-		if (item.toString() == "TakePhoto"){
+		if (item.toString() == "Photo"){
 			
 			 
 			// AlertDialog.Builder alertDialogBuilder;
@@ -1866,6 +1904,7 @@ presence_online*/
 			if (SafeSearchActivated) item.setIcon(android.R.drawable.ic_lock_lock);
 			else item.setIcon(android.R.drawable.ic_menu_report_image);
 			
+			invalidateOptionsMenu();//needed if you want to refresh option cause it(ShoAsAction make it open
 			
 		}
 		if (item.toString() == "Validation"){
@@ -3738,7 +3777,7 @@ presence_online*/
 					int res = getResources()
 							.getIdentifier(thingsToFind[counter], "drawable",
 									getPackageName());
-					// now just take the fund string to create your resource
+					// now just  the fund string to create your resource
 					// name
 					// and get its Id in "res" to print after
 					if (res != 0) {// if a picture with this name exist
@@ -3925,12 +3964,14 @@ presence_online*/
 			
 			
 			if (!file.exists()) {
-				fileFullPathString=Environment.getExternalStorageDirectory()
+				if (ShowSearchResultsActivated) {
+						fileFullPathString=Environment.getExternalStorageDirectory()
 						+ File.separator + "hexasense" + File.separator
 						+ File.separator
 						+ wordsYouSaid[foundWord] + ".jpg";
 				file = new File(fileFullPathString);
 				}
+			}
 			
 			
 			if (GoogleActivated) {
@@ -4717,42 +4758,82 @@ presence_online*/
 	   ContextMenuInfo menuInfo) {
 	  super.onCreateContextMenu(menu, v, menuInfo);
 	  menu.setHeaderTitle("Medias Options");
+	  
 	  //menu.menu.FLAG_ALWAYS_PERFORM_CLOSE
 	  menu.setHeaderIcon(android.R.drawable.ic_menu_report_image);//s.setFinishOnTouchOutside(true);
 	  setFinishOnTouchOutside(true);
 	  if (v.getId()==videoLayout.getId()){
-		  menu.add(0, v.getId(), 20, "ChangeVideo").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		  menu.add(0, v.getId(), 20, "ChangeVideo").setIcon(android.R.drawable.ic_menu_gallery);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		  //menu.add("loadList").setIcon(android.R.drawable.btn_dialog).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-	  }else menu.add(0, v.getId(), 20, "Change").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+	  }else menu.add(0, v.getId(), 20, "Change").setIcon(android.R.drawable.ic_menu_gallery);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 	  
 	  if (v.getId()==videoLayout.getId()){
 		 
-		  menu.add(0, v.getId(), 22, "MakeVideo");
+		  menu.add(0, v.getId(), 22, "MakeVideo").setIcon(android.R.drawable.ic_menu_camera);
 	  }
-	  else menu.add(0, v.getId(), 21, "TakePhoto");
+	  else menu.add(0, v.getId(), 21, "Photo").setIcon(android.R.drawable.ic_menu_camera);
 	 
 	  if (v.getId()==videoLayout.getId()){
 			 
-		  menu.add(0, v.getId(), 22, "ValidateVideo");
+		  menu.add(0, v.getId(), 22, "ValidateVideo").setIcon(android.R.drawable.checkbox_on_background);
 	  }
-	  else  menu.add("Validate");// menu.add(0, v.getId(), 21, "TakePhoto");
-	 
+	  else  menu.add("Validate").setIcon(android.R.drawable.checkbox_on_background);// menu.add(0, v.getId(), 21, "Photo");
+	 SubMenu subMenu;
+	 subMenu=menu.addSubMenu("ViewOptions");
+	 subMenu.setHeaderIcon(android.R.drawable.checkbox_on_background);
+	// if (item.isChecked()) item.setChecked(false);
+    // else item.setChecked(true);
+	 // subMenu.setHeaderTitle("ViewOptions");
+	// subMenu.a
+	 // menu.addSubMenu("ViewOptions").setIcon(android.R.drawable.ic_menu_manage).add("tert").add("cxv").setIcon(android.R.drawable.ic_menu_manage);
+	
+	  /*  Method m;
+	try {
+		m = menu.getClass().getDeclaredMethod(
+		          "setOptionalIconsVisible", Boolean.TYPE);
+
+        m.setAccessible(true);
+        
+        try {
+			m.invoke(menu, true);
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	} catch (NoSuchMethodException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}*/
+	  
 	  
 	  if (v.getId()==videoLayout.getId()){
-		  menu.add(0, v.getId(), 24, "HideVideo");
-	  }else menu.add(0, v.getId(), 23, "Hide");
+		  menu.add(0, v.getId(), 24, "HideVideo").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+	  }else{
+		  menu.add(0, v.getId(), 23, "Hide").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		  
+		  subMenu.add("SearchResults").setIcon(android.R.drawable.ic_delete).setCheckable(true).setChecked(ShowSearchResultsActivated);
+		  subMenu.add("SearchWeb").setIcon(android.R.drawable.ic_search_category_default).setCheckable(true).setChecked(bWebActivated);
+		  subMenu.add("SafeSearch").setIcon(android.R.drawable.ic_search_category_default).setCheckable(true).setChecked(SafeSearchActivated);
+		  invalidateOptionsMenu();
+	  }
 	  
 	 
 	  //if (v.getId()!=videoLayout.getId())menu.add(0, v.getId(), 25, "AutoScroll");
 	  
-	  if (v.getId()==videoLayout.getId())menu.add(0, v.getId(), 26, "ReloadVideo");
-	  else menu.add(0, v.getId(), 26, "ReloadImage");
+	  if (v.getId()==videoLayout.getId())menu.add(0, v.getId(), 26, "ReloadVideo").setIcon(android.R.drawable.ic_menu_revert);
+	  else menu.add(0, v.getId(), 26, "ReloadImage").setIcon(android.R.drawable.ic_menu_revert);
 	  
 	  if (v.getId()==videoLayout.getId());
 	  else{//menu.add(0, v.getId(), 26, "ReloadVideo");
-	  menu.add(0, v.getId(), 27, "NormalSize").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
-	  menu.add(0, v.getId(), 27, "MicroSize").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
-	  menu.add(0, v.getId(), 27, "FullSize").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
+	  subMenu.add(0, v.getId(), 27, "NormalSize").setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
+	  subMenu.add(0, v.getId(), 27, "MicroSize").setIcon(android.R.drawable.ic_menu_crop);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
+	  subMenu.add(0, v.getId(), 27, "FullSize").setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
 		 	 
 	  
 	  }
@@ -7405,7 +7486,7 @@ presence_online*/
 		}
 
 		// Uses AsyncTask to create a task away from the main UI thread. This
-		// task takes a
+		// task s a
 		// URL string and uses it to create an HttpUrlConnection. Once the
 		// connection
 		// has been established, the AsyncTask downloads the contents of the
@@ -7838,7 +7919,7 @@ presence_online*/
 				 if (matches.isEmpty()) {
 				 //toast("ERROR: No results"); // TODO
 				 } else {
-				 // TODO: we just take the first result for the time being
+				 // TODO: we just  the first result for the time being
 				 // TODO: confidence scores support is in API 14
 				 String result = matches.iterator().next();
 				// if (lastPartialResult==null)lastPartialResult="";
@@ -7900,7 +7981,7 @@ presence_online*/
 			 if (matches.isEmpty()) {
 			 //toast("ERROR: No results"); // TODO
 			 } else {
-			 // TODO: we just take the first result for the time being
+			 // TODO: we just  the first result for the time being
 			 // TODO: confidence scores support is in API 14
 			 String result = matches.iterator().next();
 			 Log.d("leapkh", "---------------onResults"+result);
