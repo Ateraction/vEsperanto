@@ -9121,7 +9121,7 @@ presence_online*/
 					@Override
 					public boolean onLongClick(View v) {
 						   registerForContextMenu(videoLayout);
-						  // mjk
+						  //Githubcleaning master merge 
 						   viewsAlertDialog.hide();
 						   videoLayout.showContextMenu();
 						//ContextMenu cmenu=null;
