@@ -308,6 +308,7 @@ import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -337,6 +338,7 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.MediaStore;
 import android.provider.MediaStore.Files;
 import android.provider.MediaStore.Video;
+import android.renderscript.ProgramFragmentFixedFunction.Builder;
 import android.speech.RecognitionListener;
 import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
@@ -8951,7 +8953,7 @@ presence_online*/
 	   
 	   protected void showHelp() {
 	        // Inflate the about message contents
-	        View messageView = getLayoutInflater().inflate(R.layout.options, null, false);
+	        View messageView = getLayoutInflater().inflate(R.layout.views, null, false);
 	 
 	        // When linking text, force to always use default color. This works
 	        // around a pressed color state bug.
@@ -8988,11 +8990,15 @@ presence_online*/
 	        
 	        //findViewById(R.id.toggleButton1).setOnClickListener(this);
 	    }
-	   
+	  // View viewsChooserView;
+	   View messageView;
+	   AlertDialog.Builder builder;
+	   AlertDialog viewsAlertDialog;
 	   protected void showViews() {
 	        // Inflate the about message contents
-	        View messageView = getLayoutInflater().inflate(R.layout.views, null, false);
-	 
+	        //View//
+		   messageView = getLayoutInflater().inflate(R.layout.views, null, false);
+	//viewsChooserView= getLayoutInflater().inflate(R.layout.views, null, false);
 	        // When linking text, force to always use default color. This works
 	        // around a pressed color state bug.
 	        
@@ -9008,6 +9014,53 @@ presence_online*/
 				toggle.setButtonDrawable(android.R.drawable.ic_search_category_default);
 				//toggle.toggle();
 				toggle.invalidate();
+				
+				
+				registerForContextMenu(toggle);
+				toggle.setOnLongClickListener(new OnLongClickListener(){
+					@Override
+					public boolean onLongClick(View v) {
+					   // v.cancelLongPress();
+					   registerForContextMenu(hscrollView5);
+					   viewsAlertDialog.hide();
+					 //   messageView.setVisibility(View.GONE);
+						//builder.setView(null);
+						//v.callOnClick();//api15
+					//viewsAlertDialog.cancel();
+					//	viewsAlertDialog.closeOptionsMenu();
+					// v.cancelLongPress();					 
+					//	v.showContextMenu();
+					/*	try {
+							v.wait(5000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}*/
+						//viewsAlertDialog.dismiss();
+					//	builder.setCancelable(true);
+						//builder.
+						//viewsAlertDialog.cancel();
+						//viewsAlertDialog.hide();
+						//viewsAlertDialog.hide();
+						
+						
+					   // hscrollView5.bringToFront();
+						hscrollView5.showContextMenu();
+						//hscrollView5.setVisibility(View.GONE);
+						//viewsChooserView.cancelLongPress();
+						//messageView.bringToFront();
+						//builder.setCancelable(true);
+						//builder.seto.setVisibility(View.GONE);
+				//	findViewById(R.id.GoogleViewTogglebutton).get;
+				//	v.getParent().getParent().invalidate();
+				//	messageView.setVisibility(View.GONE);
+						//v.getParent().getParent().getParent().
+					   // v.showContextMenu();
+						//v.setVisibility(View.GONE);//just Button
+						//v.setVisibility(View.GONE);
+						
+						return true;
+					}});
 			
 				
 				 toggle = (ToggleButton) messageView.findViewById(R.id.SWSpellViewTogglebutton);
@@ -9015,6 +9068,25 @@ presence_online*/
 				toggle.setButtonDrawable(android.R.drawable.ic_menu_sort_alphabetically);
 				//toggle.toggle();
 				toggle.invalidate();
+				registerForContextMenu(toggle);
+				toggle.setOnLongClickListener(new OnLongClickListener(){
+					@Override
+					public boolean onLongClick(View v) {
+					   // v.cancelLongPress();					 
+						//v.showContextMenu();
+						   registerForContextMenu(hscrollView1);
+						   viewsAlertDialog.hide();
+							hscrollView1.showContextMenu();
+						//v.setVisibility(View.GONE);
+						/*builder.setOnCancelListener(new OnCancelListener(){
+							
+							@Override
+							public void onCancel(DialogInterface dialog) {
+								dialog.cancel();
+							}});*/
+						
+						return true;
+					}});
 				
 
 				toggle = (ToggleButton) messageView.findViewById(R.id.SecurityViewTogglebutton);
@@ -9022,13 +9094,54 @@ presence_online*/
 				toggle.setButtonDrawable(android.R.drawable.ic_dialog_alert);
 				//toggle.toggle();
 				toggle.invalidate();
+				registerForContextMenu(toggle);
+				toggle.setOnLongClickListener(new OnLongClickListener(){
+					@Override
+					public boolean onLongClick(View v) {
+						   registerForContextMenu(hscrollView2);
+						   viewsAlertDialog.hide();
+							hscrollView2.showContextMenu();
+						   /*
+						v.cancelLongPress();					 
+						v.showContextMenu();
+						v.setVisibility(View.GONE);*/
+						
+						return true;
+					}});
 				
 				toggle = (ToggleButton) messageView.findViewById(R.id.VideoViewTogglebutton);
 				toggle.setChecked(SLVideoActivated);
 				toggle.setButtonDrawable(android.R.drawable.ic_media_play);//setIcon(R.drawable.ic_launcher)
-				//toggle.toggle();
-				toggle.invalidate();
 				
+				toggle.invalidate();
+								
+				registerForContextMenu(toggle);
+				toggle.setOnLongClickListener(new OnLongClickListener(){
+
+					@Override
+					public boolean onLongClick(View v) {
+						   registerForContextMenu(videoLayout);
+						  // mjk
+						   viewsAlertDialog.hide();
+						   videoLayout.showContextMenu();
+						//ContextMenu cmenu=null;
+						//Menu menu = null;
+						//menu.add("ViewOption");
+						//v.cancelLongPress();
+						//cmenu=v.get
+						//menu= new ContextMenu();
+						//v.createContextMenu(R.id.sousmenu);//cmenu);
+						//cmenu.add("ViewOption");
+						//v.getParent().showContextMenuForChild(v);
+						//v.showContextMenu();
+						//v.setVisibility(View.GONE);
+						//v.getContext().getApplicationContext()messageView.se
+						//v.getContext().getc
+						//showViews();
+						
+						// TODO Auto-generated method stub
+						return true;
+					}});
 				//toggle.addChildrenForAccessibility(children);
 				//toggle.setButtonDrawable(R.drawable.ic_launcher);//setIcon(R.drawable.ic_launcher)
 				
@@ -9038,15 +9151,16 @@ presence_online*/
 			}
 	        
 	        
-	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        AlertDialog.Builder builder;
+	        builder = new AlertDialog.Builder(this);
 	        builder.setIcon(R.drawable.ic_launcher);
 	        builder.setTitle(R.string.app_name);
 	        builder.setView(messageView);
-	        builder.create();
+	        viewsAlertDialog= builder.create();
 	        builder.setIcon(android.R.drawable.ic_menu_view);//ic_menu_slideshow
 	        
 	       
-			builder.show();
+	        viewsAlertDialog=builder.show();
 	      
 	       
 	        
