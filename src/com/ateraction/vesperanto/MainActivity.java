@@ -275,6 +275,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -474,7 +475,7 @@ public class MainActivity extends Activity implements OnClickListener,
 
 	
 	
-	
+	//new Locale("en").getDisplayName(Locale.FRANCE);
 	
 	String languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
   String[] historyList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
@@ -517,6 +518,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	Boolean DebugActivated=false;
 	Boolean ShowSearchResultsActivated=true;
 	int imageSizePref;
+	String DisplayLanguage=null;
 	
 	// Image&Video tool
 	String[] signLanguageVideo;// just the name of the video .mp4 found in
@@ -609,6 +611,12 @@ return new ComponentName(pkg, cls);
 		 VibratorActivated = readSharedPrefBoolean("VibratorActivated");
 		 imageSizePref= readSharedPrefInt("imageSizePref");
 		
+		 if (readSharedPref("DisplayLanguage")!=null){
+			// languagePref = readSharedPref("DisplayLanguage");
+			 DisplayLanguage= Locale.getDefault().toString();
+		 }else  DisplayLanguage=readSharedPref("DisplayLanguage");
+		 
+		
 		
 		
 		 
@@ -639,7 +647,8 @@ return new ComponentName(pkg, cls);
         //Removed to avoid crash but not Started so nothing could happen
         //
         //speechRecognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(getApplicationContext()));
-        speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));
+        //speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));//working
+        speechRecognizer.startListening(createRecognizerIntent("fr", DisplayLanguage));//Locale.getDefault().getDisplayLanguage()));//Locale.FRANCE.getLanguage()));
         Log.i("speechRecognizer"," "+        		SpeechRecognizer.isRecognitionAvailable(getBaseContext())
         		);
        }
@@ -1000,9 +1009,17 @@ presence_online*/
 		// String languagePref = Locale.FRENCH.toString();
 		languagePref = Locale.getDefault().getDisplayLanguage();
 		
+		
 		//i.putExtra(RecognizerIntent.EXTRA_ORIGIN, "SpeakNow");//API 14 used for website origin
 		i.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);//1to 3 results is a good choice for normal use, but could use more (e.g. image mix) 
-		
+		 
+	
+		 if (readSharedPref("DisplayLanguage")!=null){
+			 languagePref = readSharedPref("DisplayLanguage");
+			 
+		 }
+		 
+		 
 		//Specific to gGoogle Voice Recognition		
 		i.putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true);//return  realTime Analysis
 		//I put Extra doesn 
@@ -1222,14 +1239,100 @@ presence_online*/
 				"menu:" + "item.getMenuInfo().toString()" + " select  "
 						+ item.toString(), Toast.LENGTH_SHORT).show();
 		// switch (item.toString()){} //not working for1.6 need 1.7 and KitKat
-		if (item.toString() == "English")
+		if (item.toString() == "English"){
 			languagePref = Locale.US.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
-		if (item.toString() == "Français")
+		writeSharedPrefString("DisplayLanguage",languagePref);}
+		if (item.toString() == "Français"){
 			languagePref = Locale.FRENCH.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
-		if (item.toString() == "UserLanguage")
-			languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "UserLanguage"){
+			languagePref = DisplayLanguage;// Locale.FRENCH.toString();
 		// Locale.getDefault().getDisplayLanguage();
-
+			writeSharedPrefString("DisplayLanguage",languagePref);
+			}
+		if (item.toString() == "DefaultLanguage"){
+			
+			languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		
+		
+		if(item.toString().substring(3, 4).contains("-")){
+			Locale[] localeList= Locale.getDefault().getAvailableLocales();
+			
+			for(int i=0 ;i<localeList.length; i++){
+				if (localeList[i].getISO3Country().length()==3){
+				Log.d("bv","Found SubString:"				
+				+item.toString().substring(0, 3)
+				+
+							" ISO3 Country:"
+				+localeList[i].getISO3Country()+
+								" is contained:"	+item.toString().substring(0, 3).contains(localeList[i].getISO3Country())
+								+	" Writing SharePref   "+localeList[i].getLanguage()+"  "+
+									localeList[i].getISO3Country()+
+							 "/languagePref = "+languagePref
+							 +"/DefaultLanguage= "+DisplayLanguage
+						);	
+				
+				if (
+						(item.toString().substring(0, 3).contains(localeList[i].getISO3Country()))
+					&& (item.toString().contains(localeList[i].getLanguage()))	
+					){
+					
+					
+					writeSharedPrefString("DisplayLanguage",localeList[i].getLanguage()+"_"+localeList[i].getCountry());
+					languagePref=localeList[i].getLanguage()+"_"+localeList[i].getCountry();
+					//DisplayLanguage=localeList[i].getLanguage()+"_"+localeList[i].getCountry();
+					
+					Log.d("LanguageChooser:","Found SubString:"				
+							+item.toString().substring(0, 3)
+							+
+										" ISO3 Country:"
+							+localeList[i].getISO3Country()+
+											" is contained:"	+item.toString().substring(0, 3).contains(localeList[i].getISO3Country())
+											+	" Writing SharePref   "+localeList[i].getLanguage()+"  "+
+												localeList[i].getISO3Country()+
+										 "/languagePref = "+languagePref
+										 +"/DefaultLanguage= "+DisplayLanguage
+									);	
+					/*Toast.makeText(getApplicationContext(),
+							"Found SubString:"+item.toString().substring(0, 3)+
+							" ISO3 Country:"+(localeList[i].getISO3Country()+
+								" is contained:"	+item.toString().substring(0, 3).contains(localeList[i].getISO3Country())
+								+	" Writing SharePref   "+localeList[i].getLanguage()+"  "+
+									localeList[i].getISO3Country()+
+							 "languagePref = "+languagePref
+							 +"DefaultLanguage= "+DisplayLanguage),
+							 Toast.LENGTH_SHORT).show();*/
+					
+				}
+			}
+			}
+		}
+		
+		
+		Toast.makeText(getApplicationContext(),
+				 "languagePref = "+languagePref+" substring:"
+				+ item.toString().substring(0, 4)+"  0-4  "
+				+" 0-1  "+
+				item.toString().substring(0, 1)+
+				(item.toString().substring(0, 1)=="-")+ " 1-2  "
+				+item.toString().substring(1,2)
+				+(item.toString().substring(1, 2)=="-")+ " 2-3 "
+				+item.toString().substring(2, 3)
+				+(item.toString().substring(2,3)=="-")+ " 3-4 "
+				+item.toString().substring(3, 4)
+				+(item.toString().substring(3, 4)=="-")+
+				"                  "+ (item.toString().substring(3, 4).contains("-"))
+				+ " 4-5 "+
+				item.toString().substring(4, 5)
+				+(item.toString().substring(4, 5)=="-")+ " 2-3 "
+				 +"DefaultLanguage= "+DisplayLanguage,
+				 Toast.LENGTH_LONG).show();
+		
+		
+		
 		if (item.toString() == "ScrollR")
 			hscrollView1.fling(150);// velocityX);// ;
 		if (item.toString() == "Espagnol")
@@ -2090,12 +2193,38 @@ presence_online*/
 		menu.add("loadList").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("pickContact");
 		//menu.add("getPhoto");
-		//menu.addSubMenu("languages");
-		//menu.add("Français");//working
-		// menu.add(1, 0, 1, "cool");
+		SubMenu subMenu;
+		subMenu=menu.addSubMenu("languages");
+		subMenu.add("UserLanguage");
 		
-		//menu.add("English");//working
+		//Locale[] localeTable= Locale.getDefault().getAvailableLocales();
+	/*	For(Locale locale:localeTable){
+			
+		}*/
+		Locale[] localeList= Locale.getDefault().getAvailableLocales();
+		subMenu.add("UserLanguage");//working
+		subMenu.add("Français");//working		
+		subMenu.add("English");//working
 		
+		for(int i=0 ;i<localeList.length; i++){ 
+			if (localeList[i].getISO3Country()!=""){
+			subMenu.add(
+					//localeList[i].getLanguage()
+					localeList[i].getISO3Country()
+					+"-"+localeList[i].getDisplayName(localeList[i])
+					+"-"+localeList[i].getDisplayName(Locale.ROOT)
+					+"-"+localeList[i].getLanguage()
+					+"-"+localeList[i].getDisplayCountry()
+					//(languagePref)
+					);//working
+			}
+		}
+		
+		
+		
+		
+	
+		//subMenu.add("DefaultLanguage");
 		//menu.add("Espagnol");
 		//menu.add("Esperanto");
 		//menu.addSubMenu("Other languages");
@@ -3484,8 +3613,11 @@ presence_online*/
 		// On the other hand, it isn't necessary to provide a Greek locale to
 		// get correct case mapping of Greek characters: any locale will do.
 
-		thingCleaned = thingCleaned.toLowerCase(new Locale("FRENCH"));
-		Log.d("input", "thingCleaned " + thingCleaned);
+		//thingCleaned = thingCleaned.toLowerCase(new Locale("FRENCH"));
+		thingCleaned = thingCleaned.toLowerCase(Locale.getDefault());
+		
+		Locale.getDefault().getLanguage();
+		Log.d("input", "thingCleaned afterLowerCase:" + thingCleaned);
 
 		int wordsYouSaidCounter = 0;
 		final String[] wordsYouSaid = { "", "", "", "", "", "", "", "", "", "",
@@ -4196,13 +4328,28 @@ presence_online*/
 							//fc Labeled for reuse
 							//fm Labeled for noncommercial reuse with modification
 							//f Labeled for noncommercial reuse
+							
+							//String dQuote= ((char)34)+"";
+							
+							/*String encodedWord=wordsYouSaid[foundWord];
+							try {
+								//URLEncoder.encode("sdf", "UTF-8");
+								encodedWord =URLEncoder.encode(wordsYouSaid[foundWord], "UTF-8");
+							} catch (UnsupportedEncodingException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+								
+							}*/
+							
+							
 							if (SafeSearchActivated){
 							advancedDownload(
 									true,
 									wordsYouSaid[foundWord],
 									"",
 									".jpg",
-									"https://www.google.com/search?safe=active&as_st=y&tbm=isch&as_q=&as_epq=",
+									"https://www.google.com/search?safe=active&as_st=y&tbm=isch&as_q=&as_epq=",//+dQuote,
+									//dQuote +
 									"&as_oq=&as_eq=&cr=&as_sitesearch=&tbs=isz:m&gws_rd=ssl",
 									"https://encrypted-tbn1.gstatic.com/",
 									"width", 2, "");
@@ -4235,7 +4382,9 @@ presence_online*/
 						lparams.width = LayoutParams.MATCH_PARENT;
 						btnImageView4.setScaleType(ScaleType.FIT_XY);
 						btnImageView4.setLayoutParams(lparams);
-
+				
+					
+						
 						// btnImageView4.setBackgroundResource(
 						// words2ImageResult[i].imageID);
 						final String fullImageLink = Environment
@@ -4934,6 +5083,20 @@ presence_online*/
 					// Toast.LENGTH_LONG).show();
 					// return;
 				}
+		
+				
+				String encodedSearch=search;
+				
+				try {
+					//URLEncoder.encode("sdf", "UTF-8");
+					encodedSearch =URLEncoder.encode(search, "UTF-8");
+				} catch (UnsupportedEncodingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					
+				}		
+				
+				
 				Log.v("l:"
 						+ Thread.currentThread().getStackTrace()[2]
 								.getLineNumber(),
@@ -4972,9 +5135,9 @@ presence_online*/
 									.getLineNumber(), "Last Link inside exist "
 							+ lastLinkInside);
 				} else {
-
+						//Trying Correcting Search format using uTF- encoding
 					text = downloader.downloadFromUrl(searchRequestStart
-							+ search + searchRequestEnd, search + "text.txt");// "http://commons.wikimedia.org/wiki/Maison?uselang=fr",
+							+ encodedSearch + searchRequestEnd, search + "text.txt");// "http://commons.wikimedia.org/wiki/Maison?uselang=fr",
 																				// "text.txt");
 					Log.v("l:"
 							+ Thread.currentThread().getStackTrace()[2]
@@ -7675,7 +7838,7 @@ presence_online*/
 	public class Downloader extends Intent {
 		public Object downloadFromUrl(String imageURL, String fileName) { // this
 																			// is
-																			// the
+														// the
 																			// downloader
 																			// method
 
@@ -7690,6 +7853,8 @@ presence_online*/
 				// URL("http://www.elix-lsf.fr/IMG/mp4/dhb91s4e9mpymrvijeev-encoded.mp4");
 				// //+ imageURL); //you can write here any link
 				URL url = new URL(imageURL.toString());
+				
+				
 				// File file = new File(fileName);
 				// File file=new File("test.mp4");
 				long startTime = System.currentTimeMillis();
@@ -7742,12 +7907,14 @@ presence_online*/
 						+ " file " + fileName);
 				
 				String path=e.getMessage();
-			if (debug>0){
+			if (true){//debug>0){
 				path=path.substring( path.indexOf("http"));
+				if (path.contains("https://ipv4.google.com/sorry/")){
 				//findViewById(R.id.webView1).setVisibility(View.VISIBLE);
 				//((WebView)findViewById(R.id.webView1)).loadUrl("http://slashdot.org/");//.loadUrl("http://www.aecom.org/");
 				//.loadUrl("http://slashdot.org/");
 				runBrowser(path);
+				}
 				//addVideoWebViewFromPath("http://www.aecom.org");// path);
 			}
 				
@@ -8366,13 +8533,13 @@ presence_online*/
 				 //android.speech.RecognitionService   speechembedded;
 				 //speechembedded.
 				String filename=file.getName().substring(0, file.getName().length()-4);
-				if (file.getName().toLowerCase().endsWith(".txt")) {
+				if (file.getName().endsWith(".txt")) {//.toLowerCase()
 					if (file.exists()) {
 						// advancedDownload(wordsYouSaid[foundWord]);
 						file.delete();
 					}}
 				
-				if (file.getName().toLowerCase().endsWith(".jpg")) {
+				if (file.getName().endsWith(".jpg")) {//remove .toLowerCase() Lower Case for locale Errors
 					if (file.exists()) {
 						// advancedDownload(wordsYouSaid[foundWord]);
 						
@@ -8402,8 +8569,8 @@ presence_online*/
 						//hscrollLayout2.addView(btnImageView4,0 );
 						
 						
-						//btnImageView4.
-						Log.v("setGoogleImageBitmap", "" +file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						//btnImageView4.//
+						Log.v("setGoogleImageBitmap", "" +file.getName());//.toLowerCase()//wordsYouSaid[foundWord]);
 						/*	btnImageView4.setImageBitmap(
 						// Environment.getExternalStorageDirectory()+File.separator+"hexasense"
 						// +File.separator + wordsYouSaid[foundWord]+".jpg"
@@ -8779,13 +8946,13 @@ presence_online*/
 				 //android.speech.RecognitionService   speechembedded;
 				 //speechembedded.
 				String filename=file.getName().substring(0, file.getName().length()-4);
-				if (file.getName().toLowerCase().endsWith(".txt")) {
+				if (file.getName().endsWith(".txt")) {//.toLowerCase()
 					if (file.exists()) {
 						// advancedDownload(wordsYouSaid[foundWord]);
 						file.delete();
 					}}
 				
-				if (file.getName().toLowerCase().endsWith(".jpg")) {
+				if (file.getName().endsWith(".jpg")) {//.toLowerCase()
 					if (file.exists()) {
 						// advancedDownload(wordsYouSaid[foundWord]);
 						
@@ -8815,7 +8982,7 @@ presence_online*/
 						
 						
 						//btnImageView4.
-						Log.v("setGoogleImageBitmap", "" +file.getName().toLowerCase());//wordsYouSaid[foundWord]);
+						Log.v("setGoogleImageBitmap", "" +file.getName());//.toLowerCase()//wordsYouSaid[foundWord]);
 						/*	btnImageView4.setImageBitmap(
 						// Environment.getExternalStorageDirectory()+File.separator+"hexasense"
 						// +File.separator + wordsYouSaid[foundWord]+".jpg"
