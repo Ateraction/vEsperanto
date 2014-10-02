@@ -1601,9 +1601,10 @@ presence_online*/
 			//to handle API2.0 to 4
 			//1 use V7support ActionBar could be replaced by action bar Sherlock
 			//2 Or fir API3.0to4 use GoogleActionBar
-			ActionBar actionBar = getActionBar();
+			/*ActionBar actionBar = getActionBar();
 			actionBar.setSubtitle("mytest");
-			actionBar.setTitle("ateraction"); 
+			actionBar.setTitle("ateraction"); */
+			
 			//actionBar.show();
 			/*Tab tab=new Tab();
 			actionBar.
@@ -2080,10 +2081,13 @@ presence_online*/
 		}
 		if (item.toString() == "Reload") {
 			try {
+				setTitle(">:"+lastRequest);
 				processRequest(lastRequest);
-				this.setTitle("Reload");
+			//	this.setTitle("Reload");
+				
 			} catch (Exception e) {
-				this.setTitle("reload error" + e.toString());
+				setTitle("ReloadError" + e.toString());
+				//this.setTitle("reload error" + e.toString());
 			}
 		}
 
@@ -2191,14 +2195,14 @@ presence_online*/
 		// Locale.getDefault().getDisplayLanguage();
 		}
 		
-		
+		/*
 		invalidateOptionsMenu();
 		ActionBar actionBar = getActionBar();
 		//actionBar.setSubtitle("mytest");
 		actionBar.setTitle("vEsperanto"+item.getTitle()); 
 		//actionBar.hide();
 		actionBar.show();
-		
+		*/
 		return false;
 	}
 
@@ -2303,7 +2307,7 @@ presence_online*/
 		//menu.getItem(menu.size()-1).setIcon(android.R.drawable.btn_dialog);
 		//((ImageButton)findViewById(R.id.button2)).setImageResource(android.R.drawable.stat_notify_call_mute)
 		menu.add("Reload").setIcon(android.R.drawable.ic_popup_sync).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);;
-		menu.add("loadList").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//menu.add("loadList").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("pickContact");
 		//menu.add("getPhoto");
 		SubMenu subMenu;
@@ -2332,15 +2336,42 @@ presence_online*/
 					);//working
 			}
 		}
+		
 		SubMenu debugSubMenu;
-		debugSubMenu=menu.addSubMenu("DebugOptions" );
+		debugSubMenu=menu.addSubMenu("AdvancedOptions" );
+		debugSubMenu.add("Validation");
 		debugSubMenu.add("Debug")
 			.setCheckable(true)
 			.setChecked(DebugActivated);
 		debugSubMenu.add("SendReport");
 		
-	    
 		
+	    
+		SubMenu exchangeSubMenu;
+		exchangeSubMenu=menu.addSubMenu("Exchange" );
+		exchangeSubMenu.add("getLastpack").setEnabled(false)
+			.setCheckable(true)
+			.setChecked(DebugActivated);
+		exchangeSubMenu.add("getLastWordList")
+		.setCheckable(true)
+		.setChecked(true);
+		exchangeSubMenu.add("getLastSpellList").setEnabled(false)
+		.setCheckable(true)
+		.setChecked(false);
+		exchangeSubMenu.add("getLastImageList").setEnabled(false)
+		.setCheckable(true)
+		.setChecked(false);
+		exchangeSubMenu.add("getLastVideoList").setEnabled(false)
+		.setCheckable(true)
+		.setChecked(false);
+		exchangeSubMenu.add("loadList");
+		exchangeSubMenu.add("LoadImageList").setEnabled(false);
+		exchangeSubMenu.add("LoadVideoList").setEnabled(false);
+		exchangeSubMenu.add("SendWordList").setEnabled(false);
+		exchangeSubMenu.add("SendImageList").setEnabled(false);
+		exchangeSubMenu.add("sendVideoList").setEnabled(false);		
+		exchangeSubMenu.add("SendImages").setEnabled(false);
+		exchangeSubMenu.add("sendVideos").setEnabled(false);
 		
 	
 		//subMenu.add("DefaultLanguage");
@@ -2394,13 +2425,13 @@ presence_online*/
 		//need to invalidate this to refresh 
 		}		
 	
-		
-			
-		menu.add("Help").setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		SubMenu otherSubMenu;
+		otherSubMenu=menu.addSubMenu("????" );			
+		otherSubMenu.add("Help").setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		otherSubMenu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		
-		menu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		// languagePref =
 		// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
 
@@ -8229,11 +8260,12 @@ presence_online*/
 				// mButtonMicrophone.setState(mState);
 				 if (matches!=null){
 				 if (matches.isEmpty()) {
-				 //toast("ERROR: No results"); // TODO
+					 Log.d("partialResults", "matches.isEmpty"); // TODO
 				 } else {
 				 // TODO: we just  the first result for the time being
 				 // TODO: confidence scores support is in API 14
 				 String result = matches.iterator().next();
+				 //.substring(lastPartialResult.length()));
 				// if (lastPartialResult==null)lastPartialResult="";
 				// result=result.replace(lastPartialResult, "");
 				// lastPartialResult=result;
@@ -8241,8 +8273,14 @@ presence_online*/
 				 if ((result!="")&&(result!=null)&& (lastPartialResult!=result)){
 					 Log.d("partialResults", "---------------onpartialResults"+result);
 					 if (result.isEmpty()) Log.d("partialResults", "---------------onpartialResults=null"+(result=="")+" result "+result.length());
-					 else processRequest (result);
+					 else {
+						 setTitle(result);
+						 processRequest (result);
+					 }
+					 
 					 lastPartialResult=result;
+				
+					
 				 }
 				 //startAutoScrolling(hscrollView5);
 				// stopAutoScrolling(hscrollView5);
@@ -8260,6 +8298,8 @@ presence_online*/
 				 Log.d(" partial results",""+hscrollView5.getChildCount()+ "  "+hscrollView5.getChildAt(hscrollView5.getChildCount()-1).getScrollX()  );
 				 hscrollView5.fullScroll(hscrollView5.FOCUS_RIGHT);
 				 hscrollView5.setKeepScreenOn(true);
+				 
+				
 				}
 				 //scro
 				 }
@@ -8311,7 +8351,7 @@ presence_online*/
 							
 							)
 							);
-					if (lastPartialResult!=result)processRequest(result);hscrollView5.fullScroll(hscrollView5.FOCUS_RIGHT);
+					if (lastPartialResult!=result){processRequest(result);hscrollView5.fullScroll(hscrollView5.FOCUS_RIGHT);}
 					
 					lastRequest = result;
 					 setTitle(result,"");
@@ -8681,6 +8721,7 @@ presence_online*/
 						// advancedDownload(wordsYouSaid[foundWord]);
 						file.delete();
 					}}
+				builder.setTitle("Delete:"+file.getName());
 				
 				if (file.getName().endsWith(".jpg")) {//remove .toLowerCase() Lower Case for locale Errors
 					if (file.exists()) {
@@ -9615,11 +9656,26 @@ presence_online*/
 		   	    }	 
 	   
 	   void setTitle(String title,String subTitle){
-		   ActionBar actionBar = getActionBar();
-			if (subTitle!=null) actionBar.setSubtitle(subTitle);
-			actionBar.setTitle(title);
+		  // invalidateOptionsMenu();
+		   this.setTitle(title);
 		   
+		  /*
+		   ActionBar actionBar = getActionBar();
+		   actionBar.hide();
+		   Log.v("setTitle",title);
+		   
+			//if (subTitle!=null) actionBar.setSubtitle(subTitle);
+			
+					
+			actionBar.setTitle(title);
+			
+			
+			actionBar.show();*/
+			
+			
+			
 	   }
+	   
 	   
 	   void blueTooth(String string){
 		   AudioManager am;

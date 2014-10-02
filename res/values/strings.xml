@@ -56,37 +56,42 @@
                                                                                 <p>Ateraction SAS n\'est en rien affilié à Elix (ni Signes de sens)</p>
                                                                                 <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><br></br></div>
         
-        Made in Bordeaux by Ateraction http://www.ateraction.com/
-        with the help of Aquinetic 	http://www.aquinetic.com/
-        during the Hexasense project http://www.ateraction.com/Hexasense/
-        supported by the Aquitaine Regional council http://www.aquitaine.fr/
-        
-        French SL Video from Elix http://www.elix-lsf.fr/
-        Elix is not affiliated with Hexasense project.
-        http://www.elix-lsf.fr/article/conditions-generales-d-utilisation
-        
-        Pictures from GoogleImage 
-        https://www.google.fr/intl/fr/policies/terms/regional.html
-            
+        Made in Bordeaux by Ateraction http://www.ateraction.com/ \n
+        with the help of Aquinetic 	http://www.aquinetic.com/   \n
+        during the Hexasense project http://www.ateraction.com/Hexasense/   \n
+        supported by the Aquitaine Regional council http://www.aquitaine.fr/   \n
+        \n
+        French SL Video from Elix http://www.elix-lsf.fr/  \n
+        Elix is not affiliated with Hexasense project.\n
+        http://www.elix-lsf.fr/article/conditions-generales-d-utilisation \n
+        \n
+        Pictures from GoogleImage \n
+        https://www.google.fr/intl/fr/policies/terms/regional.html \n
+            \n
+            \n
         
          ---------------------------------------------------------
-                                                    vEsperanto, réalisée dans le cadre du projet Hexasense soutenu par le Conseil Régional d Aquitaine, permet de faciliter et d\'accélérer la communication entre personnes ne parlant pas ou ne lisant pas la même langue.
+         \n
+         vEsperanto, réalisée dans le cadre du projet Hexasense soutenu par le Conseil Régional d Aquitaine, permet de faciliter et d\'accélérer la communication entre personnes ne parlant pas ou ne lisant pas la même langue.
+         \n
+         \n
          
- 		Les vidéos en langue des signes française proviennent du site d\' Elix 
- 		http://www.elix-lsf.fr/  
+ 		Les vidéos en langue des signes française proviennent du site d\' Elix \n
+ 		http://www.elix-lsf.fr/   \n
+ 		\n
+ 		le site Elix n\'est en rien affilié au projet Hexasense, ni à Ateraction\n
+		Elix est cofinancé par l\’Union européenne. \n 
+		L\’Europe s’engage en Nord Pas de Calais avec le FEDER. \n 
+ 		http://www.elix-lsf.fr/article/partenaires \n
  		
- 		le site Elix n\'est en rien affilié au projet Hexasense, ni à Ateraction
-		Elix est cofinancé par l\’Union européenne. 
-		L\’Europe s’engage en Nord Pas de Calais avec le FEDER.
- 		http://www.elix-lsf.fr/article/partenaires
- 		
- 		Par l\'utilisation des vidéos, vous acceptez de fait les CGU d\'utilisation du site Elix disponible ici
- 		http://www.elix-lsf.fr/article/conditions-generales-d-utilisation
+ 		Par l\'utilisation des vidéos, vous acceptez de fait les CGU d\'utilisation du site Elix disponible ici:\n
+ 		http://www.elix-lsf.fr/article/conditions-generales-d-utilisation \n
+ 		\n
  		Merci de participer et de proposer vos vidéos afin d\'améliorer la qualité de la base de données Elix.
- 		
- 		Vesperanto s\'appuie sur différents fournisseurs de médias. et leur utilisation signifie votre acceptation des CGU associées
- 		dont les CGUs du service sont disponibles à l\'adresse suivante
- 		Par exemple les image fournies par GoogleImages sont soumis à l\'acceptation des CGU suivantes https://www.google.fr/intl/fr/policies/terms/regional.html
+ 		\n
+ 		Vesperanto s\'appuie sur différents fournisseurs de médias. et leur utilisation signifie votre acceptation des CGU associées\n
+ 		dont les CGUs du service sont disponibles à l\'adresse suivante\n
+ 		Par exemple les image fournies par GoogleImages sont soumis à l\'acceptation des CGU suivantes https://www.google.fr/intl/fr/policies/terms/regional.html \n
  		
  		 </string>
    
@@ -95,71 +100,89 @@
     
     <string name="app_descrip">
         
-vEsperanto recherche les médias (images, vidéos) associés aux mots prononcés.
-Vous pouvez créer vos propres listes, sélectionner vos médias... (remplacer les vidéos LSF par vos propres vidéos)
-Il est désormais possible d\'importer une liste de mots (fichier texte) et de rechercher les médias associés.
-Liste de base:
-Etienne Brunet 1500 mots les plus utilisés en français
-.http://eduscol.education.fr/cid47916/liste-des-mots-classee-par-frequence-decroissante.html
--------------------------------Prérequis
-Reconnaissance vocale:
-Cette application nécessite d\'avoir préalablement installé un module de reconnaissance vocale comme celui de Google
-Connexion de données:
-Le chargement initial des médias nécessite une connexion (Wifi fortement recommandé).
-L\'application fonctionne hors ligne avec le moteur de reconnaissance vocale et les médias disponibles sur le téléphone et chargera les médias supplémentaires uniquement si une connexion est active durant la requête.        
+vEsperanto recherche les médias (images, vidéos) associés aux mots prononcés.\n
+Vous pouvez créer vos propres listes, sélectionner vos médias... (remplacer les vidéos LSF par vos propres vidéos)\n
+Il est désormais possible d\'importer une liste de mots (fichier texte) et de rechercher les médias associés.\n
+Liste de base:\n
+Etienne Brunet 1500 mots les plus utilisés en français\n
+.http://eduscol.education.fr/cid47916/liste-des-mots-classee-par-frequence-decroissante.html \n
+\n-------------------------------\n
+Prérequis\n
+\n
+Reconnaissance vocale:\n
+Cette application nécessite d\'avoir préalablement installé un module de reconnaissance vocale comme celui de Google\n
+\n
+Connexion de données:\n
+Le chargement initial des médias nécessite une connexion (Wifi fortement recommandé).\n
+L\'application fonctionne hors ligne avec le moteur de reconnaissance vocale et les médias disponibles sur le téléphone et chargera les médias supplémentaires uniquement si une connexion est active durant la requête.\n        
     </string>
     
     <string name="app_help"> 
-        Help
-        Aide
+        Help\n
+        Aide\n
         
-        Ateraction a la joie de vous inviter à participer à la construction de vEsperanto et son application destinée à faciliter la communication entre personnes.
-		vEsperanto, a été développée, en collaboration avec Aquinetic, dans le cadre du projet Hexasense soutenu par le Conseil Régional d\'Aquitaine.
+        Ateraction a la joie de vous inviter à participer à la construction de vEsperanto et son application destinée à faciliter la communication entre personnes.\n
+        \n
+		vEsperanto, a été développée, en collaboration avec Aquinetic, dans le cadre du projet Hexasense soutenu par le Conseil Régional d\'Aquitaine.\n\n
 
-vEsperanto permet, d\'abord de convertir des paroles en images ou en vidéos (Langue des Signes Française).
-L\'application démarre en écoute continue, il suffit donc de parler au lancement de vEsperanto pour obtenir les médias correspondants.
-"L\'écoute continue" peut être stoppée à tout moment en cliquant une fois sur le "bouton micro" déclenchant "l\'écoute à la demande" puis être relancée par l\'appui prolongé sur le même "bouton micro".
+vEsperanto permet, d\'abord de convertir des paroles en images ou en vidéos (Langue des Signes Française).\n\n
+L\'application démarre en écoute continue, il suffit donc de parler au lancement de vEsperanto pour obtenir les médias correspondants.\n
+"L\'écoute continue" peut être stoppée à tout moment en cliquant une fois sur le "bouton micro" déclenchant "l\'écoute à la demande" puis être relancée par l\'appui prolongé sur le même "bouton micro".\n\n
+\n
+\n
 
-
-Pour vous proposer les médias l\'application fouille le web en se basant pour l\'instant sur les services de Google Image et sur le dictionnaire de la langue des signes de Elix.
+Pour vous proposer les médias l\'application fouille le web en se basant pour l\'instant sur les services de Google Image et sur le dictionnaire de la langue des signes de Elix.\n
+\n
 L\'application fonctionne de façon autonome (hors ligne), mais les médias n\'étant pas fournis avec l\'application, il est nécessaire de disposer  d\'une connexion pour charger les médias images et vidéos...
+\n
 Néanmoins, il est possible d\'importer des listes de mots afin de disposer même hors connexion d\'une bibliothèque pertinente.
-Vous trouverez donc une liste intégrée comportant les 1500 mots les plus fréquents dans la langue française et vous pourrez importer vos listes personnelles.
-(Attention cette opération dure environ 20 minutes, la recherche et le chargement des vidéos en langue des signes étant très long, il est conseillé de désactiver la fenêtre "Video" préalablement, ou de laisser le téléphone en charge durant cette période)
-
-Vous pouvez à tout moment remplacer un média existant par un média disponible sur le téléphone ou sur le web, mais aussi faisant une photo ou une vidéo.
-
-Merci pour vos retours
-
-
-
-
-Menu "Options" accessible à l\'aide de la touche menu
-
+\n
+Vous trouverez donc une liste intégrée comportant les 1500 mots les plus fréquents dans la langue française et vous pourrez importer vos listes personnelles.\n
+\n
+(Attention cette opération dure environ 20 minutes, la recherche et le chargement des vidéos en langue des signes étant très long, il est conseillé de désactiver la fenêtre "Video" préalablement, ou de laisser le téléphone en charge durant cette période)\n
+\n
+Vous pouvez à tout moment remplacer un média existant par un média disponible sur le téléphone ou sur le web, mais aussi faisant une photo ou une vidéo.\n
+\n
+\n
+Merci pour vos retours\n
+\n
+\n
+\n
+\n
+Menu "Options" accessible à l\'aide de la touche menu\n
+\n
 1)SelectView
-permet de choisir les vues affichées
-		a)Video (langue des signes)
-		b)SW-Spell (Sign Writing ou langue des signes écrite)
-		c)SecurityView (principalement des images liées à la sécurité sur le lieu de travail )
-		d)GoogleView  (les images fournies par goggle)
-
+\n
+permet de choisir les vues affichées\n
+		a)Video (langue des signes)\n
+		b)SW-Spell (Sign Writing ou langue des signes écrite)\n
+		c)SecurityView (principalement des images liées à la sécurité sur le lieu de travail )\n
+		d)GoogleView  (les images fournies par goggle)\n
+\n
+\n
 2)Reload
+\n
 relance la dernière requête
+\n
+\n
 
 3)LoadList
+\n
 SDCard/Hexasense/WordList/fr.txt
+\n
  Lire une liste de mots (1500mots) et télécharger les médias associés afin d\'avoir le vocabulaire minimum préchargé
-
-4)Autoscroll
-
-5)Help
-Vous y êtes!!!
+ \n
+\n
 
 6)debug
+\n
 Permet d\'afficher plus d\'informations permettant de déterminer la cause de mauvais fonctionnement
-
+\n
+\n
 7)About
-Les crédits </string>
+\n
+Les crédits
+\n\n\n\n\n </string>
     
     <string-array name="fi">
          <!-- geo  --> 

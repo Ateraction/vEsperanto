@@ -16,14 +16,15 @@
             android:layout_height="match_parent"
             android:orientation="vertical" >
 
-            <ToggleButton
+           <!--   <ToggleButton
                 android:id="@+id/togglebutton1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:checked="true"
                 android:onClick="onVideoToggleClicked"
                 android:textOff="Video off"
-                android:textOn="Video on" />
+                android:textOn="Video on" 
+                android:visible="false" />-->
  
      <TextView
                 android:id="@+id/options_lang"
