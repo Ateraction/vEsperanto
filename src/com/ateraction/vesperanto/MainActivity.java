@@ -480,7 +480,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	//new Locale("en").getDisplayName(Locale.FRANCE);
 	
 	String languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
-  String[] historyList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
+  String[] historyList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
 	
   	// UI
 	LinearLayout main, scrollLayout, scrollLayout2, hscrollLayout1,
@@ -535,7 +535,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	Boolean needDownload = false;
 	int count = 0;
 	String lastOnMediaLongClick = null;
-	String[] userFoundList={"","","","","","","","","","","","","","","","","","","","","","","","",""};
+	String[] userFoundList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
 	
 	/**
 * Look up the default recognizer service in the preferences.
@@ -2126,7 +2126,8 @@ presence_online*/
 				
 			
 		}
-		
+		if (item.toString() == "ReadSMS"){readSMS();}
+		if (item.toString() == "SendMail"){sendMail();}
 		if (item.toString() == "About"){
 			showAbout();
 			
@@ -2431,6 +2432,8 @@ presence_online*/
 		//menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		otherSubMenu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add("ReadSMS").setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		otherSubMenu.add("SendMail").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		
 		// languagePref =
 		// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
@@ -3795,7 +3798,7 @@ presence_online*/
 
 		int wordsYouSaidCounter = 0;
 		final String[] wordsYouSaid = { "", "", "", "", "", "", "", "", "", "",
-				"", "", "", "", "", "", "", "", "", "", "", "", "", "", "" };
+				"", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
 		int[] wordspostion = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		wordsYouSaid[0] = "";
@@ -9848,7 +9851,80 @@ presence_online*/
      dialog.show();    // showing dialog
  
  }
- 
-	   
+public void readSMS (){
+	//Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
+	Uri mSmsinboxQueryUri = Uri.parse("content://sms/inbox");
+	Cursor cursor = getContentResolver().query(mSmsinboxQueryUri,new String[] { "_id", "thread_id", "address", "person", "date","body", "type" }, null, null, null);
+	cursor.moveToLast();//.moveToFirst();
+	String[] columns = new String[] { "address", "person", "date", "body","type" };
+	 String nameList="";
+	 String lastSMS="";
+	 String lastName="";
+	do{
+	   String msgData = "";
+	   String msg2="";
+	   for(int idx=0;idx<cursor.getColumnCount();idx++)
+	   {
+	       msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+	       Log.d("ReadingSMS",msgData);
+	       String address = cursor.getString(cursor.getColumnIndex(columns[0]));
+	       String name = cursor.getString(cursor.getColumnIndex(columns[1]));
+	       String date = cursor.getString(cursor.getColumnIndex(columns[2]));
+	       String msg = cursor.getString(cursor.getColumnIndex(columns[3]));
+	       String type = cursor.getString(cursor.getColumnIndex(columns[4]));
+	       Log.d("ReadingSMS", name + "\n"+msg);
+	      processRequest(name+ ":"+ msg);
+	       nameList+=nameList;
+	       msg2=msg;
+	       lastSMS=msg;
+	       lastName=name;
+	   }
+	   //processRequest(msg2);
+	}while(cursor.moveToNext());
+	//processRequest(lastSMS);
+	processRequest(lastName+ " : "+ lastSMS);
+	cursor.close();
+}
+	 
+public void sendMail(){
+	Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+            "mailto","pierre.capdepuy@gmail.com", null));
+	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "About vEsperanto");
+	
+	emailIntent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you!"+lastRequest);
+	
+	startActivity(Intent.createChooser(emailIntent, "Send email..."));
+	/*
+	Intent intent = new Intent(Intent.ACTION_SEND);
+	intent.setType("text/html");
+	intent.putExtra(Intent.EXTRA_EMAIL, "pierre.capdepuy@gmail.com");//from
+	//intent.putExtra(Intent., "mail from vEsperanto App ");
+	intent.putExtra(Intent.EXTRA_SUBJECT, "mail from vEsperanto App ");
+	intent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you!");
+
+	startActivity(Intent.createChooser(intent, "Send Email"));
+	*/
+}
+
+public void sendMail2(){
+	Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+            "mailto","pierre.capdepuy@gmail.com", null));
+	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "About vEsperanto");
+	startActivity(Intent.createChooser(emailIntent, "Send email..."));
+	emailIntent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you!"+lastRequest);
+	/*
+	Intent intent = new Intent(Intent.ACTION_SEND);
+	intent.setType("text/html");
+	intent.putExtra(Intent.EXTRA_EMAIL, "pierre.capdepuy@gmail.com");//from
+	//intent.putExtra(Intent., "mail from vEsperanto App ");
+	intent.putExtra(Intent.EXTRA_SUBJECT, "mail from vEsperanto App ");
+	intent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you!");
+
+	startActivity(Intent.createChooser(intent, "Send Email"));
+	*/
+}
+
+
+
 }// EOF
 
