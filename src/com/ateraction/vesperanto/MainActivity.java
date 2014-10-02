@@ -302,6 +302,7 @@ import android.app.ActionBar.Tab;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.ClipData.Item;
@@ -313,6 +314,7 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -571,6 +573,70 @@ return new ComponentName(pkg, cls);
 		// On create run on start and screen orientation change
 		Log.i("onCreate "," "+savedInstanceState);
 		blueTooth("");
+		
+		 /* Uri telnumber = Uri.parse("tel:0248484000");
+    	  Intent call = new Intent(Intent.ACTION_DIAL, telnumber);
+    	  startActivity(call);*/
+    	  
+    
+		
+		
+		//checkVoiceRecognition();
+		if (!checkVoiceRecognition()){
+			if (isOnline())installGoogleVoiceSearch(this);
+			else {
+				final Activity activity= this;
+				Dialog dialog = new AlertDialog.Builder(this)
+		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+
+		             // Install Button click handler
+		             @Override
+		             public void onClick(DialogInterface dialog, int which) {
+		                 try {
+		                   /*  // creating an Intent for opening applications page in Google Play
+		                     // Voice Search package name: com.google.android.voicesearch
+		                   //  Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.voicesearch"));
+		                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.ateraction.vespranto"));
+		                     // setting flags to avoid going in application history (Activity call stack)
+		                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+		                     // sending an Intent
+		                     activity.startActivity(intent);
+		                    // ownerActivity.startActivity(intent);
+		                     
+		                     *//*
+		                	  Uri telnumber = Uri.parse("tel:0248484000");
+		                	  Intent call = new Intent(Intent.ACTION_DIAL, telnumber);
+		                	  startActivity(call);
+		                	  Intent intent;
+		                	   intent = new Intent(Intent.ACTION_GET_CONTENT, telnumber);
+		                	   startActivity(intent);
+		                	   intent = new Intent(Intent.ACTION_ASSIST, telnumber);
+		                	   startActivity(intent);
+		                	  */
+		                  } catch (Exception ex) {
+		                      // if something going wrong
+		                      // doing nothing
+		                	 if (isOnline()){Intent    	  intent = new Intent(Intent.ACTION_APP_ERROR);
+		                	   startActivity(intent);
+		                	   intent.putExtra("EXTRA_BUG_REPORT", "Error Vesperanto");
+		                	 }
+		                  }
+		             }})
+
+		         .setNegativeButton("Cancel", null)    // cancel button
+		         .create();
+
+		     dialog.show();    // showing dialog
+				
+				
+				
+				
+				
+				
+			}//else
+		}
 		
 		vibrate(100);
 		 // Vibrate for 500 milliseconds
@@ -1229,7 +1295,7 @@ presence_online*/
 
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		VideoView mVideoView = (VideoView) findViewById(R.id.videoView1);
-
+		
 		// View namebar = view.findViewById(R.id.namebar);
 		// ((LinearLayout)namebar.getParent()).removeView(namebar);
 
@@ -1239,6 +1305,14 @@ presence_online*/
 				"menu:" + "item.getMenuInfo().toString()" + " select  "
 						+ item.toString(), Toast.LENGTH_SHORT).show();
 		// switch (item.toString()){} //not working for1.6 need 1.7 and KitKat
+		if (item.toString() == "SendReport"){
+			Intent intent;
+			intent = new Intent(Intent.ACTION_APP_ERROR);
+	 	   startActivity(intent);
+	 	   intent.putExtra("EXTRA_BUG_REPORT", " Vesperanto error report test");
+		}
+		
+		
 		if (item.toString() == "English"){
 			languagePref = Locale.US.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
 		writeSharedPrefString("DisplayLanguage",languagePref);}
@@ -1251,6 +1325,12 @@ presence_online*/
 		// Locale.getDefault().getDisplayLanguage();
 			writeSharedPrefString("DisplayLanguage",languagePref);
 			}
+		
+		
+		
+		
+		
+		
 		if (item.toString() == "DefaultLanguage"){
 			
 			languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
@@ -1305,6 +1385,24 @@ presence_online*/
 							 "languagePref = "+languagePref
 							 +"DefaultLanguage= "+DisplayLanguage),
 							 Toast.LENGTH_SHORT).show();*/
+					Toast.makeText(getApplicationContext(),
+							 "languagePref = "+languagePref+" substring:"
+							/*+ item.toString().substring(0, 4)+"  0-4  "
+							+" 0-1  "+
+							item.toString().substring(0, 1)+
+							(item.toString().substring(0, 1)=="-")+ " 1-2  "
+							+item.toString().substring(1,2)
+							+(item.toString().substring(1, 2)=="-")+ " 2-3 "
+							+item.toString().substring(2, 3)
+							+(item.toString().substring(2,3)=="-")+ " 3-4 "
+							+item.toString().substring(3, 4)
+							+(item.toString().substring(3, 4)=="-")+
+							"                  "+ (item.toString().substring(3, 4).contains("-"))
+							+ " 4-5 "+
+							item.toString().substring(4, 5)
+							+(item.toString().substring(4, 5)=="-")+ " 2-3 "*/
+							 +"DefaultLanguage= "+DisplayLanguage,
+							 Toast.LENGTH_LONG).show();
 					
 				}
 			}
@@ -1312,24 +1410,7 @@ presence_online*/
 		}
 		
 		
-		Toast.makeText(getApplicationContext(),
-				 "languagePref = "+languagePref+" substring:"
-				+ item.toString().substring(0, 4)+"  0-4  "
-				+" 0-1  "+
-				item.toString().substring(0, 1)+
-				(item.toString().substring(0, 1)=="-")+ " 1-2  "
-				+item.toString().substring(1,2)
-				+(item.toString().substring(1, 2)=="-")+ " 2-3 "
-				+item.toString().substring(2, 3)
-				+(item.toString().substring(2,3)=="-")+ " 3-4 "
-				+item.toString().substring(3, 4)
-				+(item.toString().substring(3, 4)=="-")+
-				"                  "+ (item.toString().substring(3, 4).contains("-"))
-				+ " 4-5 "+
-				item.toString().substring(4, 5)
-				+(item.toString().substring(4, 5)=="-")+ " 2-3 "
-				 +"DefaultLanguage= "+DisplayLanguage,
-				 Toast.LENGTH_LONG).show();
+	
 		
 		
 		
@@ -1472,26 +1553,49 @@ presence_online*/
 		if (item.toString() == "SearchResults"){
 			ShowSearchResultsActivated=!ShowSearchResultsActivated;
 			writeSharedPrefBool("ShowSearchResultsActivated",ShowSearchResultsActivated);
+			if ((!ShowSearchResultsActivated) && bWebActivated)
+			{
+				bWebActivated=!bWebActivated;
+			Toast.makeText(getApplicationContext(),
+					 "SearchResults off\n \n Warning:\n Search on web automatic desactivation\n "
+					 // +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick
+					  ,
+					 Toast.LENGTH_SHORT).show();
+				writeSharedPrefBool("bWebActivated",bWebActivated);
+			
+			}
+				
 			
 		}
 		if (item.toString() == "SearchWeb"){
 			bWebActivated=!bWebActivated;
 			writeSharedPrefBool("bWebActivated",bWebActivated);
+			if (bWebActivated&&!ShowSearchResultsActivated){
+				ShowSearchResultsActivated=true;
+				writeSharedPrefBool("ShowSearchResultsActivated",ShowSearchResultsActivated);
+				Toast.makeText(getApplicationContext(),
+						 "Search on web activated \n \n Warning:\n SearchResults automatic Activation \n "
+						 // +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick
+						  ,
+						 Toast.LENGTH_LONG).show();
+			}
+			
 			
 		}
-		if (item.toString() == "debug"){
-			if (DebugActivated){
-				
-				debug=0;
-			}else debug=1;
+		if (item.toString() == "Debug"){
+			Log.d("Before: DebugActivated", ""+DebugActivated);
 			
 			DebugActivated=!DebugActivated;
 			writeSharedPrefBool("DebugActivated",DebugActivated);
-			
-			
-			
-			bWebActivated=!bWebActivated;
-			writeSharedPrefBool("bWebActivated",bWebActivated);
+			if (DebugActivated){
+				
+				debug=1;
+						
+			}else debug=0;
+			item.isChecked();
+			Log.d("After: DebugActivated", ""+DebugActivated);
+			/*bWebActivated=!bWebActivated;
+			writeSharedPrefBool("bWebActivated",bWebActivated);*/
 			
 			
 			//to handle API2.0 to 4
@@ -2086,6 +2190,15 @@ presence_online*/
 			//languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
 		// Locale.getDefault().getDisplayLanguage();
 		}
+		
+		
+		invalidateOptionsMenu();
+		ActionBar actionBar = getActionBar();
+		//actionBar.setSubtitle("mytest");
+		actionBar.setTitle("vEsperanto"+item.getTitle()); 
+		//actionBar.hide();
+		actionBar.show();
+		
 		return false;
 	}
 
@@ -2195,7 +2308,7 @@ presence_online*/
 		//menu.add("getPhoto");
 		SubMenu subMenu;
 		subMenu=menu.addSubMenu("languages");
-		subMenu.add("UserLanguage");
+		//subMenu.add("UserLanguage");
 		
 		//Locale[] localeTable= Locale.getDefault().getAvailableLocales();
 	/*	For(Locale locale:localeTable){
@@ -2219,8 +2332,14 @@ presence_online*/
 					);//working
 			}
 		}
+		SubMenu debugSubMenu;
+		debugSubMenu=menu.addSubMenu("DebugOptions" );
+		debugSubMenu.add("Debug")
+			.setCheckable(true)
+			.setChecked(DebugActivated);
+		debugSubMenu.add("SendReport");
 		
-		
+	    
 		
 		
 	
@@ -2259,11 +2378,26 @@ presence_online*/
 		
 
 		//menu.add("Inject");
-		if (SafeSearchActivated) menu.add("SafeSearch").setIcon(android.R.drawable.ic_lock_lock).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		else menu.add("SafeSearch").setIcon(android.R.drawable.ic_menu_report_image).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		MenuItem safeSearchMenuItem;
+		safeSearchMenuItem=menu.add("SafeSearch")
+				.setCheckable(true)
+				.setChecked(SafeSearchActivated);
+		safeSearchMenuItem.setIcon(android.R.drawable.ic_menu_report_image)
+		.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
+		if (SafeSearchActivated){
+			safeSearchMenuItem.setIcon(android.R.drawable.ic_lock_lock).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			
+			
+			
+			if (ShowSearchResultsActivated)safeSearchMenuItem.setIcon(android.R.drawable.ic_partial_secure).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//need to invalidate this to refresh 
+		}		
+	
+		
 			
 		menu.add("Help").setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		
 		menu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
@@ -2275,6 +2409,7 @@ presence_online*/
 		// inflater.inflate(R.menu.option, menu);
 		// inflater.inflate(R.layout.menu, menu);
 		Log.v("menu", "menu created" + menu.toString());
+		
 		return true;
 	}
 
@@ -3405,8 +3540,16 @@ presence_online*/
 						Toast.LENGTH_SHORT).show();
 			}
 			if (resultCode == RecognizerIntent.RESULT_SERVER_ERROR) {
-				Toast.makeText(getApplicationContext(),
+					if (isOnline())Toast.makeText(getApplicationContext(),
 						"No RESULT_SERVER_ERROR", Toast.LENGTH_SHORT).show();
+					else Toast.makeText(getApplicationContext(),
+							"Offline " +languagePref+" language pack not found!\n\n"
+									+   "Switch to online mode or change language\n\n"
+									+"To avoid this please download the "
+									+ languagePref
+									+  " languagepack on next connection" 
+									, Toast.LENGTH_LONG).show();
+				
 			}
 			// Toast.makeText(getApplicationContext(), "No RESULT_SERVER_ERROR",
 			// Toast.LENGTH_SHORT).show();
@@ -4812,7 +4955,7 @@ presence_online*/
 
 						Log.d("OK downloading VideoFile provider",
 								"linkInside.toString()" + linkInside.toString()
-										+ " " + linkInside + " lastLinkInside "
+										+ "\n " + linkInside + " lastLinkInside "
 										+ lastLinkInside);
 						// Toast.makeText(getBaseContext(), , duration)
 
@@ -9120,15 +9263,15 @@ presence_online*/
 	   
 	   protected void showHelp() {
 	        // Inflate the about message contents
-	        View messageView = getLayoutInflater().inflate(R.layout.views, null, false);
+	        View messageView = getLayoutInflater().inflate(R.layout.options, null, false);
 	 
 	        // When linking text, force to always use default color. This works
 	        // around a pressed color state bug.
 	        
 	        
 	        TextView textView = (TextView) messageView.findViewById(R.id.options_lang);
-	        int defaultColor = textView.getTextColors().getDefaultColor();
-	        textView.setTextColor(defaultColor);
+	       // int defaultColor = textView.getTextColors().getDefaultColor();
+	       //.setTextColor(defaultColor);
 	 
 	        
 	        
@@ -9142,7 +9285,7 @@ presence_online*/
 	        
 	        
 	        //Not used Button is defined in XML
-	        ToggleButton toggle = (ToggleButton) findViewById(R.id.togglebutton1);
+	        //ToggleButton toggle = (ToggleButton) findViewById(R.id.togglebutton1);
 	        //toggle.setChecked(SLVideoActivated);
 	       /* toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 	            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -9157,10 +9300,14 @@ presence_online*/
 	        
 	        //findViewById(R.id.toggleButton1).setOnClickListener(this);
 	    }
+	   
+	   
+	   
 	  // View viewsChooserView;
 	   View messageView;
 	   AlertDialog.Builder builder;
 	   AlertDialog viewsAlertDialog;
+	 
 	   protected void showViews() {
 	        // Inflate the about message contents
 	        //View//
@@ -9566,6 +9713,86 @@ presence_online*/
 
  }
 	   
+ public Boolean checkVoiceRecognition() {
+
+  // Check if voice recognition is present
+
+  PackageManager pm = getPackageManager();
+
+  List<ResolveInfo> activities = pm.queryIntentActivities(new Intent(
+
+    RecognizerIntent.ACTION_RECOGNIZE_SPEECH), 0);
+
+  if (activities.size() == 0) {
+
+   //mbtSpeak.setEnabled(false);
+
+  // mbtSpeak.setText("Voice recognizer not present")
+
+   Toast.makeText(this, "Voice recognizer not present! 	Please download a voice recognizer",
+     
+     Toast.LENGTH_LONG).show();
+
+  }else{
+	  int i =0;
+	 while (i<activities.size()){
+	  
+		/* Toast.makeText(this,
+			  " Voice recognizer present:"+activities.size()
+			 +"   --- activityInfoname: "+activities.iterator().next().activityInfo.name
+		
+			  ,Toast.LENGTH_SHORT).show();*/
+	  			i++;
+	 }
+  }
+  return (activities.size() != 0);
+
+ }
+ /**
+  * Asking the permission for installing Google Voice Search. 
+  * If permission granted – sent user to Google Play
+  * @param callerActivity – Activity, that initialized installing
+  */
+ private static void installGoogleVoiceSearch(final Activity ownerActivity) {
+
+     // creating a dialog asking user if he want
+     // to install the Voice Search
+	 // modified by Pierre Capdepuy for Ateraction in Hexasense's vEsperanto project
+	 //from intel https://software.intel.com/en-us/articles/developing-android-applications-with-voice-recognition-features
+	/* android.app.AlertDialog.Builder aDialog = new AlertDialog.Builder(ownerActivity)
+	 			.setMessage("For recognition it’s necessary to install Google Voice Search");
+	 			*/
+	 
+     Dialog dialog = new AlertDialog.Builder(ownerActivity)
+         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+         .setTitle("Install Voice Search from Google Play?")    // dialog header
+         .setPositiveButton("Install", new DialogInterface.OnClickListener() {    // confirm button
+
+             // Install Button click handler
+             @Override
+             public void onClick(DialogInterface dialog, int which) {
+                 try {
+                     // creating an Intent for opening applications page in Google Play
+                     // Voice Search package name: com.google.android.voicesearch
+                   //  Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.google.android.voicesearch"));
+                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=com.ateraction.vespranto"));
+                     // setting flags to avoid going in application history (Activity call stack)
+                     intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+                     // sending an Intent
+                     ownerActivity.startActivity(intent);
+                  } catch (Exception ex) {
+                      // if something going wrong
+                      // doing nothing
+                  }
+             }})
+
+         .setNegativeButton("Cancel", null)    // cancel button
+         .create();
+
+     dialog.show();    // showing dialog
+ 
+ }
+ 
 	   
 }// EOF
 
