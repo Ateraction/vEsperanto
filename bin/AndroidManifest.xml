@@ -7,7 +7,69 @@
     <uses-sdk
         android:minSdkVersion="11"
         android:targetSdkVersion="17" />
-     <uses-permission android:name="android.permission.CALL_PHONE" />
+   <!-- 
+   If you don't want Google Play to filter based on a specific implied feature,
+    you can disable that behavior.
+    To do so, declare the feature explicitly in a <uses-feature> element and 
+    include an android:required="false" attribute.
+     For example, to disable filtering derived from the CAMERA permission,
+      you would declare the feature as shown below.
+
+		<uses-feature android:name="android.hardware.camera" android:required="false" />
+   
+	   Category 	This Permission... 	Implies This Feature Requirement
+		Bluetooth 
+			BLUETOOTH 	android.hardware.bluetooth
+		
+				(See Special handling for Bluetooth feature for details.)
+			BLUETOOTH_ADMIN 	android.hardware.bluetooth
+		
+		Camera
+			CAMERA 	android.hardware.camera and
+			android.hardware.camera.autofocus
+			
+		Location
+			ACCESS_MOCK_LOCATION 	android.hardware.location
+			ACCESS_LOCATION_EXTRA_COMMANDS 	android.hardware.location
+			INSTALL_LOCATION_PROVIDER 	android.hardware.location
+			ACCESS_COARSE_LOCATION 	android.hardware.location.network and
+			android.hardware.location
+			ACCESS_FINE_LOCATION 	android.hardware.location.gps and
+			android.hardware.location
+			
+		Microphone
+			RECORD_AUDIO 	android.hardware.microphone
+			
+		Telephony
+			CALL_PHONE 	android.hardware.telephony
+			CALL_PRIVILEGED 	android.hardware.telephony
+			MODIFY_PHONE_STATE 	android.hardware.telephony
+			PROCESS_OUTGOING_CALLS 	android.hardware.telephony
+			READ_SMS 	android.hardware.telephony
+			RECEIVE_SMS 	android.hardware.telephony
+			RECEIVE_MMS 	android.hardware.telephony
+			RECEIVE_WAP_PUSH 	android.hardware.telephony
+			SEND_SMS 	android.hardware.telephony
+			WRITE_APN_SETTINGS 	android.hardware.telephony
+			WRITE_SMS 	android.hardware.telephony
+			
+		Wi-Fi 
+			ACCESS_WIFI_STATE 	android.hardware.wifi
+			CHANGE_WIFI_STATE 	android.hardware.wifi
+			CHANGE_WIFI_MULTICAST_STATE 	android.hardware.wifi
+	   
+    -->
+    
+    
+    <uses-feature android:name="android.hardware.camera.autofocus" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
+    <uses-feature android:name="android.hardware.wifi" android:required="false" />
+    <uses-feature android:name="android.hardware.microphone" android:required="false" />
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    
+    <uses-permission android:name="android.permission.CALL_PHONE" />
      
    <uses-permission android:name="android.permission.READ_SMS" />
    <uses-permission android:name="android.permission.SEND_SMS" />
@@ -19,9 +81,9 @@
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 	  <uses-permission android:name="android.permission.READ_CONTACTS" />
 	  <uses-permission android:name="android.permission.CAMERA" />
-        <uses-feature android:name="android.hardware.camera" />
-	
+       
         <uses-permission android:name="android.permission.VIBRATE"/>
+      
         
         <uses-permission android:name="android.permission.BLUETOOTH" />
         <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
