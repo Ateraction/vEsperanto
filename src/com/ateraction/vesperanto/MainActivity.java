@@ -283,6 +283,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -346,14 +347,17 @@ import android.speech.RecognitionListener;
 import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.telephony.SmsManager;
 import android.text.Html;
 import android.text.format.Time;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MenuItem.OnMenuItemClickListener;
 import android.view.SubMenu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -368,6 +372,7 @@ import android.webkit.WebView;
 import android.webkit.WebView.FindListener;
 import android.webkit.WebView.WebViewTransport;
 import android.webkit.WebViewClient;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -393,6 +398,8 @@ import com.ateraction.vesperanto.R;
 
 public class MainActivity extends Activity implements OnClickListener,
 		OnCompletionListener,OnPreparedListener, OnLongClickListener {
+	
+	private Menu menu;
 	private SpeechRecognizer sr;
 	public AudioManager am;
     public SpeechRecognizer     speechRecognizer;
@@ -480,7 +487,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	//new Locale("en").getDisplayName(Locale.FRANCE);
 	
 	String languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
-  String[] historyList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
+  String[] historyList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
+		  ,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
 	
   	// UI
 	LinearLayout main, scrollLayout, scrollLayout2, hscrollLayout1,
@@ -500,13 +508,14 @@ public class MainActivity extends Activity implements OnClickListener,
 	
 	static String lastOnVideoLongClick;
 	protected static final int REQUEST_OK = 1;
+	//private static final String ISO3Country = null;
 
 	Boolean SLVideoActivated = false;
 	Boolean SWSpellingActivated = false;
 	Boolean SLSpellingActivated = false;
 	Boolean SecurityActivated = false;
 	Boolean GoogleActivated = true;
-
+	Boolean commandModeActivated = true;
 	
 	
 	Boolean bWebActivated = true;
@@ -522,6 +531,10 @@ public class MainActivity extends Activity implements OnClickListener,
 	int imageSizePref;
 	String DisplayLanguage=null;
 	
+	Boolean onlyProcessMenuActivated=false;
+	Boolean processMenuActivated=false;
+	Boolean isMenuRequest=false	;
+	Boolean onclickProcessMenuActivated=processMenuActivated;
 	// Image&Video tool
 	String[] signLanguageVideo;// just the name of the video .mp4 found in
 								// /videoFolder
@@ -535,7 +548,16 @@ public class MainActivity extends Activity implements OnClickListener,
 	Boolean needDownload = false;
 	int count = 0;
 	String lastOnMediaLongClick = null;
-	String[] userFoundList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
+	String[] userFoundList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
+			,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
+	
+	String recorder="660";
+	String jC="1234567890";
+	String jP="1234567890";
+	String pierre="660";
+	String akinetique="1234567890";
+	String userName="paul";
+	String userNumber="660";
 	
 	/**
 * Look up the default recognizer service in the preferences.
@@ -669,6 +691,16 @@ return new ComponentName(pkg, cls);
 		DebugActivated= readSharedPrefBoolean("DebugActivated",DebugActivated);
 		 bWebActivated = readSharedPrefBoolean("bWebActivated",bWebActivated);
 		 SafeSearchActivated=readSharedPrefBoolean("SafeSearchActivated",SafeSearchActivated);
+			commandModeActivated = readSharedPrefBoolean("commandModeActivated",true);
+			
+			processMenuActivated = readSharedPrefBoolean("processMenuActivated",false);
+			onlyProcessMenuActivated = readSharedPrefBoolean("onlyProcessMenuActivated",false);
+			isMenuRequest = readSharedPrefBoolean("isMenuRequest",false);
+			
+			
+		 
+		 
+		 
 		 
 		 ShowSearchResultsActivated=readSharedPrefBoolean("ShowSearchResultsActivated",ShowSearchResultsActivated);
 		
@@ -1338,26 +1370,87 @@ presence_online*/
 		}
 		
 		
-		if(item.toString().substring(3, 4).contains("-")){
+		/*	"-"+localeList[i].getDisplayLanguage(localeList[i])
+				   +"-"+localeList[i].getDisplayCountry(localeList[i])
+				   +"-"+localeList[i].getLanguage()*/
+		
+		/*
+		 	//Locale locale= new Locale("");locale.getDefault();
+		if(item.toString().substring(0, 1).contains("-")){
+			
+		
+			
+		    Locale[] localeList= Locale.getDefault().getAvailableLocales();
+		    for(int i=0 ;i<localeList.length; i++){
+		    	if (item.toString().startsWith("-"+
+		    			localeList[i].getDisplayLanguage(localeList[i])
+		    			+"-"+localeList[i].getDisplayCountry(localeList[i])
+		    			,1 ) ){
+		    		writeSharedPrefString("DisplayLanguage",localeList[i].getLanguage()+"_"+localeList[i].getCountry());
+					languagePref=localeList[i].getLanguage()+"_"+localeList[i].getCountry();
+					//DisplayLanguage=localeList[i].getLanguage()+"_"+localeList[i].getCountry();
+					
+		    		
+		    	}
+		    	
+		    	
+		    }
+		    
+		}*/	
+		
+		
+		//ISO3CodeIdentification desacivated
+		if(false){//item.toString()
+				//.substring(3, 4)
+				//.contains("-")){
+			
 			Locale[] localeList= Locale.getDefault().getAvailableLocales();
 			
 			for(int i=0 ;i<localeList.length; i++){
-				if (localeList[i].getISO3Country().length()==3){
+				
+//			} catch (MissingResourceException  e) {
+				
+				String countryISO3="";
+
+				try {
+					countryISO3=localeList[i].getISO3Country();
+				} catch (MissingResourceException e) {
+					countryISO3="?";
+					e.printStackTrace();
+				}
+				
+				
+				
+				
+				if (true){//countryISO3.length()==3){
 				Log.d("bv","Found SubString:"				
 				+item.toString().substring(0, 3)
 				+
 							" ISO3 Country:"
-				+localeList[i].getISO3Country()+
-								" is contained:"	+item.toString().substring(0, 3).contains(localeList[i].getISO3Country())
+				+countryISO3+
+								" is contained:"	+item.toString().substring(0, 3).contains(countryISO3)
 								+	" Writing SharePref   "+localeList[i].getLanguage()+"  "+
 									localeList[i].getISO3Country()+
 							 "/languagePref = "+languagePref
 							 +"/DefaultLanguage= "+DisplayLanguage
 						);	
 				
+				
+				
+				
+				
 				if (
-						(item.toString().substring(0, 3).contains(localeList[i].getISO3Country()))
-					&& (item.toString().contains(localeList[i].getLanguage()))	
+						(
+								(item.toString().substring(0, 3).contains(countryISO3)	)&& 
+					
+						(
+							item.toString().contains(localeList[i].getLanguage())
+							)	
+							&& 	(item.toString()
+									//.substring(0, 3)
+									.contains(localeList[i].getCountry())
+									)
+						)
 					){
 					
 					
@@ -1369,8 +1462,8 @@ presence_online*/
 							+item.toString().substring(0, 3)
 							+
 										" ISO3 Country:"
-							+localeList[i].getISO3Country()+
-											" is contained:"	+item.toString().substring(0, 3).contains(localeList[i].getISO3Country())
+							+countryISO3+
+											" is contained:"	+item.toString().substring(0, 3).contains(countryISO3)
 											+	" Writing SharePref   "+localeList[i].getLanguage()+"  "+
 												localeList[i].getISO3Country()+
 										 "/languagePref = "+languagePref
@@ -1580,12 +1673,72 @@ presence_online*/
 						 Toast.LENGTH_LONG).show();
 			}
 			
-			
 		}
+		
+
+		Log.d("onCLick: item", ""+item.toString());
+		if (item.toString()=="processMenu"){//"processMenuActivated"){
+			Log.d("Before: processMenuActivated", ""+processMenuActivated);
+
+			processMenuActivated = readSharedPrefBoolean("processMenuActivated",processMenuActivated);
+			processMenuActivated=!processMenuActivated;
+			onclickProcessMenuActivated=processMenuActivated;
+			
+			writeSharedPrefBool("processMenuActivated",processMenuActivated);
+			Toast.makeText(getApplicationContext(), "processMenuActivated"+processMenuActivated,Toast.LENGTH_LONG);
+			
+			
+			invalidateOptionsMenu();
+			if (onclickProcessMenuActivated){
+			processRequest("processMenuActivated "+processMenuActivated);
+			lastRequest="processMenuActivated "+processMenuActivated;
+			}
+			//item.isChecked();
+			Log.d("After: processMenuActivated", " "+processMenuActivated);
+		}
+		if (item.toString()=="hideMenu"){
+			Log.d("Before: onlyProcessMenuActivated", ""+onlyProcessMenuActivated);
+			
+			onlyProcessMenuActivated=!onlyProcessMenuActivated;
+			//onlyProcessMenuActivated = readSharedPrefBoolean("onlyProcessMenuActivated",onlyProcessMenuActivated);
+			writeSharedPrefBool("onlyProcessMenuActivated",onlyProcessMenuActivated);
+			Toast.makeText(getApplicationContext(), "onlyProcessMenuActivated"+onlyProcessMenuActivated,Toast.LENGTH_LONG);
+			invalidateOptionsMenu();
+			if (onclickProcessMenuActivated){
+				processRequest("onlyProcessMenuActivated "+onlyProcessMenuActivated);
+				lastRequest="onlyProcessMenuActivated "+onlyProcessMenuActivated;
+			}
+			//item.isChecked();
+			Log.d("After: onlyProcessMenuActivated", " "+onlyProcessMenuActivated);
+		}
+		
+		
+		
+		
+		
+		if (item.toString()=="CommandMode"){
+			Log.d("Before: CommandModeActivated", ""+commandModeActivated);
+			
+			
+			commandModeActivated = readSharedPrefBoolean("commandModeActivated",commandModeActivated);
+			commandModeActivated=!commandModeActivated;
+			writeSharedPrefBool("commandModeActivated",commandModeActivated);
+			invalidateOptionsMenu();
+			Toast.makeText(getApplicationContext(), "commandMode"+commandModeActivated,Toast.LENGTH_LONG);
+			if (onclickProcessMenuActivated){
+			processRequest("commandMode "+commandModeActivated);
+			lastRequest="commandMode "+commandModeActivated;
+			}
+			//item.isChecked();
+			Log.d("After: CommandModeActivated", " "+commandModeActivated);
+		}
+		
 		if (item.toString() == "Debug"){
 			Log.d("Before: DebugActivated", ""+DebugActivated);
 			
 			DebugActivated=!DebugActivated;
+			
+			//commandModeActivated = readSharedPrefBoolean("DebugActivated",DebugActivated);
 			writeSharedPrefBool("DebugActivated",DebugActivated);
 			if (DebugActivated){
 				
@@ -1594,6 +1747,10 @@ presence_online*/
 			}else debug=0;
 			item.isChecked();
 			Log.d("After: DebugActivated", ""+DebugActivated);
+			Toast.makeText(getApplicationContext(), "DebugActivated "+DebugActivated,Toast.LENGTH_LONG);
+			processRequest("Debug "+DebugActivated +" "+debug);
+			lastRequest=("Debug "+DebugActivated+" "+debug );
+			
 			/*bWebActivated=!bWebActivated;
 			writeSharedPrefBool("bWebActivated",bWebActivated);*/
 			
@@ -2126,8 +2283,11 @@ presence_online*/
 				
 			
 		}
-		if (item.toString() == "ReadSMS"){readSMS();}
+		if (item.toString() == "ReadSMS"){readContactSMS();}
+		if (item.toString() == "ReadLast-SMS"){readSimSMS();}
+		if (item.toString() == "ReadLastPHoneSMS"){readPhoneSMS();}
 		if (item.toString() == "SendMail"){sendMail();}
+		if (item.toString() == "SendSMS"){sendSMS(""+5556,lastRequest);}
 		if (item.toString() == "About"){
 			showAbout();
 			
@@ -2294,14 +2454,55 @@ presence_online*/
 	
 	
 	public boolean onCreateOptionsMenu(Menu menu) {
+		this.menu = menu;
+		String MenuList="";
+		
+		
 		// Toast.makeText(this,"onCreateOptionsMenu "+menu.toString(),
 		// Toast.LENGTH_LONG ).show();
 		Item item;
-		
+		int id=0;
+		MenuItem menuItem;
 		//menu.size()
-		
-		//menu.add("SelectViews");
 		menu.add("SelectViews").setIcon(android.R.drawable.ic_menu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+	/*	menuItem= menu.add(" ");
+		id=menuItem.getItemId();
+		menu.removeItem(id);
+		//menu.add("SelectViews");
+		menuItem=menu.add("SelectViews");//.setIcon(android.R.drawable.ic_menu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menuItem.setIcon(android.R.drawable.ic_menu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.removeItem(id);
+		menu.add("SelectViews").setIcon(android.R.drawable.ic_menu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+	        @Override
+	        public boolean onMenuItemClick(MenuItem item) {
+	        	String title=item.getTitle().toString();
+	        	String language="";
+	        	//String lastLanguage=languagePref;
+	        	language=title.substring(title.indexOf("/")+1,title.indexOf(">"));
+	        	if (title.length()>title.indexOf(">")+1)	language=language+"_"+title.substring(title.indexOf(">")+1);
+	        		        	
+	        	writeSharedPrefString("DisplayLanguage",language);
+	        	processRequest(item.getTitle().toString().substring(0,title.indexOf("/")).trim());
+	        	//processRequest(languagePref+">"+item.getTitle().toString());
+	        	lastRequest=item.getTitle().toString().substring(0,title.indexOf("/")).trim();
+	        	languagePref=language; 
+				//DisplayLanguage=localeList[i].getLanguage()+"_"+localeList[i].getCountry();
+				Toast.makeText(getApplicationContext(), language   +"    "+item.getTitle().toString(), 0).show();
+				
+	            return true;
+	            //processRequest();
+	        }
+	    });
+		*/
+		
+		
+		
+		
+		
+		
+		
 		
 		//menu.getItem(0).setIcon(android.R.drawable.ic_menu_view);
 		//menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);//.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
@@ -2311,6 +2512,12 @@ presence_online*/
 		//menu.add("loadList").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("pickContact");
 		//menu.add("getPhoto");
+		
+		
+		
+		
+		
+		
 		SubMenu subMenu;
 		subMenu=menu.addSubMenu("languages");
 		//subMenu.add("UserLanguage");
@@ -2319,13 +2526,40 @@ presence_online*/
 	/*	For(Locale locale:localeTable){
 			
 		}*/
-		Locale[] localeList= Locale.getDefault().getAvailableLocales();
+		
 		subMenu.add("UserLanguage");//working
 		subMenu.add("Français");//working		
 		subMenu.add("English");//working
+		Locale[] localeList= Locale.getDefault().getAvailableLocales();
+		//subMenu.addSubMenu("-----------").getItem().setActionView(hscrollView1);
+		//subMenu.addIntentOptions(groupId, itemId, order, caller, specifics, intent, flags, outSpecificItems)
+		//http://en.wikipedia.org/wiki/ISO_3166-1
+			
+		/*
+		subMenu.add("ISO Languages");
+		String[] isoLanguageString=Locale.getISOLanguages();
 		
+		for(int i=0 ;i<isoLanguageString.length; i++){ 
+			subMenu.add(isoLanguageString[i]);
+		
+		}
+		subMenu.add("ISO Country");
+		String[] isoCountryString=Locale.getISOCountries();
+		for(int i=0 ;i<isoCountryString.length; i++){ 
+			subMenu.add(isoCountryString[i]);
+		
+		}*/
+		
+		
+		
+		
+		
+		
+		
+		/*
 		for(int i=0 ;i<localeList.length; i++){ 
 			if (localeList[i].getISO3Country()!=""){
+			
 			subMenu.add(
 					//localeList[i].getLanguage()
 					localeList[i].getISO3Country()
@@ -2337,6 +2571,82 @@ presence_online*/
 					);//working
 			}
 		}
+		*/
+	
+		//
+		for(int i=0 ;i<localeList.length; i++){ 
+			
+			
+			String countryISO3="";
+			
+			try {
+				countryISO3=localeList[i].getISO3Country();
+				
+			} catch (MissingResourceException  e) {
+				// catch block Android 4.4 (maybe only on Galaxy S4 (jflte)	 
+				e.printStackTrace();
+			}finally {
+				
+			}
+			
+			
+			if (countryISO3!=""){
+			
+			}
+			String title=
+					//countryISO3
+					//+"-"+
+					localeList[i].getDisplayLanguage(localeList[i])
+					+" _ "+localeList[i].getDisplayLanguage()//+" "+localeList[i].getDisplayName()
+				   +" [ "+localeList[i].getDisplayCountry(localeList[i])
+				   
+				   +" _ "+localeList[i].getDisplayCountry()
+				   +" ]                               "
+				   +" /"+localeList[i].getLanguage()
+				   +">"+localeList[i].getCountry();
+					//+" "+localeList[i].getDisplayName()//full name language+Country 
+					//+"-"+localeList[i].getLanguage()+
+					//+"-"+localeList[i].getDisplayName(Locale.ROOT)
+					//+"-"+localeList[i].getLanguage()
+					//(languagePref)";
+			
+//			MenuItem menuItem;
+			menuItem=subMenu.add(title);
+			
+			//OnMenuItemClickListener onMenuItemClickListener;//=new  OnMenuItemClickListener();
+			
+			//OnItemClickListener onItemClickListener;//=new  OnItemClickListener();
+			
+			menuItem.setOnMenuItemClickListener(new OnMenuItemClickListener() {
+
+		        @Override
+		        public boolean onMenuItemClick(MenuItem item) {
+		        	String title=item.getTitle().toString();
+		        	String language="";
+		        	//String lastLanguage=languagePref;
+		        	language=title.substring(title.indexOf("/")+1,title.indexOf(">"));
+		        	if (title.length()>title.indexOf(">")+1)	language=language+"_"+title.substring(title.indexOf(">")+1);
+		        		        	
+		        	writeSharedPrefString("DisplayLanguage",language);
+		        	if (onclickProcessMenuActivated){
+		        	processRequest(item.getTitle().toString().substring(0,title.indexOf("/")).trim());
+		        	//processRequest(languagePref+">"+item.getTitle().toString());
+		        	lastRequest=item.getTitle().toString().substring(0,title.indexOf("/")).trim();
+		        	}
+		        	languagePref=language; 
+					//DisplayLanguage=localeList[i].getLanguage()+"_"+localeList[i].getCountry();
+					Toast.makeText(getApplicationContext(), language   +"    "+item.getTitle().toString(), 0).show();
+		            return true;
+		            //processRequest();
+		        }
+		    });
+			//menuItem=subMenu.add(title);
+			
+			
+		}
+		
+		
+		
 		
 		SubMenu debugSubMenu;
 		debugSubMenu=menu.addSubMenu("AdvancedOptions" );
@@ -2345,8 +2655,17 @@ presence_online*/
 			.setCheckable(true)
 			.setChecked(DebugActivated);
 		debugSubMenu.add("SendReport");
+		debugSubMenu.add("CommandMode").setCheckable(true)
+		.setChecked(commandModeActivated);
 		
-		
+		debugSubMenu.add("processMenu").setCheckable(true)
+		.setChecked(processMenuActivated);
+		debugSubMenu.add("hideMenu").setCheckable(true).setEnabled(false)
+		.setChecked(onlyProcessMenuActivated);
+	
+		debugSubMenu.add("isMenuRequest").setCheckable(true).setEnabled(false)
+		.setChecked(isMenuRequest);
+
 	    
 		SubMenu exchangeSubMenu;
 		exchangeSubMenu=menu.addSubMenu("Exchange" );
@@ -2427,14 +2746,15 @@ presence_online*/
 		}		
 	
 		SubMenu otherSubMenu;
-		otherSubMenu=menu.addSubMenu("????" );			
+		otherSubMenu=menu.addSubMenu("Help-About" );			
 		otherSubMenu.add("Help").setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		otherSubMenu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		menu.add("ReadSMS").setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add("ReadLast-SMS").setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		otherSubMenu.add("SendMail").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		
+		otherSubMenu.add("SendSMS").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		// languagePref =
 		// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
 
@@ -2443,10 +2763,76 @@ presence_online*/
 		// inflater.inflate(R.menu.option, menu);
 		// inflater.inflate(R.layout.menu, menu);
 		Log.v("menu", "menu created" + menu.toString());
+		/*String menuString="";
+		
+		for (int i=0;i<menu.size();i++)menuString+=(menu.getItem(i)+" ");
+		processRequest(menuString);
+		lastRequest=(menuString);*/
+
+		
+		
+		
 		
 		return true;
 	}
+	
+	@Override
+	public boolean onKeyDown(int keycode, KeyEvent e) {
+	    switch(keycode) {
+	        case KeyEvent.KEYCODE_MENU:
+	        	
+	        	if (processMenuActivated){
+	        		this.invalidateOptionsMenu();
+	        	//this.getApplicationContext()
 
+	        		if (!onlyProcessMenuActivated)this.openOptionsMenu();
+	        		
+	        	//menu.getItem(index)
+	        	String menuString="";
+	        	
+	        	//for (int i=0;i<menu.size();i++)menuString+=(menu.getItem(i)+" ");
+	        	for (int i=0;i<menu.size();i++){
+	        		
+	        	//	if(!menu.getItem(i).isActionViewExpanded()){menu.getItem(i).;}
+	        		
+	        		if(menu.getItem(i).hasSubMenu()){
+	        			menuString+=(menu.getItem(i)+" ");
+	        			//menu.getItem(i).getSubMenu().size();
+	        			//for(int j=0;j<menu.getItem(i).getSubMenu().size()-1;j++) menuString+=menu.getItem(i)+"-"+menu.getItem(i).getSubMenu().getItem(j)+" ";
+	        			//this.openOptionsMenu();
+	        		}
+	        		else menuString+=(menu.getItem(i)+" ");
+	        		
+	        		
+	        		
+	        	}
+        		isMenuRequest=true;	
+	        	processRequest(menuString);
+	           // processRequest(thingYouSaid);
+	            return true;
+	        	}
+	    }
+
+	    return super.onKeyDown(keycode, e);
+	    
+	
+	}
+	
+	
+	public boolean onPrepareOptionsMenu(Menu menu) {
+	
+	/*	String menuString="";
+		for (int i=0;i<menu.size();i++)menuString+=(menu.getItem(i)+" ");
+		processRequest(menuString);
+		lastRequest=(menuString);*/
+		return super.onPrepareOptionsMenu(menu);
+		
+	}
+	
+	
+	
+	
+	
 	static final int PICK_CONTACT_REQUEST = 2; // The request code
 	static final int ACTION_CAMERA_BUTTON_REQUEST = 3; // The request code
 
@@ -3551,7 +3937,109 @@ presence_online*/
 					);
 			processRequest(thingYouSaid);
 			lastRequest = thingYouSaid;
+			
+			if (commandModeActivated){
+			String wish="envoie par mail à ";
+			Log.d("CommandMode "," contains? "+wish +" " +thingYouSaid);
+			String wishMail="";
+			if (thingYouSaid.contains(wish)){
+				Log.d("CommandMode "," contains? "+wish +" " +thingYouSaid);
+				if (thingYouSaid.contains("arobase")){
+					Log.d("CommandMode "," contains? space"+wish +" " +thingYouSaid);
+					
+					
+					wishMail=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());
+				
+					wishMail=wishMail.replace("arobase","@");
+				/*if (wishMail.contains(" ")){
+					wishMail=wishMail.substring(0,wishMail.indexOf("."));
+					wishMail=wishMail.substring(0,wishMail.indexOf(" "));
+					Log.d("CommandMode "," contains space "+wish +" " +thingYouSaid);
+				}*/
+				
+				}
+				/*makePhoneCall(
+						thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()
+								,thingYouSaid.indexOf(wish)+wish.length()+10)
+						);*/
+				
+				wishMail=wishMail.replaceAll(" ", "");
+				sendMail2(wishMail);
+				Log.d("CommandMode "," contains "+wishMail);
+			}
+			
+			
+			
+			//String
+			wish="appelle le ";
+			
+			if (thingYouSaid.contains(wish)){
+				
+				makePhoneCall(
+						thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+			/*String recorder="660";
+			String jC="1234567890";
+			String jP="1234567890";
+			String pierre="1234567890";
+			String akinetique="1234567890";
+			String userName="paul";
+			String userNumber="660";*/
+			
+			wish="appelle "+userName;if (thingYouSaid.toLowerCase().contains(wish.toLowerCase())){makePhoneCall(userNumber);}				
+			wish="appelle mon répondeur";if (thingYouSaid.contains(wish)){makePhoneCall(recorder);}			
+			wish="appelle JC";if (thingYouSaid.contains(wish)){makePhoneCall(jC);}
+			wish="appelle pierre";if (thingYouSaid.contains(wish)){makePhoneCall(pierre);}
+			wish="appelle jean-paul chiron";if (thingYouSaid.contains(wish)){makePhoneCall(jP);}
+			wish="appelle akinétique";if (thingYouSaid.contains(wish)){makePhoneCall(akinetique);}
+			
+			wish="modifie "+userName;if (thingYouSaid.contains(wish)){userNumber=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());}
+			wish="modifie mon répondeur";if (thingYouSaid.contains(wish)){recorder=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());}			
+			wish="modifie JC";if (thingYouSaid.contains(wish)){jC=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());}
+			wish="modifie Pierre";if (thingYouSaid.contains(wish)){vibrate(100);pierre=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());}
+			wish="modifie jean-paul chiron";if (thingYouSaid.contains(wish)){jP=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());}
+			wish="modifie akinétique";if (thingYouSaid.contains(wish)){akinetique=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());}
+			
+			
+			wish="nouveau";if (thingYouSaid.contains(wish)){
+				userName=thingYouSaid.substring(0,thingYouSaid.indexOf(wish));
+				userNumber=thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length());
+				
+				}
+			
+			
+			
+			//String
+			wish="envoie par SMS au ";
+			Log.d("SMS",thingYouSaid);
+			if (thingYouSaid.toLowerCase().contains(wish.toLowerCase())){
+				Log.d("SMSOK",thingYouSaid);
+				sendSMS(thingYouSaid.toLowerCase().substring(thingYouSaid.toLowerCase().indexOf(wish.toLowerCase())+wish.toLowerCase().length()),lastRequest);
+				//makePhoneCall(
+					//	thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
 
+			wish="au secours SOS";
+			Log.d("SMS SOS",thingYouSaid);
+			if (thingYouSaid.toLowerCase().contains(wish.toLowerCase())){
+				Log.d("SMS SOS OK",thingYouSaid);
+				sendSMS(" 06 64 43 16 27 ",lastRequest+"<localisation>Pessac centre <proximité> Hôtel de Ville Team Gare");
+				//makePhoneCall(
+					//	thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+				makePhoneCall(pierre);		
+				
+			}
+
+			}
+			
+			
 			if (debug>1)Toast.makeText(getApplicationContext(), ">>> " + thingYouSaid,
 					Toast.LENGTH_LONG).show();
 		}// if request
@@ -3798,7 +4286,8 @@ presence_online*/
 
 		int wordsYouSaidCounter = 0;
 		final String[] wordsYouSaid = { "", "", "", "", "", "", "", "", "", "",
-				"", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
+				"", "", "", "", "", "", "", "", "", "", "", "", "", "", "" ,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
+				,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
 		int[] wordspostion = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 		wordsYouSaid[0] = "";
@@ -4350,6 +4839,123 @@ presence_online*/
 									"clickon Image" + v.getContentDescription()
 											+ " " + v.toString(),
 									Toast.LENGTH_SHORT).show();
+							Log.d("clickon Image" + v.getContentDescription(),"isMenuRequest " +isMenuRequest+" "+v.getContentDescription());
+							if (isMenuRequest){
+								for (int i=0;i<menu.size();i++){
+									Log.d("clickon Image" + v.getContentDescription(),"search MenuRequest" +menu.getItem(i));
+									
+									
+									if (menu.getItem(i).hasSubMenu()){
+										Log.d("Menu Itel has  SubMenu",""); 
+										
+										String request="";
+										for (int j=0;j<menu.getItem(i).getSubMenu().size()-1;j++){
+											if 	(menu.getItem(i).getSubMenu().getItem(j).toString().contains(v.getContentDescription())){
+												menu.performIdentifierAction(menu.getItem(i).getSubMenu().getItem(j).getItemId(),2);
+												
+												onOptionsItemSelected(menu.findItem(menu.getItem(i).getSubMenu().getItem(j).getItemId()));//menu.getItem(i).
+												Log.d("clickon SubMenu Image" + v.getContentDescription(),"MenuRequest" +menu.getItem(i)+" subMenu " +menu.getItem(i).getSubMenu().getItem(j));
+												
+												
+											}
+										}
+									}	
+									
+									if (menu.getItem(i).toString().contains(v.getContentDescription())){
+										onOptionsItemSelected(menu.findItem(i));//menu.getItem(i).
+										Log.d("clickon Menu Image" + v.getContentDescription(),"MenuRequest" +menu.getItem(i));
+										//menu.getItem(i).OnMenuItemClickListener(menuItemClickListener)
+										String tempRequest2="";
+										if (menu.getItem(i).hasSubMenu()){
+											String request="";
+											Log.d("clickon  Image hasSubMenu" + v.getContentDescription(),"MenuRequest" +menu.getItem(i));
+											for (int j=0;j<menu.getItem(i).getSubMenu().size()-1;j++){
+												
+												if (true){//menu.getItem(i).toString().contains("languages")){
+													
+												String language="";
+												String country="";
+													tempRequest2=menu.getItem(i).getSubMenu().getItem(j).toString();
+													Log.d("tempRequest2",tempRequest2);
+													if(tempRequest2.contains("_")){
+														language=tempRequest2.substring(0,tempRequest2.indexOf("_")-1).trim();
+														tempRequest2=tempRequest2.substring(tempRequest2.indexOf("_")+2,tempRequest2.length());
+														Log.d("--language",language);
+														if (tempRequest2.contains("_")&&tempRequest2.contains("[")){
+															//if tempRequest2.indexOf("(")+1
+															Log.d("tempRequest2",tempRequest2);
+															country=tempRequest2.substring(tempRequest2.indexOf("[")+1);
+															Log.d("-country",country+"!");
+															country= country.substring(country.indexOf("[")+1,(country.indexOf("_")-1)).trim();	
+															country=","+	country.trim();
+														//country+="=";
+															Log.d("--country",country+"!");
+															//country=country.
+														}
+														
+														if (country==",!")country="";
+														else country=country.replace(" ", "+");//	tempRequest2=language.replace(" ", "+")+country.replace(" ", "+");
+														//else tempRequest2=language.replace(" ", "+");
+														//tempRequest2=language.replace(" ", "+")+country;
+														tempRequest2=language.replace(" ", "+")+country;
+														
+														//tempRequest2=country;
+																
+														Log.d("tempRequest2",tempRequest2);
+														//processRequest(item.getTitle().toString().substring(0,title.indexOf("/")).trim());
+														request=request+" "+tempRequest2;
+														//request= " hello";
+													}else	request=request+" "+menu.getItem(i).getSubMenu().getItem(j);
+													
+												;}else	request=request+" "+menu.getItem(i).getSubMenu().getItem(j);
+												
+												Log.d("-request",request);
+												
+												/*if (menu.getItem(i).getSubMenu().getItem(j).toString()
+														.contains((CharSequence) menu.getItem(i).getSubMenu().getItem(j)
+																.toString())	);//menu.performIdentifierAction(menu.getItem(i).getSubMenu().getItem(j).getItemId(),2);
+																*/
+											}
+											
+											/*int lastPos=0;
+											int count=0;
+											String tempRequest=request;
+											while (tempRequest.contains(" ")){
+												
+												if (request.length()>95//count==95
+														)
+													lastPos=tempRequest.indexOf(" ");
+												else count++;tempRequest=tempRequest.replace(" ", "-");
+											
+											}*/
+											
+											/*request=request.replaceAll(" \\ ", " ");//regex error handling
+											request=request.replaceAll("\\[" , " ");											
+											request=request.replaceAll("_", " ");
+											
+											//request=request.replaceAll("_", "1");
+											//request=request.replaceAll("        ", "");
+											//request=request.replaceAll("         ", "");
+											//request=request.replaceAll(" ", "");
+											request=request.replaceAll("  ", "");
+										//	request=request.replaceAll("(", " ");
+											
+											//if (request.length()>900//count>95
+													//)request=request.substring(0,900);
+											*/
+											Log.d("justBeforeProcess",request);
+											processRequest(request);
+											
+											lastRequest=request;
+											processRequest(request);
+											
+										}else menu.performIdentifierAction(i,2);//.openOptionsMenu();
+										//menu
+									}
+									
+								}
+							}
+							
 
 						}
 					});
@@ -9851,7 +10457,63 @@ presence_online*/
      dialog.show();    // showing dialog
  
  }
-public void readSMS (){
+ 
+ public void readSimSMS (){
+		//Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
+		Uri mSmsinboxQueryUri = Uri.parse("content://sms/sim");//"content://sms/inbox");
+		ContentValues values = new ContentValues(); 
+		
+		/*values.put("address", number); 
+		values.put("body", message);
+		getContentResolver().insert(Uri.parse("content://sms/sent"),values);
+		*/
+		
+		
+		
+		Cursor cursor = getContentResolver().query(mSmsinboxQueryUri,new String[] { "_id", "thread_id", "address", "person", "date","body", "type" }, null, null, null);
+		cursor.moveToLast();//.moveToFirst();
+		String[] columns = new String[] { "address", "person", "date", "body","type" };
+		 String nameList="";
+		 String lastSMS="";
+		 String lastName="";
+		 String lastAddress="";
+		 String request="";
+		do{
+		   String msgData = "";
+		 
+		   for(int idx=0;idx<cursor.getColumnCount();idx++)
+		   {
+			   
+		       msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+		       Log.d("ReadingSMS",msgData);
+		       String address = cursor.getString(cursor.getColumnIndex(columns[0]));
+		       String name ="";
+		     /*  cursor.getColumnName(idx);
+		       if (msgData.contains(cursor.getString(cursor.getColumnIndex("address")))){
+		        name = cursor.getString(cursor.getColumnIndexOrThrow(columns[1]));
+		       }*/
+		       String date = cursor.getString(cursor.getColumnIndexOrThrow(columns[2]));
+		       String msg = cursor.getString(cursor.getColumnIndexOrThrow(columns[3]));
+		       String type = cursor.getString(cursor.getColumnIndexOrThrow(columns[4]));
+		       Log.d("ReadingSMS", name + "\n"+msg);
+		      // processRequest(name+ ":"+ msg);
+		       nameList+=nameList;
+		       lastAddress=address;
+		       lastSMS=msg;
+		       lastName=name;
+		   }
+		  request+= lastName+ "  "+ lastSMS+" ";
+		  if (lastName=="")request+= lastAddress + " : "+ lastSMS+" ";
+		   //processRequest(msg2);
+		}while(cursor.moveToNext());
+		//processRequest(lastSMS);
+		if (lastName=="")processRequest(" "+lastAddress + " : "+ lastSMS +"");
+		
+		processRequest(request);
+		cursor.close();
+	}
+ 
+public void readPhoneSMS (){
 	//Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
 	Uri mSmsinboxQueryUri = Uri.parse("content://sms/inbox");
 	Cursor cursor = getContentResolver().query(mSmsinboxQueryUri,new String[] { "_id", "thread_id", "address", "person", "date","body", "type" }, null, null, null);
@@ -9862,7 +10524,7 @@ public void readSMS (){
 	 String lastName="";
 	do{
 	   String msgData = "";
-	   String msg2="";
+	 
 	   for(int idx=0;idx<cursor.getColumnCount();idx++)
 	   {
 	       msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
@@ -9873,9 +10535,9 @@ public void readSMS (){
 	       String msg = cursor.getString(cursor.getColumnIndex(columns[3]));
 	       String type = cursor.getString(cursor.getColumnIndex(columns[4]));
 	       Log.d("ReadingSMS", name + "\n"+msg);
-	      processRequest(name+ ":"+ msg);
+	       processRequest(name+ ":"+ msg);
 	       nameList+=nameList;
-	       msg2=msg;
+	  
 	       lastSMS=msg;
 	       lastName=name;
 	   }
@@ -9885,8 +10547,69 @@ public void readSMS (){
 	processRequest(lastName+ " : "+ lastSMS);
 	cursor.close();
 }
+
+
+
+
+
+public void readContactSMS(){
+	//Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
+	Uri mSmsinboxQueryUri = Uri.parse("content://sms/inbox");
+	Cursor cursor = getContentResolver().query(mSmsinboxQueryUri,new String[] { "_id", "thread_id", "address", "person", "date","body", "type" }, null, null, null);
+	
+	cursor.moveToFirst();//.moveToFirst();
+	
+	String[] columns = new String[] { "address", "person", "date", "body","type" };
+	 String nameList="";
+	 String lastSMS="";
+	 String lastName="";
+	 String lastDate="";
+	 String request="";
+	do{
+	   String msgData = "";
+	 
+	   for(int idx=0;idx<cursor.getColumnCount();idx++)
+	   {
+	       msgData += " " + cursor.getColumnName(idx) + ":" + cursor.getString(idx);
+	       Log.d("ReadingSMS",msgData);
+	       //String address = cursor.getString(cursor.getColumnIndex(columns[0]));
+	       String name = cursor.getString(cursor.getColumnIndex(columns[1]));
+	       String date = cursor.getString(cursor.getColumnIndex(columns[2]));
+	       String msg = cursor.getString(cursor.getColumnIndex(columns[3]));
+	       String type = cursor.getString(cursor.getColumnIndex(columns[4]));
+	      // Log.d("ReadingSMS", name + "\n"+msg);
+	      // processRequest(name+ ":"+ msg);
+	      
+	       lastSMS=msg;//name+" ";
+	   
+	   }
+	   //request+=lastSMS;
+	   request=lastSMS;
+	   //processRequest(msg2);
+	}while(cursor.moveToNext());
+	//processRequest(lastSMS);
+	processRequest(request);
+	processRequest(request);
+	cursor.close();
+}
 	 
 public void sendMail(){
+	/*1	EXTRA_BCC
+	A String[] holding e-mail addresses that should be blind carbon copied.
+	2	EXTRA_CC
+	A String[] holding e-mail addresses that should be carbon copied.
+	3	EXTRA_EMAIL
+	A String[] holding e-mail addresses that should be delivered to.
+	4	EXTRA_HTML_TEXT
+	A constant String that is associated with the Intent, used with ACTION_SEND to supply an alternative to EXTRA_TEXT as HTML formatted text.
+	5	EXTRA_SUBJECT
+	A constant string holding the desired subject line of a message.
+	6	EXTRA_TEXT
+	A constant CharSequence that is associated with the Intent, used with ACTION_SEND to supply the literal data to be sent.
+	7	EXTRA_TITLE
+	A CharSequence dialog title to provide to the user when used with a ACTION_CHOOSER.
+	*/
+	
 	Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
             "mailto","pierre.capdepuy@gmail.com", null));
 	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "About vEsperanto");
@@ -9906,12 +10629,13 @@ public void sendMail(){
 	*/
 }
 
-public void sendMail2(){
+public void sendMail2(String mailTo){
 	Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-            "mailto","pierre.capdepuy@gmail.com", null));
+            "mailto",mailTo, null));
 	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "About vEsperanto");
+	emailIntent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you! "+lastRequest);
 	startActivity(Intent.createChooser(emailIntent, "Send email..."));
-	emailIntent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you!"+lastRequest);
+
 	/*
 	Intent intent = new Intent(Intent.ACTION_SEND);
 	intent.setType("text/html");
@@ -9922,6 +10646,28 @@ public void sendMail2(){
 
 	startActivity(Intent.createChooser(intent, "Send Email"));
 	*/
+}
+void sendSMS(String phoneNumber, String message){
+	Log.v("SMS send", phoneNumber+"   \n"+ message);
+	phoneNumber=phoneNumber.replace(" ","");
+	if (phoneNumber.startsWith("0")){
+		phoneNumber.replaceFirst("0", "+33");
+		Log.v("SMS changed send", phoneNumber+"   \n"+ message);
+		}
+	try {
+		SmsManager sms = SmsManager.getDefault();
+		sms.sendTextMessage(phoneNumber, null, message, null, null);
+	} catch (Exception e) {
+		Log.e("SMS send error",e.toString());
+		e.printStackTrace();
+	}
+}
+
+void makePhoneCall(String phoneNumber){
+	Intent callIntent = new Intent(Intent.ACTION_CALL);
+	callIntent.setData(Uri.parse("tel:"+phoneNumber));
+	//callIntent.setData(Uri.parse("tel:0377778888"));
+	startActivity(callIntent);	
 }
 
 
