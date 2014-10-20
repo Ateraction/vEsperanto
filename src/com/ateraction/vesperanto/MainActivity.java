@@ -317,6 +317,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -528,6 +529,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	Boolean VibratorActivated = true;
 	Boolean DebugActivated=false;
 	Boolean ShowSearchResultsActivated=true;
+	Boolean telephonyAvailable=false;
+	
 	int imageSizePref;
 	String DisplayLanguage=null;
 	
@@ -595,6 +598,26 @@ return new ComponentName(pkg, cls);
 		// On create run on start and screen orientation change
 		Log.i("onCreate "," "+savedInstanceState);
 		blueTooth("");
+		PackageManager pm = getPackageManager();
+
+		if (pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)){
+			/*Toast.makeText(
+					getApplicationContext(),
+					//"SavedInstanceState not Null OnCreate: AppStarted "
+					//		+ savedInstanceState.toString()
+					//		+ "Download service "
+					//		+ this.getBaseContext().getSystemService(
+					//				DOWNLOAD_SERVICE)
+					"phoneFeature in packageManager"
+									,
+									Toast.LENGTH_SHORT)
+					.show();//has Telephony features.*/
+			
+			telephonyAvailable=true;
+		}
+		
+		
+		
 		
 		 /* Uri telnumber = Uri.parse("tel:0248484000");
     	  Intent call = new Intent(Intent.ACTION_DIAL, telnumber);
@@ -1337,7 +1360,7 @@ presence_online*/
 				"menu:" + "item.getMenuInfo().toString()" + " select  "
 						+ item.toString(), Toast.LENGTH_SHORT).show();
 		// switch (item.toString()){} //not working for1.6 need 1.7 and KitKat
-		if (item.toString() == "SendReport"){
+		if (item.toString() == getApplicationContext().getString(R.string.SendReport)){
 			Intent intent;
 			intent = new Intent(Intent.ACTION_APP_ERROR);
 	 	   startActivity(intent);
@@ -1677,7 +1700,7 @@ presence_online*/
 		
 
 		Log.d("onCLick: item", ""+item.toString());
-		if (item.toString()=="processMenu"){//"processMenuActivated"){
+		if (item.toString()==getApplicationContext().getString(R.string.ProcessMenu)){//"processMenuActivated"){
 			Log.d("Before: processMenuActivated", ""+processMenuActivated);
 
 			processMenuActivated = readSharedPrefBoolean("processMenuActivated",processMenuActivated);
@@ -1696,7 +1719,7 @@ presence_online*/
 			//item.isChecked();
 			Log.d("After: processMenuActivated", " "+processMenuActivated);
 		}
-		if (item.toString()=="hideMenu"){
+		if (item.toString()==getApplicationContext().getString(R.string.HideMenu)){
 			Log.d("Before: onlyProcessMenuActivated", ""+onlyProcessMenuActivated);
 			
 			onlyProcessMenuActivated=!onlyProcessMenuActivated;
@@ -1716,15 +1739,17 @@ presence_online*/
 		
 		
 		
-		if (item.toString()=="CommandMode"){
+		if (item.toString()==getApplicationContext().getString(R.string.CommandMode)){
 			Log.d("Before: CommandModeActivated", ""+commandModeActivated);
 			
 			
 			commandModeActivated = readSharedPrefBoolean("commandModeActivated",commandModeActivated);
 			commandModeActivated=!commandModeActivated;
+			if((!telephonyAvailable)&& commandModeActivated)Toast.makeText(getApplicationContext(), "CommandMode activated but no phone"+telephonyAvailable,Toast.LENGTH_LONG);
+			else	Toast.makeText(getApplicationContext(), "commandMode"+commandModeActivated,Toast.LENGTH_LONG);
 			writeSharedPrefBool("commandModeActivated",commandModeActivated);
 			invalidateOptionsMenu();
-			Toast.makeText(getApplicationContext(), "commandMode"+commandModeActivated,Toast.LENGTH_LONG);
+		
 			if (onclickProcessMenuActivated){
 			processRequest("commandMode "+commandModeActivated);
 			lastRequest="commandMode "+commandModeActivated;
@@ -1733,7 +1758,7 @@ presence_online*/
 			Log.d("After: CommandModeActivated", " "+commandModeActivated);
 		}
 		
-		if (item.toString() == "Debug"){
+		if (item.toString() == getApplicationContext().getString(R.string.Debug)){
 			Log.d("Before: DebugActivated", ""+DebugActivated);
 			
 			DebugActivated=!DebugActivated;
@@ -2236,7 +2261,7 @@ presence_online*/
 				this.setTitle("injection e" + e.toString());
 			}
 		}
-		if (item.toString() == "Reload") {
+		if (item.toString() == getApplicationContext().getString(R.string.Reload)) {
 			try {
 				setTitle(">:"+lastRequest);
 				processRequest(lastRequest);
@@ -2255,16 +2280,18 @@ presence_online*/
 			getPhoto("");
 		}
 
-		if (item.toString() == "Help"){
+		if (item.toString() == getApplicationContext().getString(R.string.Help)){
 			 //((ToggleButton) findViewById(R.id.toggleButton1)).setChecked(SLVideoActivated);
 			showHelp();
 		}
-		if (item.toString() == "SelectViews"){
+		if (item.toString() == getApplicationContext().getString(R.string.SelectViews)){
 			 //((ToggleButton) findViewById(R.id.toggleButton1)).setChecked(SLVideoActivated);
 			showViews();
 		}
 		
-		if (item.toString() == "SafeSearch"){
+		//Resources r = getResources();
+		//r.getIdentifier("today", "string", getPackageName()));
+		if (item.toString() == getApplicationContext().getString(R.string.SafeSearch)){
 			//showAbout();
 			SafeSearchActivated= !SafeSearchActivated;
 			writeSharedPrefBool("SafeSearchActivated",SafeSearchActivated);
@@ -2277,18 +2304,19 @@ presence_online*/
 			invalidateOptionsMenu();//needed if you want to refresh option cause it(ShoAsAction make it open
 			
 		}
-		if (item.toString() == "Validation"){
+		if (item.toString() == getApplicationContext().getString(R.string.Validation)){
 			showValidation();
 			
 				
 			
 		}
-		if (item.toString() == "ReadSMS"){readContactSMS();}
-		if (item.toString() == "ReadLast-SMS"){readSimSMS();}
-		if (item.toString() == "ReadLastPHoneSMS"){readPhoneSMS();}
-		if (item.toString() == "SendMail"){sendMail();}
-		if (item.toString() == "SendSMS"){sendSMS(""+5556,lastRequest);}
-		if (item.toString() == "About"){
+		if (item.toString() == getApplicationContext().getString(R.string.ReadSMS)){
+			if(telephonyAvailable)readContactSMS();}
+		if (item.toString() == getApplicationContext().getString(R.string.ReadLast_SMS)){if(telephonyAvailable)readSimSMS();}
+		if (item.toString() == "ReadLastPHoneSMS"){if(telephonyAvailable)readPhoneSMS();}
+		if (item.toString() == getApplicationContext().getString(R.string.SendMail)){sendMail();}
+		if (item.toString() == getApplicationContext().getString(R.string.SendSMS)){if(telephonyAvailable)sendSMS(""+5556,lastRequest);}
+		if (item.toString() == getApplicationContext().getString(R.string.About)){
 			showAbout();
 			
 				if (findViewById(R.id.webView1).getVisibility() == View.GONE)
@@ -2464,7 +2492,7 @@ presence_online*/
 		int id=0;
 		MenuItem menuItem;
 		//menu.size()
-		menu.add("SelectViews").setIcon(android.R.drawable.ic_menu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		menu.add(getApplicationContext().getString(R.string.SelectViews)).setIcon(android.R.drawable.ic_menu_view).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 	/*	menuItem= menu.add(" ");
 		id=menuItem.getItemId();
 		menu.removeItem(id);
@@ -2508,7 +2536,7 @@ presence_online*/
 		//menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);//.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		//menu.getItem(menu.size()-1).setIcon(android.R.drawable.btn_dialog);
 		//((ImageButton)findViewById(R.id.button2)).setImageResource(android.R.drawable.stat_notify_call_mute)
-		menu.add("Reload").setIcon(android.R.drawable.ic_popup_sync).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);;
+		menu.add(getApplicationContext().getString(R.string.Reload)).setIcon(android.R.drawable.ic_popup_sync).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);;
 		//menu.add("loadList").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("pickContact");
 		//menu.add("getPhoto");
@@ -2519,7 +2547,8 @@ presence_online*/
 		
 		
 		SubMenu subMenu;
-		subMenu=menu.addSubMenu("languages");
+		subMenu=menu.addSubMenu(R.string.languages);
+		
 		//subMenu.add("UserLanguage");
 		
 		//Locale[] localeTable= Locale.getDefault().getAvailableLocales();
@@ -2649,49 +2678,51 @@ presence_online*/
 		
 		
 		SubMenu debugSubMenu;
-		debugSubMenu=menu.addSubMenu("AdvancedOptions" );
+		debugSubMenu=menu.addSubMenu(R.string.AdvancedOptions );
 		debugSubMenu.add("Validation");
 		debugSubMenu.add("Debug")
 			.setCheckable(true)
 			.setChecked(DebugActivated);
-		debugSubMenu.add("SendReport");
-		debugSubMenu.add("CommandMode").setCheckable(true)
+		debugSubMenu.add(R.string.SendReport);
+		debugSubMenu.add(getApplicationContext().getString(R.string.CommandMode)).setCheckable(true)
 		.setChecked(commandModeActivated);
 		
-		debugSubMenu.add("processMenu").setCheckable(true)
+		debugSubMenu.add(getApplicationContext().getString(R.string.ProcessMenu)).setCheckable(true)
 		.setChecked(processMenuActivated);
-		debugSubMenu.add("hideMenu").setCheckable(true).setEnabled(false)
+		
+		debugSubMenu.add(getApplicationContext().getString(R.string.HideMenu)).setCheckable(true).setEnabled(false)
 		.setChecked(onlyProcessMenuActivated);
 	
-		debugSubMenu.add("isMenuRequest").setCheckable(true).setEnabled(false)
+		debugSubMenu.add(getApplicationContext().getString(R.string.IsMenuRequest)).setCheckable(true).setEnabled(false)
 		.setChecked(isMenuRequest);
 
 	    
 		SubMenu exchangeSubMenu;
-		exchangeSubMenu=menu.addSubMenu("Exchange" );
-		exchangeSubMenu.add("getLastpack").setEnabled(false)
+		exchangeSubMenu=menu.addSubMenu(getApplicationContext().getString(R.string.Exchange) );
+		
+		exchangeSubMenu.add(R.string.getLastpack).setEnabled(false)
 			.setCheckable(true)
 			.setChecked(DebugActivated);
-		exchangeSubMenu.add("getLastWordList")
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.getLastWordList))
 		.setCheckable(true)
 		.setChecked(true);
-		exchangeSubMenu.add("getLastSpellList").setEnabled(false)
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.getLastSpellList)).setEnabled(false)
 		.setCheckable(true)
 		.setChecked(false);
-		exchangeSubMenu.add("getLastImageList").setEnabled(false)
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.getLastImageList)).setEnabled(false)
 		.setCheckable(true)
 		.setChecked(false);
-		exchangeSubMenu.add("getLastVideoList").setEnabled(false)
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.getLastVideoList)).setEnabled(false)
 		.setCheckable(true)
 		.setChecked(false);
-		exchangeSubMenu.add("loadList");
-		exchangeSubMenu.add("LoadImageList").setEnabled(false);
-		exchangeSubMenu.add("LoadVideoList").setEnabled(false);
-		exchangeSubMenu.add("SendWordList").setEnabled(false);
-		exchangeSubMenu.add("SendImageList").setEnabled(false);
-		exchangeSubMenu.add("sendVideoList").setEnabled(false);		
-		exchangeSubMenu.add("SendImages").setEnabled(false);
-		exchangeSubMenu.add("sendVideos").setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.loadList));
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadImageList)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadVideoList)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendWordList)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendImageList)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendVideoList)).setEnabled(false);		
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendImages)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.sendVideos)).setEnabled(false);
 		
 	
 		//subMenu.add("DefaultLanguage");
@@ -2730,7 +2761,7 @@ presence_online*/
 
 		//menu.add("Inject");
 		MenuItem safeSearchMenuItem;
-		safeSearchMenuItem=menu.add("SafeSearch")
+		safeSearchMenuItem=menu.add(R.string.SafeSearch)
 				.setCheckable(true)
 				.setChecked(SafeSearchActivated);
 		safeSearchMenuItem.setIcon(android.R.drawable.ic_menu_report_image)
@@ -2746,15 +2777,20 @@ presence_online*/
 		}		
 	
 		SubMenu otherSubMenu;
-		otherSubMenu=menu.addSubMenu("Help-About" );			
-		otherSubMenu.add("Help").setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		//otherSubMenu=menu.addSubMenu("Help-About" );
+		otherSubMenu=menu.addSubMenu(R.string.Help_About);		
+		
+		otherSubMenu.add(R.string.Help).setIcon(android.R.drawable.ic_menu_help).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("debug").setIcon(android.R.drawable.ic_menu_manage).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("Validation").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		otherSubMenu.add("About").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add("ReadSMS").setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add("ReadLast-SMS").setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		otherSubMenu.add("SendMail").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		otherSubMenu.add("SendSMS").setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		otherSubMenu.add(R.string.About).setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		if (telephonyAvailable){
+			menu.add(R.string.ReadSMS).setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			menu.add(R.string.ReadLast_SMS).setIcon(android.R.drawable.arrow_down_float).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+			otherSubMenu.add(R.string.SendSMS).setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		}
+		otherSubMenu.add(R.string.SendMail).setIcon(android.R.drawable.ic_menu_info_details).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		
 		// languagePref =
 		// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
 
@@ -5691,29 +5727,29 @@ presence_online*/
 	 public void onCreateContextMenu(ContextMenu menu, View v,
 	   ContextMenuInfo menuInfo) {
 	  super.onCreateContextMenu(menu, v, menuInfo);
-	  menu.setHeaderTitle("Medias Options");
+	  menu.setHeaderTitle(getApplicationContext().getString(R.string.MediasOptions));
 	  
 	  //menu.menu.FLAG_ALWAYS_PERFORM_CLOSE
 	  menu.setHeaderIcon(android.R.drawable.ic_menu_report_image);//s.setFinishOnTouchOutside(true);
 	  setFinishOnTouchOutside(true);
 	  if (v.getId()==videoLayout.getId()){
-		  menu.add(0, v.getId(), 20, "ChangeVideo").setIcon(android.R.drawable.ic_menu_gallery);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		  menu.add(0, v.getId(), 20, getApplicationContext().getString(R.string.ChangeVideo)).setIcon(android.R.drawable.ic_menu_gallery);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		  //menu.add("loadList").setIcon(android.R.drawable.btn_dialog).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM)
-	  }else menu.add(0, v.getId(), 20, "Change").setIcon(android.R.drawable.ic_menu_gallery);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+	  }else menu.add(0, v.getId(), 20, getApplicationContext().getString(R.string.Change)).setIcon(android.R.drawable.ic_menu_gallery);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 	  
 	  if (v.getId()==videoLayout.getId()){
 		 
-		  menu.add(0, v.getId(), 22, "MakeVideo").setIcon(android.R.drawable.ic_menu_camera);
+		  menu.add(0, v.getId(), 22, getApplicationContext().getString(R.string.MakeVideo)).setIcon(android.R.drawable.ic_menu_camera);
 	  }
-	  else menu.add(0, v.getId(), 21, "Photo").setIcon(android.R.drawable.ic_menu_camera);
+	  else menu.add(0, v.getId(), 21, getApplicationContext().getString(R.string.Photo)).setIcon(android.R.drawable.ic_menu_camera);
 	 
 	  if (v.getId()==videoLayout.getId()){
 			 
-		  menu.add(0, v.getId(), 22, "ValidateVideo").setIcon(android.R.drawable.checkbox_on_background);
+		  menu.add(0, v.getId(), 22,  getApplicationContext().getString(R.string.ValidateVideo)).setIcon(android.R.drawable.checkbox_on_background);
 	  }
-	  else  menu.add("Validate").setIcon(android.R.drawable.checkbox_on_background);// menu.add(0, v.getId(), 21, "Photo");
+	  else  menu.add(getApplicationContext().getString(R.string.Validate)).setIcon(android.R.drawable.checkbox_on_background);// menu.add(0, v.getId(), 21, "Photo");
 	 SubMenu subMenu;
-	 subMenu=menu.addSubMenu("ViewOptions");
+	 subMenu=menu.addSubMenu(getApplicationContext().getString(R.string.ViewOptions));
 	 subMenu.setHeaderIcon(android.R.drawable.checkbox_on_background);
 	// if (item.isChecked()) item.setChecked(false);
     // else item.setChecked(true);
@@ -5747,27 +5783,27 @@ presence_online*/
 	  
 	  
 	  if (v.getId()==videoLayout.getId()){
-		  menu.add(0, v.getId(), 24, "HideVideo").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		  menu.add(0, v.getId(), 24,  getApplicationContext().getString(R.string.HideVideo)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 	  }else{
-		  menu.add(0, v.getId(), 23, "Hide").setIcon(android.R.drawable.ic_menu_close_clear_cancel);
+		  menu.add(0, v.getId(), 23, getApplicationContext().getString(R.string.Hide)).setIcon(android.R.drawable.ic_menu_close_clear_cancel);
 		  
-		  subMenu.add("SearchResults").setIcon(android.R.drawable.ic_delete).setCheckable(true).setChecked(ShowSearchResultsActivated);
-		  subMenu.add("SearchWeb").setIcon(android.R.drawable.ic_search_category_default).setCheckable(true).setChecked(bWebActivated);
-		  subMenu.add("SafeSearch").setIcon(android.R.drawable.ic_search_category_default).setCheckable(true).setChecked(SafeSearchActivated);
+		  subMenu.add(getApplicationContext().getString(R.string.SearchResults)).setIcon(android.R.drawable.ic_delete).setCheckable(true).setChecked(ShowSearchResultsActivated);
+		  subMenu.add(getApplicationContext().getString(R.string.SearchWeb)).setIcon(android.R.drawable.ic_search_category_default).setCheckable(true).setChecked(bWebActivated);
+		  subMenu.add(R.string.SafeSearch).setIcon(android.R.drawable.ic_search_category_default).setCheckable(true).setChecked(SafeSearchActivated);
 		  invalidateOptionsMenu();
 	  }
 	  
 	 
 	  //if (v.getId()!=videoLayout.getId())menu.add(0, v.getId(), 25, "AutoScroll");
 	  
-	  if (v.getId()==videoLayout.getId())menu.add(0, v.getId(), 26, "ReloadVideo").setIcon(android.R.drawable.ic_menu_revert);
-	  else menu.add(0, v.getId(), 26, "ReloadImage").setIcon(android.R.drawable.ic_menu_revert);
+	  if (v.getId()==videoLayout.getId())menu.add(0, v.getId(), 26, getApplicationContext().getString(R.string.ReloadVideo)).setIcon(android.R.drawable.ic_menu_revert);
+	  else menu.add(0, v.getId(), 26, getApplicationContext().getString(R.string.ReloadImage)).setIcon(android.R.drawable.ic_menu_revert);
 	  
 	  if (v.getId()==videoLayout.getId());
 	  else{//menu.add(0, v.getId(), 26, "ReloadVideo");
-	  subMenu.add(0, v.getId(), 27, "NormalSize").setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
-	  subMenu.add(0, v.getId(), 27, "MicroSize").setIcon(android.R.drawable.ic_menu_crop);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
-	  subMenu.add(0, v.getId(), 27, "FullSize").setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
+	  subMenu.add(0, v.getId(), 27, getApplicationContext().getString(R.string.NormalSize)).setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
+	  subMenu.add(0, v.getId(), 27, getApplicationContext().getString(R.string.MicroSize)).setIcon(android.R.drawable.ic_menu_crop);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
+	  subMenu.add(0, v.getId(), 27, getApplicationContext().getString(R.string.FullSize)).setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
 		 	 
 	  
 	  }

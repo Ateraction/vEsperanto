@@ -265,17 +265,75 @@ public final class R {
         public static final int index=0x7f040002;
     }
     public static final class string {
-        public static final int app_credits=0x7f050003;
-        public static final int app_descrip=0x7f050004;
-        public static final int app_help=0x7f050005;
+        public static final int About=0x7f05002f;
+        public static final int AdvancedOptions=0x7f050006;
+        public static final int Change=0x7f05001f;
+        public static final int ChangeVideo=0x7f050023;
+        public static final int CommandMode=0x7f05000a;
+        public static final int Debug=0x7f050008;
+        public static final int Exchange=0x7f05000e;
+        public static final int FullSize=0x7f05002b;
+        public static final int Help=0x7f05002e;
+        public static final int Help_About=0x7f05002d;
+        public static final int Hide=0x7f050021;
+        public static final int HideMenu=0x7f05000c;
+        public static final int HideVideo=0x7f050027;
+        public static final int IsMenuRequest=0x7f05000d;
+        public static final int LoadImageList=0x7f050015;
+        public static final int LoadVideoList=0x7f050016;
+        public static final int MakeVideo=0x7f050024;
+        public static final int MediasOptions=0x7f05001c;
+        public static final int MicroSize=0x7f05002c;
+        public static final int NormalSize=0x7f05002a;
+        public static final int Photo=0x7f050020;
+        public static final int ProcessMenu=0x7f05000b;
+        public static final int ReadLast_SMS=0x7f050032;
+        public static final int ReadSMS=0x7f050031;
+        public static final int Reload=0x7f050004;
+        public static final int ReloadImage=0x7f050022;
+        public static final int ReloadVideo=0x7f050026;
+        public static final int SafeSearch=0x7f050030;
+        public static final int SearchResults=0x7f050028;
+        public static final int SearchWeb=0x7f050029;
+        public static final int SelectViews=0x7f050003;
+        public static final int SendImageList=0x7f050019;
+        public static final int SendImages=0x7f05001a;
+        public static final int SendMail=0x7f050034;
+        public static final int SendReport=0x7f050009;
+        public static final int SendSMS=0x7f050033;
+        public static final int SendVideoList=0x7f050018;
+        public static final int SendWordList=0x7f050017;
+        public static final int Validate=0x7f05001d;
+        public static final int ValidateVideo=0x7f050025;
+        public static final int Validation=0x7f050007;
+        public static final int ViewOptions=0x7f05001e;
+        public static final int app_credits=0x7f050035;
+        public static final int app_descrip=0x7f050036;
+        public static final int app_help=0x7f050037;
         /**  panneaux http://routes.wikia.com/wiki/Portail:Signalisation  
+    signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
+    http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip
+
+ panneaux http://routes.wikia.com/wiki/Portail:Signalisation  
+    signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
+    http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip
+
+ panneaux http://routes.wikia.com/wiki/Portail:Signalisation  
     signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
     http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip
 
          */
         public static final int app_name=0x7f050000;
+        public static final int getLastImageList=0x7f050012;
+        public static final int getLastSpellList=0x7f050011;
+        public static final int getLastVideoList=0x7f050013;
+        public static final int getLastWordList=0x7f050010;
+        public static final int getLastpack=0x7f05000f;
         public static final int hello_world=0x7f050002;
+        public static final int languages=0x7f050005;
+        public static final int loadList=0x7f050014;
         public static final int menu_settings=0x7f050001;
+        public static final int sendVideos=0x7f05001b;
     }
     public static final class style {
         /** 

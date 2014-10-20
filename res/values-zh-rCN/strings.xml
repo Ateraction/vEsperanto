@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!-- panneaux http://routes.wikia.com/wiki/Portail:Signalisation  
+    signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
+    http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip
+-->
+    <string name="app_name">视觉v世界语  vEsperanto</string>
+    <string name="menu_settings">选项</string>
+    <string name="hello_world">Salut Monde!</string>
+   
+   <string name="SelectViews">浏览次数</string> 
+   <string name="Reload">刷新</string>
+   <string name="languages">语言</string>
+   <string name="AdvancedOptions">高级选项</string>
+      <string name="Validation">验证=</string>
+      <string name="Debug">调试-Tiáoshì</string>
+      <string name="SendReport">发送报告</string>
+      <string name="CommandMode">命令模式</string>
+        <string name="ProcessMenu">流程菜单</string>
+      <string name="HideMenu">隐藏菜单</string>
+      <string name="IsMenuRequest">"是菜单请求"</string>
+      
+      
+      <string name="Exchange">外汇</string>
+   	<string name="getLastpack">获取最后一个包</string>
+   	<string name="getLastWordList">获取最后一个单词列表</string>
+   	<string name="getLastSpellList">获取最后一个法术列表</string>
+   	<string name="getLastImageList">获取最后的图像列表</string>
+   	<string name="getLastVideoList">获取最后一个视频列表</string>
+   	
+   	<string name="loadList">加载列表</string>
+   	<string name="LoadImageList">加载图像列表</string>
+   	<string name="LoadVideoList">加载视频列表</string>
+   	
+   	<string name="SendWordList">寄语名单</string>
+   	<string name="SendVideoList">发送视频列表</string>
+   	<string name="SendImageList">发送图片列表</string>
+   	
+   	<string name="SendImages">发送图片</string>
+   	<string name="sendVideos">发送视频</string>
+   	
+  	<string name="MediasOptions">媒体选项</string>
+   	<string name="Validate">验证</string>
+   	<string name="ViewOptions">查看选项</string>
+   	<string name="Change">变化</string>
+    <string name="Photo">图片</string>
+     <string name="Hide">隐藏</string> 
+     <string name="ReloadImage">换一个</string>
+     
+     <string name="ChangeVideo">改变视频</string>
+     <string name="MakeVideo">制作视频</string> 
+      	<string name="ValidateVideo">验证视频</string>
+     <string name="ReloadVideo">刷新视频</string>
+   <string name="HideVideo">隐藏视频</string>
+   
+  <string name="SearchResults">搜索结果</string> 
+  <string name="SearchWeb">搜索网页</string>
+    
+  	<string name="NormalSize">正常大小</string>
+     <string name="FullSize">全尺寸</string>
+   <string name="MicroSize">微型尺寸</string>
+      
+      
+      
+      
+      
+   
+   <string name="Help_About">新闻</string>
+   <string name="Help">帮助</string>
+   <string name="About">关于</string>
+   
+   <string name="SafeSearch">安全搜索</string>
+   
+   
+    <string name="ReadSMS">阅读短信</string>
+    <string name="ReadLast_SMS">短信</string>
+    <string name="SendSMS">发送短信</string>		
+    <string name="SendMail">发送邮件</string>
+   
+   
+    <string name="app_credits">    	
+    	<div class="id-app-orig-desc">
+            vEsperanto ，进行由区域市政局\的阿基坦大区的支持Hexasense项目的一部分
+             促进和\加快人谁也不说话或者不念同一种语言沟通。
+             
+           <br>视觉世界语搜索媒体（图像，视频）标签为。您可以创建自己的列表中，选择您的媒体... （由您自己的视频替换影片）</br>
+               <p>Shìjué shìjièyǔ sōusuǒ méitǐ (túxiàng, shìpín) biāoqiān wèi. Nín kěyǐ chuàngjiàn zìjǐ dì lièbiǎo zhōng, xuǎnzé nín de méitǐ... (Yóu nín zìjǐ de shìpín tìhuàn yǐngpiàn)
+ 				</p>
+ 		</div>
+ 		 </string>
+   
+    
+    
+    
+    <string name="app_descrip">
+		        
+		vEsperanto recherche les médias (images, vidéos) associés aux mots prononcés.\n
+		Vous pouvez créer vos propres listes, sélectionner vos médias (remplacer les vidéos LSF par vos propres vidéos)\n
+		Il est désormais possible d\'importer une liste de mots (fichier texte) et de rechercher les médias associés.\n
+		Liste de base:\n
+		Etienne Brunet 1500 mots les plus utilisés en français\n
+		.http://eduscol.education.fr/cid47916/liste-des-mots-classee-par-frequence-decroissante.html \n
+		\n-------------------------------\n
+		Prérequis\n
+		\n
+		Reconnaissance vocale:\n
+		Cette application nécessite d\'avoir préalablement installé un module de reconnaissance vocale comme celui de Google\n
+		\n
+		Connexion de données:\n
+		Le chargement initial des médias nécessite une connexion (Wifi fortement recommandé).\n
+		L\'application fonctionne hors ligne avec le moteur de reconnaissance vocale et les médias disponibles sur le téléphone et chargera les médias supplémentaires uniquement si une connexion est active durant la requête.\n        
+    </string>
+    
+    <string name="app_help"> 
+       
+        Aide\n
+        
+        Ateraction a la joie de vous inviter à participer à la construction de vEsperanto et son application destinée à faciliter la communication entre personnes.\n
+        \n
+		vEsperanto, a été développée, en collaboration avec Aquinetic, dans le cadre du projet Hexasense soutenu par le Conseil Régional d\'Aquitaine.\n\n
+
+vEsperanto permet, d\'abord de convertir des paroles en images ou en vidéos (Langue des Signes Française).\n\n
+L\'application démarre en écoute continue, il suffit donc de parler au lancement de vEsperanto pour obtenir les médias correspondants.\n
+"L\'écoute continue" peut être stoppée à tout moment en cliquant une fois sur le "bouton micro" déclenchant "l\'écoute à la demande" puis être relancée par l\'appui prolongé sur le même "bouton micro".\n\n
+\n
+\n
+
+Pour vous proposer les médias l\'application fouille le web en se basant pour l\'instant sur les services de Google Image et sur le dictionnaire de la langue des signes de Elix.\n
+\n
+L\'application fonctionne de façon autonome (hors ligne), mais les médias n\'étant pas fournis avec l\'application, il est nécessaire de disposer  d\'une connexion pour charger les médias images et vidéos
+\n
+Néanmoins, il est possible d\'importer des listes de mots afin de disposer même hors connexion d\'une bibliothèque pertinente.
+\n
+Vous trouverez donc une liste intégrée comportant les 1500 mots les plus fréquents dans la langue française et vous pourrez importer vos listes personnelles.\n
+\n
+(Attention cette opération dure environ 20 minutes, la recherche et le chargement des vidéos en langue des signes étant très long, il est conseillé de désactiver la fenêtre "Video" préalablement, ou de laisser le téléphone en charge durant cette période)\n
+\n
+Vous pouvez à tout moment remplacer un média existant par un média disponible sur le téléphone ou sur le web, mais aussi faisant une photo ou une vidéo.\n
+\n
+\n
+Merci pour vos retours\n
+\n
+\n
+\n
+\n
+Menu "Options" accessible à l\'aide de la touche menu\n
+\n
+1)SelectView
+\n
+permet de choisir les vues affichées\n
+		a)Video (langue des signes)\n
+		b)SW-Spell (Sign Writing ou langue des signes écrite)\n
+		c)SecurityView (principalement des images liées à la sécurité sur le lieu de travail )\n
+		d)GoogleView  (les images fournies par goggle)\n
+\n
+\n
+2)Reload
+\n
+relance la dernière requête
+\n
+\n
+
+3)LoadList
+\n
+SDCard/Hexasense/WordList/fr.txt
+\n
+ Lire une liste de mots (1500mots) et télécharger les médias associés afin d\'avoir le vocabulaire minimum préchargé
+ \n
+\n
+
+6)debug
+\n
+Permet d\'afficher plus d\'informations permettant de déterminer la cause de mauvais fonctionnement
+\n
+\n
+7)About
+\n
+Les crédits
+\n\n\n\n\n </string>
+    
+    <string-array name="fi">
+         <!-- geo  --> 
+        <item>france</item>
+        <item>banane</item>
+        <item>belgique</item>
+        <item>Usa</item>
+        <item>europe</item>
+        <item>etats unis</item>
+        <item>russie</item>
+        <item>angleterre</item>
+        <item>espagne</item> 
+        <item>je</item>
+        
+      <!-- security  -->  
+        <item>extincteur</item>
+        <item>lance</item>
+        <item>civiere</item>
+         <item>douch</item>
+         <item>secour</item>
+         <item>telephon</item>
+         <item>sorti</item>
+         
+         
+         
+         
+         
+          
+          <item>interdit</item>
+        <item>eau_non_potable</item>  
+          <item>ne_pas_boire</item>
+         <item>touch</item>
+         
+         <item>danger</item>
+         <item>attenti</item>
+         <item>exclam</item>       
+         <item>risqu</item>
+         <item>matieres_comburantes</item>
+         <item>matieres_corrosives</item>
+         <item>matieres_inflammables</item>
+         <item>matieres_explosives</item>
+         <item>matieres_inflammables</item>
+         <item>matieres_nocives_irritantes</item>
+         <item>matieres_toxiques</item>
+         
+           <item>ne_pas_toucher</item>
+         <item>dangeureux_pour_l_environnement</item>
+         <item>defense_eteindre_avec_eau</item>
+         <item>defense_de_fumer</item>
+         <item>defense_d_eteindre_avec_de_l_eau</item>
+         <item>directions_a_suivre</item>
+         <item>entree_interdite_aux_personnes_non_autorisees</item>
+          
+         <item>rincage</item>
+         <item>rincage_des_yeux</item>
+         <item>rayonnement_laser.jpg</item>
+         <item>sortie_issue_de_secour</item>
+         <item>premiers_secours</item>
+         <item>protection_obligatoire_contre_les_chutes</item>
+         <item>protection_obligatoire_corp</item>
+         <item>protection_obligatoire_de_la_figure</item>
+         <item>protection_obligatoire_des_mains</item>
+         <item>protection_obligatoire_de_l_ouie.jpg</item>
+         <item>protection_obligatoire_des_pieds</item>
+         <item>protection_obligatoire_du_corps</item>
+         <item>protection_obligatoire_de_la_vue</item>
+         <item>protection_obligatoire_pieton</item>
+         <item>tres_toxique.jpg</item>
+         
+         
+         
+         
+         
+         
+         <item>interdit_aux_vehicules_de_manutention</item>
+         <item>interdit_aux_pietons.jpg</item>
+         <item>lance_a_incendie</item>
+         <item>lunettes_de_protection</item>
+         
+         <item>risque_biologique.</item>
+         <item>radiations_ionisantes</item>
+         <item>radiations_non_ionisantes</item>
+         <item>protection_obligatoire_des_mains</item>
+         <item>protection_obligatoire_de_l_ouie.jpg</item>
+         <item>protection_obligatoire_des_pieds</item>
+         <item>protection_obligatoire_du_corps</item>
+         <item>protection_obligatoire_de_la_vue</item>
+         <item>protection_obligatoire_des _pietons</item>
+         <item>tres_toxique.jpg</item>
+         
+         
+         
+         
+         <item>vehicules_manutention</item>
+         <item>manutention</item>
+         <item>chute</item>
+        <item>denivel</item>
+        <item>charge</item>
+        <item>charges_suspendues</item>
+         <item>accroch</item>
+        <item>bouteille</item>           
+         <item>trebuch</item>             
+		 
+		 <item>electri</item>        
+         <item>laser</item>
+         <item>magnetique</item>
+         <item>aimant</item>
+         <item>radioacti</item>
+         <item>radiation</item>
+         <item>nucl</item>  
+                
+         <item>froid</item>
+         <item>gel</item>
+        
+        <item>extremement_inflammable</item>  
+        <item>facilement_inflammable</item>
+        <item>inflammable</item>
+        <item>flamme</item>
+        <item>feu</item>
+        <item>incendi</item>
+        <item>comburant</item>
+        <item>explos</item>
+        
+        
+        <item>pollution</item>        
+        <item>toxi</item>
+        <item>irritant</item>
+        <item>nocif</item>
+        <item>corrosi</item>       
+        <item>acid</item>
+         
+        <item>contamin</item>
+         <item>malad</item>
+         <item>bact</item>
+         <item>virolo</item>
+         <item>virus</item>               
+         
+       
+			<item>oblig</item>
+			<item>lunettes</item>
+           <item>suspen</item>
+		   <item>casque</item>
+		   <item>bruit</item> 
+           <item>chauss</item>    
+           <item>gaz</item>     
+           <item>masque_a_gaz</item>
+           <item>odeur</item>
+           
+           <item>ca_sent</item>
+           
+           <item>gants</item> 
+           <item>visiere</item>
+          <item>combinaison</item>
+                    
+         <item>haut</item>
+         <item>bas</item>
+         <item>gauche</item>
+         <item>droite</item>
+         
+         <item>marche</item>
+         <item>aller</item>
+         <item>basse_temperature</item>
+         
+         <item>pouss</item>
+         <item>deplac</item>
+         <item>bouge</item>
+         
+         <item>_pas_</item>
+         <item>aime</item>
+          <item>plus</item>
+          
+          <!-- transport   -->
+         
+          <!-- object  --> 
+           <!-- food  --> 
+         <item>chocolat</item>
+         <item>fraise</item>         
+         <item>gateau</item>
+                  
+          <!-- workspace   --> 
+         <item>lampe</item>
+         <item>cadre</item>
+         <item>agrafeuse</item>
+         
+         <!-- healthcare   --> 
+         <item>brosse_a_dent</item>
+          
+          <!--music  --> 
+         <item>piano</item>
+         
+          <!-- action  --> 
+         <item>pouss</item>
+   			
+         
+         <!-- English  --> 
+         <item>love</item>
+ 		 <item>shoes</item>
+         <item>_hat_</item>
+         <item>_hats_</item>   
+         
+         
+    </string-array>
+
+</resources>

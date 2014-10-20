@@ -4,76 +4,82 @@
     signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
     http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip
 -->
-    <string name="app_name">vEsperanto</string>
-    <string name="menu_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    
-   <string name="SelectViews">SelectViews</string> 
-   <string name="Reload">Reload</string>
-   <string name="languages">languages</string>
-   <string name="AdvancedOptions">AdvancedOptions</string>
-   	  <string name="Validation">Validation</string>
+    <string name="app_name">vEsperanto (français)</string>
+    <string name="menu_settings">Options</string>
+    <string name="hello_world">Salut Monde!</string>
+   
+   <string name="SelectViews">Vues</string> 
+   <string name="Reload">Recharger</string>
+   <string name="languages">langues</string>
+   <string name="AdvancedOptions">optionsAvancées</string>
+      <string name="Validation">Validation</string>
       <string name="Debug">Debug</string>
-      <string name="SendReport">SendReport</string>
+      <string name="SendReport">EnvoyerInformations</string>
       <string name="CommandMode">ModeCommande</string>
-        <string name="ProcessMenu">ProcessMenu</string>
-      <string name="HideMenu">HideMenu</string>
+        <string name="ProcessMenu">MenuPicto</string>
+      <string name="HideMenu">CacherLeMenu</string>
       <string name="IsMenuRequest">"IsMenuRequest"</string>
       
-   <string name="Exchange">Exchange</string>
-   	<string name="getLastpack">getLastpack</string>
-   	<string name="getLastWordList">getLastWordList</string>
-   	<string name="getLastSpellList">getLastSpellList</string>
-   	<string name="getLastImageList">getLastImageList</string>
-   	<string name="getLastVideoList">getLastVideoList</string>
+      
+      <string name="Exchange">échanges</string>
+   	<string name="getLastpack">ObtenirLeDernierPack</string>
+   	<string name="getLastWordList">ObtenirLaDernièreListeDeMots</string>
+   	<string name="getLastSpellList">ObtenirLaDernièreListeDeSpell</string>
+   	<string name="getLastImageList">ObtenirLaDernièreListeImages</string>
+   	<string name="getLastVideoList">ObtenirLaDernièreListeDeVidéos</string>
    	
-   	<string name="loadList">loadList</string>
-   	<string name="LoadImageList">getLastWordList</string>
-   	<string name="LoadVideoList">LoadVideoList</string>
+   	<string name="loadList">chargerLaListe</string>
+   	<string name="LoadImageList">ChargerLaListeImages</string>
+   	<string name="LoadVideoList">ChargerLaListeDeVidéos</string>
    	
-   	<string name="SendWordList">SendWordList</string>
-   	<string name="SendVideoList">SendVideoList</string>
-   	<string name="SendImageList">SendImageList</string>
+   	<string name="SendWordList">EnvoyerListeDeMots</string>
+   	<string name="SendVideoList">EnvoyerListeDeVidéos</string>
+   	<string name="SendImageList">EnvoyerListImages</string>
    	
-   	<string name="SendImages">SendImages</string>
-   	<string name="sendVideos">sendVideos</string>
+   	<string name="SendImages">EnvoyerImages</string>
+   	<string name="sendVideos">EnvoyerVidéos</string>
    	
-  	<string name="MediasOptions">Medias Options</string>
-   	<string name="Validate">Validate</string>
-   	<string name="ViewOptions">ViewOptions</string>
-   	<string name="Change">Change</string>
-    <string name="Photo">Photo</string>
-     <string name="Hide">Hide</string> 
-     <string name="ReloadImage">ReloadImage</string>
+  	<string name="MediasOptions">Options des médias</string>
+   	<string name="Validate">Valider</string>
+   	<string name="ViewOptions">OptionsDeLaVue</string>
+   	<string name="Change">Changer</string>
+    <string name="Photo">PrendrePhoto</string>
+     <string name="Hide">Cacher</string> 
+     <string name="ReloadImage">RechargerImage</string>
      
-     <string name="ChangeVideo">ChangeVideo</string>
-     <string name="MakeVideo">MakeVideo</string> 
-      	<string name="ValidateVideo">ValidateVideo</string>
-     <string name="ReloadVideo">ReloadVideo</string>
-   <string name="HideVideo">HideVideo</string>
+     <string name="ChangeVideo">ChangerVidéo</string>
+     <string name="MakeVideo">FaireVidéo</string> 
+      	<string name="ValidateVideo">ValiderVidéo</string>
+     <string name="ReloadVideo">RechargerVidéo</string>
+   <string name="HideVideo">CacherVidéo</string>
    
-  <string name="SearchResults">SearchResults</string> 
-  <string name="SearchWeb">SearchWeb</string>
+  <string name="SearchResults">AfficherRésultatsDeRecherche</string> 
+  <string name="SearchWeb">ChercherSurInternet</string>
     
-  	<string name="NormalSize">NormalSize</string>
-     <string name="FullSize">FullSize</string>
-   <string name="MicroSize">MicroSize</string>
-  
-  
-   <string name="Help_About">Help_About</string>
-   <string name="Help">Help</string>
-   <string name="About">About</string>
-  
+  	<string name="NormalSize">TailleNormale</string>
+     <string name="FullSize">TailleMaximum</string>
+   <string name="MicroSize">TailleMinimum</string>
+      
+      
+      
+      
+      
+   
+   <string name="Help_About">informations</string>
+   <string name="Help">Aide</string>
+   <string name="About">Crédits</string>
+   
    <string name="SafeSearch">SafeSearch</string>
    
-    <string name="ReadSMS">ReadSMS</string>
-    <string name="ReadLast_SMS">ReadLast_SMS</string>
-    <string name="SendSMS">SendSMS</string>		
-    <string name="SendMail">SendMail</string>
-    
-    
-    <string name="app_credits">
-        <div class="id-app-orig-desc">
+   
+    <string name="ReadSMS">lireSMS</string>
+    <string name="ReadLast_SMS">SMS</string>
+    <string name="SendSMS">EnvoyerSMS</string>		
+    <string name="SendMail">EnvoyerMail</string>
+   
+   
+    <string name="app_credits">    	
+    	<div class="id-app-orig-desc">
             vEsperanto, réalisée dans le cadre du projet Hexasense soutenu par le Conseil Régional d\'Aquitaine,
              permet de faciliter et d\'accélérer la communication entre personnes ne parlant pas ou ne lisant pas la même langue.
            <br>vEsperanto recherche les médias (images, vidéos) associés aux mots prononcés.</br>
@@ -121,20 +127,6 @@
                                                                                 <p>Ateraction SAS n\'est en rien affilié à Elix (ni Signes de sens)</p>
                                                                                 <p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><br></br></div>
         
-        Made in Bordeaux by Ateraction http://www.ateraction.com/ \n
-        with the help of Aquinetic 	http://www.aquinetic.com/   \n
-        during the Hexasense project http://www.ateraction.com/Hexasense/   \n
-        supported by the Aquitaine Regional council http://www.aquitaine.fr/   \n
-        \n
-        French SL Video from Elix http://www.elix-lsf.fr/  \n
-        Elix is not affiliated with Hexasense project.\n
-        http://www.elix-lsf.fr/article/conditions-generales-d-utilisation \n
-        \n
-        Pictures from GoogleImage \n
-        https://www.google.fr/intl/fr/policies/terms/regional.html \n
-            \n
-            \n
-        
          ---------------------------------------------------------
          \n
          vEsperanto, réalisée dans le cadre du projet Hexasense soutenu par le Conseil Régional d Aquitaine, permet de faciliter et d\'accélérer la communication entre personnes ne parlant pas ou ne lisant pas la même langue.
@@ -164,26 +156,26 @@
     
     
     <string name="app_descrip">
-        
-vEsperanto recherche les médias (images, vidéos) associés aux mots prononcés.\n
-Vous pouvez créer vos propres listes, sélectionner vos médias... (remplacer les vidéos LSF par vos propres vidéos)\n
-Il est désormais possible d\'importer une liste de mots (fichier texte) et de rechercher les médias associés.\n
-Liste de base:\n
-Etienne Brunet 1500 mots les plus utilisés en français\n
-.http://eduscol.education.fr/cid47916/liste-des-mots-classee-par-frequence-decroissante.html \n
-\n-------------------------------\n
-Prérequis\n
-\n
-Reconnaissance vocale:\n
-Cette application nécessite d\'avoir préalablement installé un module de reconnaissance vocale comme celui de Google\n
-\n
-Connexion de données:\n
-Le chargement initial des médias nécessite une connexion (Wifi fortement recommandé).\n
-L\'application fonctionne hors ligne avec le moteur de reconnaissance vocale et les médias disponibles sur le téléphone et chargera les médias supplémentaires uniquement si une connexion est active durant la requête.\n        
+		        
+		vEsperanto recherche les médias (images, vidéos) associés aux mots prononcés.\n
+		Vous pouvez créer vos propres listes, sélectionner vos médias (remplacer les vidéos LSF par vos propres vidéos)\n
+		Il est désormais possible d\'importer une liste de mots (fichier texte) et de rechercher les médias associés.\n
+		Liste de base:\n
+		Etienne Brunet 1500 mots les plus utilisés en français\n
+		.http://eduscol.education.fr/cid47916/liste-des-mots-classee-par-frequence-decroissante.html \n
+		\n-------------------------------\n
+		Prérequis\n
+		\n
+		Reconnaissance vocale:\n
+		Cette application nécessite d\'avoir préalablement installé un module de reconnaissance vocale comme celui de Google\n
+		\n
+		Connexion de données:\n
+		Le chargement initial des médias nécessite une connexion (Wifi fortement recommandé).\n
+		L\'application fonctionne hors ligne avec le moteur de reconnaissance vocale et les médias disponibles sur le téléphone et chargera les médias supplémentaires uniquement si une connexion est active durant la requête.\n        
     </string>
     
     <string name="app_help"> 
-        Help\n
+       
         Aide\n
         
         Ateraction a la joie de vous inviter à participer à la construction de vEsperanto et son application destinée à faciliter la communication entre personnes.\n
@@ -198,7 +190,7 @@ L\'application démarre en écoute continue, il suffit donc de parler au lanceme
 
 Pour vous proposer les médias l\'application fouille le web en se basant pour l\'instant sur les services de Google Image et sur le dictionnaire de la langue des signes de Elix.\n
 \n
-L\'application fonctionne de façon autonome (hors ligne), mais les médias n\'étant pas fournis avec l\'application, il est nécessaire de disposer  d\'une connexion pour charger les médias images et vidéos...
+L\'application fonctionne de façon autonome (hors ligne), mais les médias n\'étant pas fournis avec l\'application, il est nécessaire de disposer  d\'une connexion pour charger les médias images et vidéos
 \n
 Néanmoins, il est possible d\'importer des listes de mots afin de disposer même hors connexion d\'une bibliothèque pertinente.
 \n
