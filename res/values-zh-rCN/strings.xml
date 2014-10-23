@@ -8,7 +8,31 @@
     <string name="menu_settings">选项</string>
     <string name="hello_world">Salut Monde!</string>
    
+    <string name="VideoLoading">"Ateraction: Loading . .. ...."</string>
+    <string name="SelectFileToProcess">"Select a file to process"</string>
+     <string name="InstallFileManager">"Please install a File Manager."</string>
+    <string name="Delete">"Delete:"</string>
+    <string name="ClickOnImage">"clickOn image"</string> 
+    <string name="ClickOnView">"clickOn view"</string> 
+    <string name="GetPhoto">"GetPhoto"</string> 
+    
+    
+    
    <string name="SelectViews">浏览次数</string> 
+      <string name="VideoOn">Video On</string> 
+	  <string name="VideoOff">Video Off</string> 
+	  <string name="SWspellOn">SWspell On</string> 
+	  <string name="SWspellOff">SWspell Off</string> 
+	  <string name="SecurityViewOn">SecurityView On</string> 
+	  <string name="SecurityViewOff">SecurityView Off</string> 
+	  <string name="GoogleViewOn">SearchView On</string> 
+	  <string name="GoogleViewOff">SearchView OFF</string> 
+	 
+   
+   
+   
+   
+   
    <string name="Reload">刷新</string>
    <string name="languages">语言</string>
    <string name="AdvancedOptions">高级选项</string>

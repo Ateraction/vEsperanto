@@ -4,11 +4,87 @@
     signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
     http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip
 -->
+
+
+	<!--Global already implemented string
+		android.R.string
+			Summary
+			Constants
+			int	VideoView_error_button	Button to close error alert when a video cannot be played
+			int	VideoView_error_text_invalid_progressive_playback	Text for error alert when a video container is not valid for progressive download/playback.
+			int	VideoView_error_text_unknown	Text for error alert when a video cannot be played.
+			int	VideoView_error_title	Title for error alert when a video cannot be played.
+			int	cancel	Preference framework strings.
+			int	copy	Item on EditText context menu.
+			int	copyUrl	Item on EditText context menu.
+			int	cut	Item on EditText context menu.
+			int	defaultMsisdnAlphaTag	What the UI should display for "Msisdn" unless overridden by the SIM
+			int	defaultVoiceMailAlphaTag	What the UI should display for "voice mail" unless overridden by the SIM
+			int	dialog_alert_title	This is the generic "attention" string to be used in attention dialogs.
+			int	emptyPhoneNumber	How to display the lack of a phone number
+			int	httpErrorBadUrl	Displayed when a web request failed because the URL isn't in a valid form.
+			int	httpErrorUnsupportedScheme	Displayed when a web request failed because the protocol of the server is not supported.
+			int	no	Preference framework strings.
+			int	ok	Preference framework strings.
+			int	paste	Item on EditText context menu.
+			int	search_go	This is the default button label in the system-wide search UI.
+			int	selectAll	Item on EditText context menu.
+			int	selectTextMode	Item on EditText context menu.
+			int	status_bar_notification_info_overflow	Text to use when the number in a notification info is too large (greater than status_bar_notification_info_maxnum, defined in values/config.xml) and must be truncated.
+			int	unknownName	How to display the lack of a name
+			int	untitled	Used in Contacts for a field that has no label and in Note Pad for a note with no name.
+			int	yes	Preference framework strings.			
+	
+	  -->
+
     <string name="app_name">vEsperanto</string>
     <string name="menu_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     
+    <!-- Content Description for accessibility  -->
+    <string name="ActionButton">Press and talk to obtain interpretation; Long press to continuously translate speech</string>
+    <string name="VideoViewAccessibility">VideoView is displaying your speech translated into videos. LongPress to obtain Video or View  options</string>
+    <string name="ImageViewAccessibility">ImageView is displaying your speech translated into images. LongPress to obtain image or View  options</string>
+    <string name="ScrollViewAccessibility">This scrollable view displays all others views.Longpress on inside views to interact</string>
+    <string name="SearchViewAccessibility">"Horizontal scrollable SearchView displays your speech interpreted as image. Longpress inside to interact"</string>
+    <string name="SWspellViewAccessibility">"Horizontal scrollable SpellView displays your speech letters interpreted as images.Default is SignWrittingSpell"</string>
+     <string name="SecurityViewAccessibility">"Horizontal scrollable Security View displays your speech interpreted as images"</string>
+    <!--Voice Recognition
+     Dialog dialog = new AlertDialog.Builder(this)
+		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+     -->
+     <string name="InstallGoogleVoiceSearchMessage">For recognition it’s necessary to install Google Voice Search</string>
+      <string name="InstallGoogleVoiceSearchTitle">Install Voice Search from Google Play next time you are online?</string>
+      <string name="InstallLater">Install Later</string>
+     <string name="Cancel">Cancel</string>
+     
+      
+    <string name="SelectFileToProcess">"Select a file to process"</string>
+     <string name="InstallFileManager">"Please install a File Manager."</string>
+    <string name="Delete">"Delete:"</string>
+    <string name="ClickOnImage">"clickOn image"</string> 
+    <string name="ClickOnView">"clickOn view"</string> 
+    <string name="GetPhoto">"GetPhoto"</string> 
+     <string name="vEsperantoByAteraction">vEsperanto by Ateraction</string>
+    <string name="VideoLoading">"Ateraction: Loading . .. ...."</string>
+    
+    
    <string name="SelectViews">SelectViews</string> 
+	   <string name="VideoOn">Video On</string> 
+	   <string name="VideoOff">Video Off</string> 
+	   <string name="SWspellOn">SWspell On</string> 
+	   <string name="SWspellOff">SWspell Off</string> 
+	   <string name="SecurityViewOn">SecurityView On</string> 
+	    <string name="SecurityViewOff">SecurityView Off</string> 
+	   <string name="GoogleViewOn">SearchView On</string> 
+	   <string name="GoogleViewOff">SearchView OFF</string> 
+	   
+    
+   
+   
+   
    <string name="Reload">Reload</string>
    <string name="languages">languages</string>
    <string name="AdvancedOptions">AdvancedOptions</string>

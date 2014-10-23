@@ -297,6 +297,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 
+import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.ActionBar;
 import android.app.ActionBar.LayoutParams;
 import android.app.ActionBar.Tab;
@@ -316,6 +317,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -348,6 +350,7 @@ import android.speech.RecognitionListener;
 import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
+import android.speech.tts.TextToSpeech;
 import android.telephony.SmsManager;
 import android.text.Html;
 import android.text.format.Time;
@@ -365,6 +368,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -562,6 +567,9 @@ public class MainActivity extends Activity implements OnClickListener,
 	String userName="paul";
 	String userNumber="660";
 	
+	TextToSpeech ttobj;
+	
+	
 	/**
 * Look up the default recognizer service in the preferences.
 * If the default have not been set then set the first available
@@ -632,9 +640,10 @@ return new ComponentName(pkg, cls);
 			else {
 				final Activity activity= this;
 				Dialog dialog = new AlertDialog.Builder(this)
-		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
-		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
-		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+		         .setMessage(R.string.InstallGoogleVoiceSearchMessage)//"For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle(R.string.InstallGoogleVoiceSearchTitle)//"Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton(R.string.InstallLater//"Install Later"
+		        		 , new DialogInterface.OnClickListener() {    // confirm button
 
 		             // Install Button click handler
 		             @Override
@@ -665,12 +674,12 @@ return new ComponentName(pkg, cls);
 		                      // doing nothing
 		                	 if (isOnline()){Intent    	  intent = new Intent(Intent.ACTION_APP_ERROR);
 		                	   startActivity(intent);
-		                	   intent.putExtra("EXTRA_BUG_REPORT", "Error Vesperanto");
+		                	   intent.putExtra("EXTRA_BUG_REPORT", "Error Vesperanto"+ex);
 		                	 }
 		                  }
 		             }})
 
-		         .setNegativeButton("Cancel", null)    // cancel button
+		         .setNegativeButton(R.string.Cancel, null)    // cancel button
 		         .create();
 
 		     dialog.show();    // showing dialog
@@ -824,6 +833,67 @@ return new ComponentName(pkg, cls);
 				"press on mic button and talk, scroll down to access options",
 				Toast.LENGTH_LONG).show();
 
+		/*Toast.makeText(getApplicationContext(),
+				this.getApplication().getPackageName(),
+				Toast.LENGTH_LONG).show();*/
+		
+	
+		/*	String 	packageName=this.getApplication().getPackageName();
+		PackageManager packageManager;
+		packageManager=this.getApplication().getPackageManager();
+		
+		String 	version=packageManager.getNameForUid(0);
+		String 	InstallerPackageName=packageManager.getInstallerPackageName(packageName);
+		Drawable 	k=null;
+		try {
+			//Drawable 
+			k=packageManager.getApplicationLogo(packageName);
+		} catch (NameNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+		
+		
+		AccessibilityManager am = (AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE);
+		boolean isAccessibilityEnabled = am.isEnabled();
+		//am.interrupt();
+	
+		//AccessibilityEvent aEvent = null;
+		//aEvent.
+		//aEvent.setEventType(AccessibilityEvent.TYPE_VIEW_SCROLLED);
+		//am.sendAccessibilityEvent(aEvent);//AccessibilityEvent.TYPE_VIEW_SCROLLED);
+		//boolean isExploreByTouchEnabled = am.isTouchExplorationEnabled();//Call requires API level 14 (current min is 11): 
+		
+		AccessibilityManager manager = (AccessibilityManager) this.getBaseContext()//context
+		        .getSystemService(Context.ACCESSIBILITY_SERVICE);
+		if (manager.isEnabled()) {
+		    AccessibilityEvent e = AccessibilityEvent.obtain();
+		    e.setEventType(AccessibilityEvent.TYPE_VIEW_CLICKED);//.TYPE_WINDOW_CONTENT_CHANGED);//.TYPE_WINDOW_CONTENT_CHANGED)//.TYPE_VIEW_SCROLLED);//API 14//.TYPE_ANNOUNCEMENT);
+		    e.setClassName(getClass().getName());
+		    e.setPackageName(this.getBaseContext().getPackageName());
+		    e.getText().add("some text");
+		    manager.sendAccessibilityEvent(e);
+		    //manager.interrupt();   
+		    
+		}
+		*/
+		/*
+		//Accessing other packageIcon
+		try {
+			Drawable drawable;
+			drawable=this.getApplication().getPackageManager().getApplicationIcon("com.android.mms");//packageName);
+			
+			if(null!=k)this.getActionBar().setBackgroundDrawable(k);//drawable);
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			
+		}//.getNameForUid(0);
+		*/
+		
+		
 		// adding all the layouts
 		// setContentView(R.layout.activity_main);
 		main = (LinearLayout) findViewById(R.id.main);
@@ -869,6 +939,30 @@ return new ComponentName(pkg, cls);
 		// used For Google Image
 		hscrollLayout5 = (LinearLayout) findViewById(R.id.hscrollLayout5);
 		hscrollView5 = (HorizontalScrollView) findViewById(R.id.horizontalScrollView5);
+		/*
+		hscrollView5.playSoundEffect(android.view.SoundEffectConstants.NAVIGATION_LEFT);
+		hscrollView5.playSoundEffect(android.view.SoundEffectConstants.NAVIGATION_LEFT);
+		hscrollView5.playSoundEffect(android.view.SoundEffectConstants.CLICK);
+		hscrollView5.playSoundEffect(android.view.SoundEffectConstants.NAVIGATION_LEFT);
+		hscrollView5.playSoundEffect(android.view.SoundEffectConstants.NAVIGATION_LEFT);
+		hscrollView5.setSoundEffectsEnabled(false);
+		final AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+        info.eventTypes = AccessibilityEvent.TYPES_ALL_MASK;
+        info.eventTypes = AccessibilityEvent.TYPE_VIEW_SCROLLED;
+        
+        info.feedbackType = AccessibilityServiceInfo.FEEDBACK_AUDIBLE;
+        info.notificationTimeout =80;// NOTIFICATION_TIMEOUT_MILLIS;
+        info.flags = AccessibilityServiceInfo.DEFAULT;
+
+      this.getApplication().getPackageName();//setServiceInfo(info);
+        
+        
+        
+        
+		//requires API level 16 (current min is 11)hscrollView5.announceForAccessibility("This is a test");
+		hscrollView2.setSoundEffectsEnabled(false);
+		hscrollView1.setSoundEffectsEnabled(false);
+		*/
 		
 		processRequest("");//Ateraction Vesperanto Hexasense project");
 		if (SLVideoActivated)videoLayout.setVisibility(View.VISIBLE);
@@ -886,9 +980,74 @@ return new ComponentName(pkg, cls);
 		GridView gridview = (GridView) findViewById(R.id.gridView1);
 		// gridview.setAdapter(new ImageAdapter(this));
 		if (lastRequest!=null)processRequest(lastRequest);
+		
+		launchRingDialog(this.main);
+		
+		
+		
+		
+		
+		/* ArrayList<String> available = data
+	                .getStringArrayListExtra("availableVoices");
+	        Log.v("languages count", String.valueOf(available.size()));
+	        Iterator<String> iter = available.iterator();
+	        while (iter.hasNext()) {
+	            String lang = iter.next();
+	            Locale locale = new Locale(lang);
+	            Log.v(TAG, "language: " + lang);
+	            Log.v(TAG, "language locale: " + locale.toString());
+
+	            TextView LocaleResults = (TextView) getView().findViewById(
+	                    R.id.textViewConfig);
+	            LocaleResults.append("\nAvailable Engine Language: " + lang);
+
+	        }
+
+	        ArrayList<String> unavailable = data
+	                .getStringArrayListExtra("unavailableVoices");
+	        Log.v("languages count", String.valueOf(unavailable.size()));
+	        Iterator<String> iteru = unavailable.iterator();
+	        while (iteru.hasNext()) {
+	            String ulang = iteru.next();
+	            Locale ulocale = new Locale(ulang);
+	            Log.v(TAG, "ulanguage: " + ulang);
+	            Log.v(TAG, "ulanguage locale: " + ulocale.toString());
+
+	            TextView LocaleResults = (TextView) getView().findViewById(
+	                    R.id.textViewConfig);
+	            LocaleResults.append("\nUnavailable Engine Language: " + ulang);
+
+	        }*/
+		
+		
+		
+		 ttobj=new TextToSpeech(getApplicationContext(), 
+			      new TextToSpeech.OnInitListener() {
+			      @Override
+			      public void onInit(int status) {
+			         if(status != TextToSpeech.ERROR){
+			        	// ttobj.speak("hello hello", TextToSpeech.QUEUE_FLUSH, null);
+			        	 
+			           //  ttobj.setLanguage(Locale.UK);
+			            }				
+			         }
+			      });
+		
+		
+		 speakText(this.main);
+		 
+		 
+		 
+		 
 	}
 	
+	public void speakText(View view){
+	      String toSpeak = "Coool   man, i'mSpeaking ";
+	      Toast.makeText(getApplicationContext(), toSpeak, 
+	      Toast.LENGTH_SHORT).show();
+	    //  ttobj.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 
+	   }
 
 	private Intent createRecognizerIntent(String phrase, String lang) {
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
@@ -908,7 +1067,9 @@ return new ComponentName(pkg, cls);
 		
 		((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.BLUE);
 		speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));
+		 ttobj.speak("LongClick", TextToSpeech.QUEUE_FLUSH, null);
 			return true;
+			
 	}
 	@Override
 	public void onClick(View v) {
@@ -1186,6 +1347,7 @@ presence_online*/
 		// i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 		// Locale.US.toString());
 		try {
+			 ttobj.speak("allez y parlez", TextToSpeech.QUEUE_FLUSH, null);
 			startActivityForResult(i, REQUEST_OK);//normal Mode
 			
 		} catch (Exception e) {
@@ -1236,8 +1398,9 @@ presence_online*/
 				public void run() {
 					// hscrollView1.scrollTo(posMax, 0);
 					// hscrollView1.fling(1);
-
+					
 					moveScrollView(HSView, hscrollView2);
+				
 				}
 			};
 
@@ -1265,6 +1428,14 @@ presence_online*/
 	public void moveScrollView(final HorizontalScrollView HSView,
 			HorizontalScrollView slaveView) {
 		boolean log =false;
+		HSView.setSoundEffectsEnabled(false);
+		slaveView.setSoundEffectsEnabled(false);
+		
+		/*hscrollView5.setSoundEffectsEnabled(false);
+		hscrollView2.setSoundEffectsEnabled(false);
+		hscrollView1.setSoundEffectsEnabled(false);*/
+		//trying to remove horrible Scroll tick function in autoscroll
+		
 		
 		scrollPos = (int) (HSView.getScrollX() + scrollStep);
 		// HSView.setMeasureAllChildren(true);
@@ -1345,7 +1516,7 @@ presence_online*/
 			hscrollView5.scrollTo(scrollPos, 0);
 
 		}
-
+		
 	}
 
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
@@ -1367,7 +1538,7 @@ presence_online*/
 	 	   intent.putExtra("EXTRA_BUG_REPORT", " Vesperanto error report test");
 		}
 		
-		
+	 ttobj.speak(item.toString(), TextToSpeech.QUEUE_FLUSH, null);
 		if (item.toString() == "English"){
 			languagePref = Locale.US.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
 		writeSharedPrefString("DisplayLanguage",languagePref);}
@@ -1535,7 +1706,7 @@ presence_online*/
 		if (item.toString() == "Espagnol")
 			((LinearLayout) mVideoView.getParent()).removeView(mVideoView);// if
 		
-		if (item.toString() == "Change"){
+		if (item.toString() == getApplicationContext().getString(R.string.Change)){
 			// View v;
 		  // v=this.getCurrentFocus();
 		   File file;
@@ -1561,7 +1732,7 @@ presence_online*/
 			//lastOnMediaLongClick = v
 					//.getContentDescription().toString();//((LinearLayout) mVideoView.getParent()).removeView(mVideoView);// if
 		}
-		if (item.toString() == "ChangeVideo"){
+		if (item.toString() == getApplicationContext().getString(R.string.ChangeVideo)){
 			// View v;
 		  // v=this.getCurrentFocus();
 		   File file;
@@ -1598,7 +1769,7 @@ presence_online*/
 		  menu.add(0, v.getId(), 23, "AutoScroll");
 		  menu.add(0, v.getId(), 24, "ReloadImage");
 		  menu.add(0, v.getId(), 25, "NormalSize");*/
-		if (item.toString() == "Hide"){
+		if (item.toString() == getApplicationContext().getString(R.string.Hide)){
 			
 				
 				(findViewById(R.id.horizontalScrollView5)).setVisibility(View.GONE);
@@ -1615,7 +1786,9 @@ presence_online*/
 			
 			
 		}
-		if (item.toString() == "ReloadImage"){
+		
+		
+		if (item.toString() == getApplicationContext().getString(R.string.ReloadImage)){
 		
 			File file = new File(Environment
 					.getExternalStorageDirectory()
@@ -1644,7 +1817,7 @@ presence_online*/
 		  processRequest(lastRequest);			
 		}
 		
-		if (item.toString() == "ReloadVideo"){
+		if (item.toString() == getApplicationContext().getString(R.string.ReloadVideo)){
 			File file = new File(lastOnVideoLongClick);/*Environment
 						.getExternalStorageDirectory()
 						+ File.separator
@@ -1660,13 +1833,13 @@ presence_online*/
 			  processRequest(lastRequest);			
 			}
 		
-		if (item.toString() == "HideVideo"){
+		if (item.toString() == getApplicationContext().getString(R.string.HideVideo)){
 			(findViewById(R.id.videoLayout)).setVisibility(View.GONE);
 			SLVideoActivated=false;
 			writeSharedPrefBool("SLVideoActivated",SLVideoActivated);
 		}	
 		
-		if (item.toString() == "SearchResults"){
+		if (item.toString() == getApplicationContext().getString(R.string.SearchResults)){
 			ShowSearchResultsActivated=!ShowSearchResultsActivated;
 			writeSharedPrefBool("ShowSearchResultsActivated",ShowSearchResultsActivated);
 			if ((!ShowSearchResultsActivated) && bWebActivated)
@@ -1683,7 +1856,7 @@ presence_online*/
 				
 			
 		}
-		if (item.toString() == "SearchWeb"){
+		if (item.toString() == getApplicationContext().getString(R.string.SearchWeb)){
 			bWebActivated=!bWebActivated;
 			writeSharedPrefBool("bWebActivated",bWebActivated);
 			if (bWebActivated&&!ShowSearchResultsActivated){
@@ -1801,7 +1974,7 @@ presence_online*/
 			
 		}
 		
-		if (item.toString() == "ValidateVideo"){
+		if (item.toString() ==  getApplicationContext().getString(R.string.ValidateVideo)){
 			 File file;
 			 
 				// AlertDialog.Builder alertDialogBuilder;
@@ -1883,13 +2056,13 @@ presence_online*/
 				
 		}
 		
-		if (item.toString() == "ViewOptions"){
+		if (item.toString() ==  getApplicationContext().getString(R.string.ViewOptions)){
 			/*Toast.makeText(getApplicationContext(),
 					 "Long click onViewOptions:For Validation "
 					  +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick,
 					 Toast.LENGTH_SHORT).show();*/
 		}
-		if (item.toString() == "Validate"){
+		if (item.toString() ==  getApplicationContext().getString(R.string.Validate)){
 			 File file;
 			 
 				// AlertDialog.Builder alertDialogBuilder;
@@ -1967,7 +2140,7 @@ presence_online*/
 				
 		}
 		
-		if (item.toString() == "Photo"){
+		if (item.toString() ==  getApplicationContext().getString(R.string.Photo)){
 			
 			 
 			// AlertDialog.Builder alertDialogBuilder;
@@ -2036,7 +2209,7 @@ presence_online*/
 			 
 			
 		}
-		if (item.toString() == "MakeVideo"){
+		if (item.toString() ==  getApplicationContext().getString(R.string.MakeVideo)){
 			 File file;
 			 
 			// AlertDialog.Builder alertDialogBuilder;
@@ -2214,7 +2387,7 @@ presence_online*/
 																		// videorender
 																		// is
 																		// locked
-		if (item.toString() == "MicroSize") {
+		if (item.toString() == getApplicationContext().getString(R.string.MicroSize)) {
 			ViewGroup.LayoutParams params = hscrollView5.getLayoutParams();
 			// params.width=50;
 			params.height = 100;
@@ -2225,7 +2398,7 @@ presence_online*/
 		}// hscrollView5.setMinimumHeight(800);hscrollView5.setMinimumWidth(1024);//only
 			// view is moving cause the videorender is locked
 
-		if (item.toString() == "FullSize") {
+		if (item.toString() == getApplicationContext().getString(R.string.FullSize)) {
 			ViewGroup.LayoutParams params = hscrollView5.getLayoutParams();
 			// params.width=300;//LayoutParams.WRAP_CONTENT;
 			params.height = 300;
@@ -2243,7 +2416,7 @@ presence_online*/
 
 		}// hscrollView5.setMinimumHeight(800);hscrollView5.setMinimumWidth(1024);//only
 			// view is moving cause the videorender is locked
-		if (item.toString() == "NormalSize") {
+		if (item.toString() == getApplicationContext().getString(R.string.NormalSize)) {
 			ViewGroup.LayoutParams params = hscrollView5.getLayoutParams();
 			// params.width=50;
 			params.height = 200;
@@ -2276,7 +2449,7 @@ presence_online*/
 		if (item.toString() == "pickContact") {
 			pickContact();
 		}
-		if (item.toString() == "getPhoto") {
+		if (item.toString() == getApplicationContext().getString(R.string.GetPhoto)) {
 			getPhoto("");
 		}
 
@@ -2679,8 +2852,8 @@ presence_online*/
 		
 		SubMenu debugSubMenu;
 		debugSubMenu=menu.addSubMenu(R.string.AdvancedOptions );
-		debugSubMenu.add("Validation");
-		debugSubMenu.add("Debug")
+		debugSubMenu.add(R.string.Validation);
+		debugSubMenu.add(R.string.Debug)
 			.setCheckable(true)
 			.setChecked(DebugActivated);
 		debugSubMenu.add(R.string.SendReport);
@@ -4232,6 +4405,12 @@ presence_online*/
 	}// onresult
 
 	void processRequest(String thingYouSaid) {
+		try {
+			if((null!=		thingYouSaid) && (thingYouSaid!="")) ttobj.speak(thingYouSaid, TextToSpeech.QUEUE_FLUSH, null);
+		} catch (Exception e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
 
 		lastLinkInside = "";// http://www.elix-lsf.fr/spip.php?page=recherche_definitions&recherche=tu";
 		//((TextView) findViewById(R.id.text1)).setText(thingYouSaid);
@@ -4869,14 +5048,15 @@ presence_online*/
 							// Toast.makeText(getApplicationContext(),
 							// "clickon Image"+hscrollLayout5.getChildCount(),
 							// Toast.LENGTH_SHORT).setView(v);
-
+							 ttobj.speak( v.getContentDescription().toString(), TextToSpeech.QUEUE_FLUSH, null);
 							Toast.makeText(
 									getApplicationContext(),
 									"clickon Image" + v.getContentDescription()
 											+ " " + v.toString(),
 									Toast.LENGTH_SHORT).show();
 							Log.d("clickon Image" + v.getContentDescription(),"isMenuRequest " +isMenuRequest+" "+v.getContentDescription());
-							if (isMenuRequest){
+							if (isMenuRequest&&onclickProcessMenuActivated){
+								isMenuRequest=false;
 								for (int i=0;i<menu.size();i++){
 									Log.d("clickon Image" + v.getContentDescription(),"search MenuRequest" +menu.getItem(i));
 									
@@ -8757,7 +8937,7 @@ presence_online*/
 		//signLanguageVideo[signLanguageVideoCounter]
 		if (debug==1){valueTV.setText(valueTV.getText()+" "+text);}
 		
-		((TextView) findViewById(R.id.textViewOnVideo)).setText("Ateraction: Loading...");
+		((TextView) findViewById(R.id.textViewOnVideo)).setText(R.string.VideoLoading);//"Ateraction: Loading...");
 		((TextView) findViewById(R.id.textViewOnVideo)).setVisibility( View.VISIBLE);
 		
 		try {
@@ -8813,21 +8993,21 @@ presence_online*/
 	class MyRecognitionListener implements RecognitionListener{
 		@Override
 	    public void onBeginningOfSpeech() {
-	        Log.d("leapkh", "onBeginningOfSpeech");
+	        Log.d("VoiceRecog", "onBeginningOfSpeech");
 	    }
 		@Override
 	    public void onBufferReceived(byte[] buffer) {
-	        Log.d("leapkh", "onBufferReceived");
+	        Log.d("VoiceRecog", "onBufferReceived");
 	    }
 		@Override
 	    public void onEndOfSpeech() {
-	        Log.d("leapkh", "onEndOfSpeech");
+	        Log.d("VoiceRecog", "onEndOfSpeech");
 	    }
 
 		@Override
 		public void onError(int error) {
 			((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.RED);
-	        Log.d("leapkh", "onError"+error);
+	        Log.d("VoiceRecog", "onError"+error);
 	        switch (error) {
 			 case SpeechRecognizer.ERROR_AUDIO:
 			// setErrorMessage(R.string.errorResultAudioError);
@@ -8885,7 +9065,7 @@ presence_online*/
 
 		@Override
 		public void onEvent(int eventType, Bundle params) {
-	        Log.d("leapkh", "onEvent");
+	        Log.d("VoiceRecog", "onEvent");
 	    }
 
 		@Override
@@ -9028,12 +9208,12 @@ presence_online*/
 
 		try {
 			startActivityForResult(Intent.createChooser(intent,
-					"Select a file to process"),
+					getBaseContext().getString(R.string.SelectFileToProcess)),//"Select a file to process"),
 					WORDLIST_SELECT_CODE);
 
 		} catch (android.content.ActivityNotFoundException ex) {
 			// Potentially direct the user to the Market with a Dialog
-			Toast.makeText(this, "Please install a File Manager.",
+			Toast.makeText(this,getBaseContext().getString(R.string.InstallFileManager),// "Please install a File Manager.",
 					Toast.LENGTH_SHORT).show();
 		}
 	}
@@ -9366,7 +9546,8 @@ presence_online*/
 						// advancedDownload(wordsYouSaid[foundWord]);
 						file.delete();
 					}}
-				builder.setTitle("Delete:"+file.getName());
+				builder.setTitle(getBaseContext().getString(R.string.Delete)//"Delete:"
+					+file.getName());
 				
 				if (file.getName().endsWith(".jpg")) {//remove .toLowerCase() Lower Case for locale Errors
 					if (file.exists()) {
@@ -9464,7 +9645,8 @@ presence_online*/
 
 								Toast.makeText(
 										getApplicationContext(),
-										"clickon Image" + v.getContentDescription()
+										getBaseContext().getString(R.string.ClickOnImage)//"clickOn Image" 
+										+ v.getContentDescription()
 												+ " " + v.toString(),
 										Toast.LENGTH_SHORT).show();
 
@@ -9577,7 +9759,8 @@ presence_online*/
 
 						Toast.makeText(
 								getApplicationContext(),
-								"clickon View" + v.getContentDescription()
+								getBaseContext().getString(R.string.ClickOnView)//"clickOn View" 
+								+ v.getContentDescription()
 										+ " " + v.toString(),
 								Toast.LENGTH_SHORT).show();
 
@@ -10487,7 +10670,8 @@ presence_online*/
                   }
              }})
 
-         .setNegativeButton("Cancel", null)    // cancel button
+         .setNegativeButton(R.string.Cancel//"Cancel"
+        		 , null)    // cancel button
          .create();
 
      dialog.show();    // showing dialog

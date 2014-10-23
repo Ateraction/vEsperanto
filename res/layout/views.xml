@@ -21,32 +21,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:onClick="onVideoToggleClicked"
-                android:textOff="Video off"
-                android:textOn="Video on" />
+                android:textOff="@string/VideoOff"
+                android:textOn="@string/VideoOn"/>
         
              <ToggleButton
                  android:id="@+id/SWSpellViewTogglebutton"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:onClick="onSWSpellToggleClicked"
-                 android:textOff="SW Spell off"
-                 android:textOn="SW Spell on" />
-            
+                 android:textOff="@string/SWspellOff"  
+                 android:textOn="@string/SWspellOn" />
+            <!--"SW Spell off"  replaced by SWspellOff
+            "@string/hello_world"
+             
+            This may also be a reference
+             to a resource 
+             (in the form "@[package:]type:name")
+              or theme attribute 
+              (in the form "?[package:][type:]name")
+               containing a value of this type.
+			This corresponds to the global attribute resource symbol textOff. 
+			
+			@[+][package:]type:name"
+			-->
+             
+             
                 <ToggleButton
                     android:id="@+id/SecurityViewTogglebutton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:onClick="onSecurityToggleClicked"
-                    android:textOff="SecurityView off"
-                    android:textOn="SecurityView on" />
+                    android:textOff="@string/SecurityViewOff"
+                    android:textOn="@string/SecurityViewOn" />
                 
              <ToggleButton
                  android:id="@+id/GoogleViewTogglebutton"
                  android:layout_width="match_parent"
                  android:layout_height="wrap_content"
                  android:onClick="onGoogleToggleClicked"
-                 android:textOff="GoogleView off"
-                 android:textOn="GoogleView on" />
+                 android:textOff="@string/GoogleViewOff"
+                 android:textOn="@string/GoogleViewOn"/>
  
     <!-- <TextView
                 android:id="@+id/options_lang"

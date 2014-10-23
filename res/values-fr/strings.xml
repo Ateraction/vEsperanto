@@ -7,8 +7,35 @@
     <string name="app_name">vEsperanto (français)</string>
     <string name="menu_settings">Options</string>
     <string name="hello_world">Salut Monde!</string>
+    
+    
+    <string name="VideoLoading">"Ateraction: Chargement . .. ...."</string>
+    <string name="SelectFileToProcess">"Sélectionnez un fichier à interpréter"</string>
+     <string name="InstallFileManager">"Veuillez télécharger un gestionnaire de fichier (FileManager)"</string>
+    <string name="Delete">"Efface:"</string>
+    <string name="ClickOnImage">"clickOn image"</string> 
+    <string name="ClickOnView">"clickOn view"</string> 
+    <string name="GetPhoto">"GetPhoto"</string> 
+    
+    <string name="SelectViews">Vues</string>  
+	   <string name="VideoOn">Cacher la vidéo</string> 
+	   <string name="VideoOff">Afficher la vidéo</string> 
+	   <string name="SWspellOn">SWspell On</string> 
+	   <string name="SWspellOff">SWspell Off</string> 
+	   <string name="SecurityViewOn">Cacher la vue Sécurité</string> 
+	    <string name="SecurityViewOff">Afficher la vue Sécurité</string> 
+	   <string name="GoogleViewOn">Cacher la vue Recherche</string> 
+	   <string name="GoogleViewOff">Afficher la vue Recherche</string> 
+	   
    
-   <string name="SelectViews">Vues</string> 
+    
+    
+    
+   
+
+   
+   
+   
    <string name="Reload">Recharger</string>
    <string name="languages">langues</string>
    <string name="AdvancedOptions">optionsAvancées</string>
@@ -21,12 +48,13 @@
       <string name="IsMenuRequest">"IsMenuRequest"</string>
       
       
+      
       <string name="Exchange">échanges</string>
    	<string name="getLastpack">ObtenirLeDernierPack</string>
-   	<string name="getLastWordList">ObtenirLaDernièreListeDeMots</string>
-   	<string name="getLastSpellList">ObtenirLaDernièreListeDeSpell</string>
-   	<string name="getLastImageList">ObtenirLaDernièreListeImages</string>
-   	<string name="getLastVideoList">ObtenirLaDernièreListeDeVidéos</string>
+   	<string name="getLastWordList">DernièreListeDeMots</string>
+   	<string name="getLastSpellList">DernièreListeDeSpell</string>
+   	<string name="getLastImageList">DernièreListeImages</string>
+   	<string name="getLastVideoList">DernièreListeDeVidéos</string>
    	
    	<string name="loadList">chargerLaListe</string>
    	<string name="LoadImageList">ChargerLaListeImages</string>
