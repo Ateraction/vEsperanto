@@ -265,32 +265,51 @@ public final class R {
         public static final int index=0x7f040002;
     }
     public static final class string {
-        public static final int About=0x7f05004a;
+        public static final int About=0x7f05004c;
         /**  Content Description for accessibility  
+ Content Description for accessibility  
+ Content Description for accessibility  
          */
         public static final int ActionButton=0x7f050003;
         public static final int AdvancedOptions=0x7f050021;
         public static final int Cancel=0x7f05000d;
         public static final int Change=0x7f05003a;
-        public static final int ChangeVideo=0x7f05003e;
+        public static final int ChangeVideo=0x7f05003f;
         public static final int ClickOnImage=0x7f050011;
         public static final int ClickOnView=0x7f050012;
         public static final int CommandMode=0x7f050025;
+        public static final int Congratulations=0x7f05005b;
         public static final int Debug=0x7f050023;
         public static final int Delete=0x7f050010;
+        public static final int DeleteImage=0x7f05003e;
+        public static final int DeleteVideo=0x7f050044;
         public static final int Exchange=0x7f050029;
-        public static final int FullSize=0x7f050046;
+        public static final int FindTheGoodPicture=0x7f050054;
+        public static final int FullSize=0x7f050048;
         public static final int GetPhoto=0x7f050013;
         public static final int GoogleViewOff=0x7f05001e;
         public static final int GoogleViewOn=0x7f05001d;
-        public static final int Help=0x7f050049;
-        public static final int Help_About=0x7f050048;
+        public static final int Help=0x7f05004b;
+        public static final int Help_About=0x7f05004a;
         public static final int Hide=0x7f05003c;
         public static final int HideMenu=0x7f050027;
-        public static final int HideVideo=0x7f050042;
+        public static final int HideVideo=0x7f050043;
+        public static final int ImBeginning=0x7f050056;
         public static final int ImageViewAccessibility=0x7f050005;
         public static final int InstallFileManager=0x7f05000f;
         /** Voice Recognition
+     Dialog dialog = new AlertDialog.Builder(this)
+		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+     
+Voice Recognition
+     Dialog dialog = new AlertDialog.Builder(this)
+		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+     
+Voice Recognition
      Dialog dialog = new AlertDialog.Builder(this)
 		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
 		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
@@ -301,27 +320,35 @@ public final class R {
         public static final int InstallGoogleVoiceSearchTitle=0x7f05000b;
         public static final int InstallLater=0x7f05000c;
         public static final int IsMenuRequest=0x7f050028;
+        public static final int LearningMode=0x7f05005d;
         public static final int LoadImageList=0x7f050030;
         public static final int LoadVideoList=0x7f050031;
-        public static final int MakeVideo=0x7f05003f;
+        public static final int MakeVideo=0x7f050040;
         public static final int MediasOptions=0x7f050037;
-        public static final int MicroSize=0x7f050047;
-        public static final int NormalSize=0x7f050045;
+        public static final int MicroSize=0x7f050049;
+        public static final int NormalSize=0x7f050047;
+        public static final int PerfectYouHaveSaid=0x7f05005a;
         public static final int Photo=0x7f05003b;
         public static final int ProcessMenu=0x7f050026;
-        public static final int ReadLast_SMS=0x7f05004d;
-        public static final int ReadSMS=0x7f05004c;
+        public static final int ReadLast_SMS=0x7f05004f;
+        public static final int ReadSMS=0x7f05004e;
         public static final int Reload=0x7f05001f;
         public static final int ReloadImage=0x7f05003d;
-        public static final int ReloadVideo=0x7f050041;
+        public static final int ReloadVideo=0x7f050042;
         public static final int SWspellOff=0x7f05001a;
         public static final int SWspellOn=0x7f050019;
         public static final int SWspellViewAccessibility=0x7f050008;
-        public static final int SafeSearch=0x7f05004b;
+        public static final int SafeSearch=0x7f05004d;
+        /**  Learning mode 
+ Learning mode 
+ Learning mode 
+         */
+        public static final int SayWords=0x7f050052;
+        public static final int SayWords2=0x7f050053;
         public static final int ScrollViewAccessibility=0x7f050006;
-        public static final int SearchResults=0x7f050043;
+        public static final int SearchResults=0x7f050045;
         public static final int SearchViewAccessibility=0x7f050007;
-        public static final int SearchWeb=0x7f050044;
+        public static final int SearchWeb=0x7f050046;
         public static final int SecurityViewAccessibility=0x7f050009;
         public static final int SecurityViewOff=0x7f05001c;
         public static final int SecurityViewOn=0x7f05001b;
@@ -329,22 +356,28 @@ public final class R {
         public static final int SelectViews=0x7f050016;
         public static final int SendImageList=0x7f050034;
         public static final int SendImages=0x7f050035;
-        public static final int SendMail=0x7f05004f;
+        public static final int SendMail=0x7f050051;
         public static final int SendReport=0x7f050024;
-        public static final int SendSMS=0x7f05004e;
+        public static final int SendSMS=0x7f050050;
         public static final int SendVideoList=0x7f050033;
         public static final int SendWordList=0x7f050032;
+        public static final int TheWordIs=0x7f050057;
+        public static final int Touch=0x7f050058;
+        public static final int TryTheWord=0x7f05005c;
         public static final int Validate=0x7f050038;
-        public static final int ValidateVideo=0x7f050040;
+        public static final int ValidateVideo=0x7f050041;
         public static final int Validation=0x7f050022;
+        public static final int ValidationMode=0x7f05005e;
         public static final int VideoLoading=0x7f050015;
         public static final int VideoOff=0x7f050018;
         public static final int VideoOn=0x7f050017;
         public static final int VideoViewAccessibility=0x7f050004;
         public static final int ViewOptions=0x7f050039;
-        public static final int app_credits=0x7f050050;
-        public static final int app_descrip=0x7f050051;
-        public static final int app_help=0x7f050052;
+        public static final int YesItWas=0x7f050059;
+        public static final int YourTurnToSpeak=0x7f050055;
+        public static final int app_credits=0x7f05005f;
+        public static final int app_descrip=0x7f050060;
+        public static final int app_help=0x7f050061;
         /**  panneaux http://routes.wikia.com/wiki/Portail:Signalisation  
     signwriting http://www.valeriesutton.org/   http://signbank.org/dictionaries/
     http://www.movementwriting.org/symbolbank/downloads/ISWA2010/ISWA2010_Symbols_SVG.zip

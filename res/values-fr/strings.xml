@@ -8,14 +8,37 @@
     <string name="menu_settings">Options</string>
     <string name="hello_world">Salut Monde!</string>
     
+     <!-- Content Description for accessibility  -->
+    <string name="ActionButton">Press and talk to obtain interpretation; Long press to continuously translate speech</string>
+    <string name="VideoViewAccessibility">VideoView is displaying your speech translated into videos. LongPress to obtain Video or View  options</string>
+    <string name="ImageViewAccessibility">ImageView is displaying your speech translated into images. LongPress to obtain image or View  options</string>
+    <string name="ScrollViewAccessibility">This scrollable view displays all others views.Longpress on inside views to interact</string>
+    <string name="SearchViewAccessibility">"Horizontal scrollable SearchView displays your speech interpreted as image. Longpress inside to interact"</string>
+    <string name="SWspellViewAccessibility">"Horizontal scrollable SpellView displays your speech letters interpreted as images.Default is SignWrittingSpell"</string>
+     <string name="SecurityViewAccessibility">"Horizontal scrollable Security View displays your speech interpreted as images"</string>
+    <!--Voice Recognition
+     Dialog dialog = new AlertDialog.Builder(this)
+		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+     -->
+     <string name="InstallGoogleVoiceSearchMessage">For recognition it’s necessary to install Google Voice Search</string>
+      <string name="InstallGoogleVoiceSearchTitle">Install Voice Search from Google Play next time you are online?</string>
+      <string name="InstallLater">Install Later</string>
+     <string name="Cancel">Cancel</string>
     
-    <string name="VideoLoading">"Ateraction: Chargement . .. ...."</string>
+    
+    
+    
+   
     <string name="SelectFileToProcess">"Sélectionnez un fichier à interpréter"</string>
      <string name="InstallFileManager">"Veuillez télécharger un gestionnaire de fichier (FileManager)"</string>
     <string name="Delete">"Efface:"</string>
     <string name="ClickOnImage">"clickOn image"</string> 
     <string name="ClickOnView">"clickOn view"</string> 
     <string name="GetPhoto">"GetPhoto"</string> 
+       <string name="vEsperantoByAteraction">vEsperanto by Ateraction</string>
+    <string name="VideoLoading">"Ateraction: Loading . .. ...."</string>
     
     <string name="SelectViews">Vues</string>  
 	   <string name="VideoOn">Cacher la vidéo</string> 
@@ -74,12 +97,15 @@
     <string name="Photo">PrendrePhoto</string>
      <string name="Hide">Cacher</string> 
      <string name="ReloadImage">RechargerImage</string>
+     <string name="DeleteImage">EffacerImage</string>
      
      <string name="ChangeVideo">ChangerVidéo</string>
      <string name="MakeVideo">FaireVidéo</string> 
       	<string name="ValidateVideo">ValiderVidéo</string>
      <string name="ReloadVideo">RechargerVidéo</string>
    <string name="HideVideo">CacherVidéo</string>
+    <string name="DeleteVideo">EffacerVidéo</string>
+   
    
   <string name="SearchResults">AfficherRésultatsDeRecherche</string> 
   <string name="SearchWeb">ChercherSurInternet</string>
@@ -104,6 +130,24 @@
     <string name="ReadLast_SMS">SMS</string>
     <string name="SendSMS">EnvoyerSMS</string>		
     <string name="SendMail">EnvoyerMail</string>
+   
+    
+    
+    
+    <!-- Learning mode -->
+   <string name="SayWords"> Jouons à dire les mots </string> 
+   <string name="SayWords2"> C est parti! Jouons à dire le mot  je commence </string>
+   <string name="FindTheGoodPicture"> trouve la bonne image </string>
+   <string name="YourTurnToSpeak"> A toi de dire </string>
+   <string name="ImBeginning"> je commence   </string>
+   <string name="TheWordIs"> le mot est   </string>
+   <string name="Touch"> Touche   </string>
+   <string name="YesItWas">bravo! c\'était    </string>
+   <string name="PerfectYouHaveSaid"> parfait, tu as dit   </string>
+   <string name="Congratulations"> Félicitations   </string>
+   <string name="TryTheWord">   Essayons le mot  </string>
+   <string name="LearningMode">Jouons</string>  
+  <string name="ValidationMode">ValidationMode</string>  
    
    
     <string name="app_credits">    	
@@ -204,7 +248,8 @@
     
     <string name="app_help"> 
        
-        Aide\n
+        Aide
+        \n
         
         Ateraction a la joie de vous inviter à participer à la construction de vEsperanto et son application destinée à faciliter la communication entre personnes.\n
         \n
@@ -236,7 +281,7 @@ Merci pour vos retours\n
 \n
 Menu "Options" accessible à l\'aide de la touche menu\n
 \n
-1)SelectView
+--)SelectView
 \n
 permet de choisir les vues affichées\n
 		a)Video (langue des signes)\n
@@ -245,13 +290,49 @@ permet de choisir les vues affichées\n
 		d)GoogleView  (les images fournies par goggle)\n
 \n
 \n
-2)Reload
+--)Reload
 \n
 relance la dernière requête
 \n
 \n
 
-3)LoadList
+--)Jouons
+\n
+L\'application sélectionne un mot parmi la liste de mots validés et le propose mélangé avec d\'autres mots
+ \n
+Cliquez sur le mot demandé pour obtenir une nouvelle liste de mots ou utilisé la reconnaissance vocale pour prononcer le mot
+\n
+ Vous devez avoir déjà validé quelques images pour que le jeu soit opérationnel
+ \n
+\n
+
+--)Jouons à valider les mots
+\n
+L\'application sélectionne un mot parmi la liste de mots non validés et le propose mélangé avec d\'autres mots
+ \n
+Cliquez sur le mot demandé pour obtenir une nouvelle liste de mots 
+\n
+ vous pouvez aussi utilisez la reconnaissance vocale pour prononcer le mot et basculet en mode "dire les mots"
+\n
+ Vous devez avoir déjà prononcé quelques mots non validés pour que le jeu soit opérationnel
+ \n
+ Il suffit de prononcer un ensemble de mot avec la reconnaisance vocale active
+\n
+
+--)Jouons à dire les mots
+\n
+L\'application sélectionne un mot parmi la liste de mots validés et demande de le répéter 
+ \n
+Répétez le mot demandé pour obtenir un nouveau mot
+\n
+Vous pouvvez aussi toucher le mot demandé pour basculer dans le mode jous à toucher les mots
+\n
+ Vous devez avoir déjà validé quelques images pour que le jeu soit opérationnel
+ \n
+\n
+
+
+--)LoadList
 \n
 SDCard/Hexasense/WordList/fr.txt
 \n
@@ -268,6 +349,7 @@ Permet d\'afficher plus d\'informations permettant de déterminer la cause de ma
 \n
 Les crédits
 \n\n\n\n\n </string>
+    
     
     <string-array name="fi">
          <!-- geo  --> 

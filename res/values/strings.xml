@@ -121,12 +121,15 @@
     <string name="Photo">Photo</string>
      <string name="Hide">Hide</string> 
      <string name="ReloadImage">ReloadImage</string>
+     <string name="DeleteImage">DeleteImage</string>
      
      <string name="ChangeVideo">ChangeVideo</string>
      <string name="MakeVideo">MakeVideo</string> 
       	<string name="ValidateVideo">ValidateVideo</string>
      <string name="ReloadVideo">ReloadVideo</string>
    <string name="HideVideo">HideVideo</string>
+   <string name="DeleteVideo">DeleteVideo</string>
+   
    
   <string name="SearchResults">SearchResults</string> 
   <string name="SearchWeb">SearchWeb</string>
@@ -148,6 +151,22 @@
     <string name="SendMail">SendMail</string>
     
     
+    
+     <!-- Learning mode -->
+   <string name="SayWords"> play together to say the words  </string> 
+   <string name="SayWords2"> It is started </string>
+   <string name="FindTheGoodPicture"> Find the good picture </string>
+   <string name="YourTurnToSpeak"> Your turn to say </string>
+   <string name="ImBeginning"> I am beginning   </string>
+   <string name="TheWordIs"> The word is   </string>
+      <string name="Touch"> Touch   </string>
+   <string name="YesItWas"> Yes it was   </string>
+   <string name="PerfectYouHaveSaid">Perfect You have said </string> 
+   <string name="Congratulations"> Congratulations   </string>
+   <string name="TryTheWord"> Try the word  </string>
+   <string name="LearningMode">Learning</string> 
+   <string name="ValidationMode">ValidationMode</string> 
+   
     <string name="app_credits">
         <div class="id-app-orig-desc">
             vEsperanto, réalisée dans le cadre du projet Hexasense soutenu par le Conseil Régional d\'Aquitaine,

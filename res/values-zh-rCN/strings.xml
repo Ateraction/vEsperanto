@@ -8,14 +8,37 @@
     <string name="menu_settings">选项</string>
     <string name="hello_world">Salut Monde!</string>
    
-    <string name="VideoLoading">"Ateraction: Loading . .. ...."</string>
+    
+     <!-- Content Description for accessibility  -->
+    <string name="ActionButton">Press and talk to obtain interpretation; Long press to continuously translate speech</string>
+    <string name="VideoViewAccessibility">VideoView is displaying your speech translated into videos. LongPress to obtain Video or View  options</string>
+    <string name="ImageViewAccessibility">ImageView is displaying your speech translated into images. LongPress to obtain image or View  options</string>
+    <string name="ScrollViewAccessibility">This scrollable view displays all others views.Longpress on inside views to interact</string>
+    <string name="SearchViewAccessibility">"Horizontal scrollable SearchView displays your speech interpreted as image. Longpress inside to interact"</string>
+    <string name="SWspellViewAccessibility">"Horizontal scrollable SpellView displays your speech letters interpreted as images.Default is SignWrittingSpell"</string>
+     <string name="SecurityViewAccessibility">"Horizontal scrollable Security View displays your speech interpreted as images"</string>
+    <!--Voice Recognition
+     Dialog dialog = new AlertDialog.Builder(this)
+		         .setMessage("For recognition it’s necessary to install Google Voice Search")    // dialog message
+		         .setTitle("Install Voice Search from Google Play next time you are online?")    // dialog header
+		         .setPositiveButton("Install Later", new DialogInterface.OnClickListener() {    // confirm button
+     -->
+     <string name="InstallGoogleVoiceSearchMessage">For recognition it’s necessary to install Google Voice Search</string>
+      <string name="InstallGoogleVoiceSearchTitle">Install Voice Search from Google Play next time you are online?</string>
+      <string name="InstallLater">Install Later</string>
+     <string name="Cancel">Cancel</string>
+    
+    
+    
+    
     <string name="SelectFileToProcess">"Select a file to process"</string>
      <string name="InstallFileManager">"Please install a File Manager."</string>
     <string name="Delete">"Delete:"</string>
     <string name="ClickOnImage">"clickOn image"</string> 
     <string name="ClickOnView">"clickOn view"</string> 
     <string name="GetPhoto">"GetPhoto"</string> 
-    
+     <string name="vEsperantoByAteraction">vEsperanto by Ateraction</string>
+    <string name="VideoLoading">"Ateraction: Loading . .. ...."</string>
     
     
    <string name="SelectViews">浏览次数</string> 
@@ -70,12 +93,15 @@
     <string name="Photo">图片</string>
      <string name="Hide">隐藏</string> 
      <string name="ReloadImage">换一个</string>
+     <string name="DeleteImage">隐藏azerty</string>
+     
      
      <string name="ChangeVideo">改变视频</string>
      <string name="MakeVideo">制作视频</string> 
       	<string name="ValidateVideo">验证视频</string>
      <string name="ReloadVideo">刷新视频</string>
    <string name="HideVideo">隐藏视频</string>
+   <string name="DeleteVideo">隐藏视频azerty</string>
    
   <string name="SearchResults">搜索结果</string> 
   <string name="SearchWeb">搜索网页</string>
@@ -102,6 +128,23 @@
     <string name="SendMail">发送邮件</string>
    
    
+    
+    <!-- Learning mode -->
+   <string name="SayWords"> play together to say the words  </string> 
+   <string name="SayWords2"> It is started </string>
+   <string name="FindTheGoodPicture"> Find the good picture </string>
+   <string name="YourTurnToSpeak"> Your turn to say </string>
+   <string name="ImBeginning"> I am beginning   </string>
+   <string name="TheWordIs"> The word is   </string>
+      <string name="Touch"> Touch   </string>
+   <string name="YesItWas"> Yes it was   </string>
+   <string name="PerfectYouHaveSaid">Perfect You have said </string> 
+   <string name="Congratulations"> Congratulations   </string>
+   <string name="TryTheWord"> Try the word  </string>
+   <string name="LearningMode">Learning</string> 
+   <string name="ValidationMode">ValidationMode</string> 
+    
+    
     <string name="app_credits">    	
     	<div class="id-app-orig-desc">
             vEsperanto ，进行由区域市政局\的阿基坦大区的支持Hexasense项目的一部分

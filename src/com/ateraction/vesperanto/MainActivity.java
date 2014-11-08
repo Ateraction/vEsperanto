@@ -281,9 +281,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.regex.Matcher;
@@ -316,9 +318,11 @@ import android.content.DialogInterface.OnCancelListener;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -336,6 +340,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -351,6 +356,7 @@ import android.speech.RecognitionService;
 import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.speech.tts.TextToSpeech;
+import android.speech.tts.TextToSpeech.EngineInfo;
 import android.telephony.SmsManager;
 import android.text.Html;
 import android.text.format.Time;
@@ -399,15 +405,13 @@ import android.widget.ToggleButton;
 import android.widget.VideoView;
 import com.ateraction.vesperanto.R;
 
-
-
-
 public class MainActivity extends Activity implements OnClickListener,
 		OnCompletionListener,OnPreparedListener, OnLongClickListener {
 	
 	private Menu menu;
 	private SpeechRecognizer sr;
-	public AudioManager am;
+	public AudioManager am;//for BlueTooth 
+	public BroadcastReceiver btBroadCastReceiver;
     public SpeechRecognizer     speechRecognizer;
     public String lastPartialResult;
 	// implements OnClickListener for UI handling
@@ -538,6 +542,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	
 	int imageSizePref;
 	String DisplayLanguage=null;
+	Locale appLocale=null;
 	
 	Boolean onlyProcessMenuActivated=false;
 	Boolean processMenuActivated=false;
@@ -559,6 +564,7 @@ public class MainActivity extends Activity implements OnClickListener,
 	String[] userFoundList={"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""
 			,"","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""};
 	
+	String appWish="";	
 	String recorder="660";
 	String jC="1234567890";
 	String jP="1234567890";
@@ -568,7 +574,11 @@ public class MainActivity extends Activity implements OnClickListener,
 	String userNumber="660";
 	
 	TextToSpeech ttobj;
-	
+    Boolean text2SpeechActivated=false	;
+	Boolean speakReadyToListen=false	;
+	//	learningPart
+	String wantedAnswer	="azertyuiopsqdfghjk";
+	 Boolean	validation=false;
 	
 	/**
 * Look up the default recognizer service in the preferences.
@@ -605,7 +615,7 @@ return new ComponentName(pkg, cls);
 		// ToDdo implements save state//
 		// On create run on start and screen orientation change
 		Log.i("onCreate "," "+savedInstanceState);
-		blueTooth("");
+		 blueTooth("");
 		PackageManager pm = getPackageManager();
 
 		if (pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)){
@@ -744,6 +754,8 @@ return new ComponentName(pkg, cls);
 		 if (readSharedPref("DisplayLanguage")!=null){
 			// languagePref = readSharedPref("DisplayLanguage");
 			 DisplayLanguage= Locale.getDefault().toString();
+			 appLocale= Locale.getDefault();
+			 
 		 }else  DisplayLanguage=readSharedPref("DisplayLanguage");
 		 
 		
@@ -778,7 +790,7 @@ return new ComponentName(pkg, cls);
         //
         //speechRecognizer.startListening(RecognizerIntent.getVoiceDetailsIntent(getApplicationContext()));
         //speechRecognizer.startListening(createRecognizerIntent("fr", "fr"));//working
-        speechRecognizer.startListening(createRecognizerIntent("fr", DisplayLanguage));//Locale.getDefault().getDisplayLanguage()));//Locale.FRANCE.getLanguage()));
+        speechRecognizer.startListening(createRecognizerIntent("...>"+DisplayLanguage, DisplayLanguage));//Locale.getDefault().getDisplayLanguage()));//Locale.FRANCE.getLanguage()));
         Log.i("speechRecognizer"," "+        		SpeechRecognizer.isRecognitionAvailable(getBaseContext())
         		);
        }
@@ -981,7 +993,7 @@ return new ComponentName(pkg, cls);
 		// gridview.setAdapter(new ImageAdapter(this));
 		if (lastRequest!=null)processRequest(lastRequest);
 		
-		launchRingDialog(this.main);
+	//	launchRingDialog(this.main);
 		
 		
 		
@@ -1027,15 +1039,103 @@ return new ComponentName(pkg, cls);
 			      public void onInit(int status) {
 			         if(status != TextToSpeech.ERROR){
 			        	// ttobj.speak("hello hello", TextToSpeech.QUEUE_FLUSH, null);
+			        	/* ttobj.setPitch((float) 1.0);
+			        	 ttobj.speak( "Bonjour, je parle "+ttobj.getLanguage().getDisplayLanguage(), TextToSpeech.QUEUE_ADD, null);
+				        
+			        	 ttobj.speak(ttobj.getDefaultEngine(), TextToSpeech.QUEUE_ADD, null);
 			        	 
-			           //  ttobj.setLanguage(Locale.UK);
+			        	 ttobj.setPitch((float) 0.5);
+			        	 ttobj.speak("Je parle " +ttobj.getLanguage().getDisplayLanguage()+"grâce à "+ttobj.getDefaultEngine(), TextToSpeech.QUEUE_ADD, null);
+				        
+			        	 ttobj.setPitch((float) 0.8);
+			        	 ttobj.speak("je parle plein d'autres langues", TextToSpeech.QUEUE_ADD, null);
+				        */
+			        	
+			        	 
+			        	 //The TTS engine will try to use the closest match
+			        	 //to the specified language as represented by the Locale,
+			        	// but there is no guarantee that
+			        	// the exact same Locale will be used.
+			        	// Use isLanguageAvailable(Locale) to check the level
+			        	// of support before choosing the language to use for the next utterances.
+
+			        	 //Parameters:
+			        	// loc The locale describing the language to be used.
+			        	// Returns:
+			        	 //Code indicating the support status for the locale. See LANG_AVAILABLE, LANG_COUNTRY_AVAILABLE, LANG_COUNTRY_VAR_AVAILABLE, LANG_MISSING_DATA and LANG_NOT_SUPPORTED.
+			        	
+			        	// locale=Locale.getDefault();
+			        	// 
+			        	 
+			        	 try {
+							if(TextToSpeech.LANG_AVAILABLE==ttobj.isLanguageAvailable(appLocale )
+									 ) ttobj.setLanguage(//Locale.ENGLISH);//
+											 appLocale);
+							 else 
+								 {
+								 if (ttobj.isLanguageAvailable(appLocale )==TextToSpeech.LANG_MISSING_DATA)
+								 	Log.d("tts error ","LANG_MISSING_DATA"+ttobj.isLanguageAvailable(appLocale ));
+								 if (ttobj.isLanguageAvailable(appLocale )==TextToSpeech.LANG_NOT_SUPPORTED)
+									 	Log.d("tts error ","LANG_NOT_SUPPORTED"+ttobj.isLanguageAvailable(appLocale ));
+								 if (ttobj.isLanguageAvailable(appLocale )==TextToSpeech.ERROR)
+									 	Log.d("tts error ","GenericError"+ttobj.isLanguageAvailable(appLocale ));
+								 if (ttobj.isLanguageAvailable(appLocale )==TextToSpeech.SUCCESS)
+									 	Log.d("tts error ","ErrorSucces??"+ttobj.isLanguageAvailable(appLocale ));
+									
+								 
+								 }
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+							Log.e("TTS error on init",e.toString());
+						}
+			        	// ttobj.setLanguage(Locale.ENGLISH);
+			        	
+			           // ttobj.setLanguage(Locale.UK);
 			            }				
 			         }
 			      });
-		
-		
-		 speakText(this.main);
+		// String ttsEngine=ttobj.getDefaultEngine().toString();
 		 
+		/*
+		int API=14;
+		if (API>=14){
+		 List<EngineInfo> ttsEngine=ttobj.getEngines();
+		if (!ttsEngine.isEmpty()){
+			Iterator <EngineInfo>		ttsIterator=ttsEngine.iterator();
+		String ttsEngineList=" ttsEngineList";
+			while(	ttsEngine.iterator().hasNext()){
+				
+				ttsEngineList += ttsIterator.next().toString();
+		 
+			}
+			 ttobj.speak(ttobj.getDefaultEngine()+ " >"+ttsEngineList, TextToSpeech.QUEUE_FLUSH, null);
+			
+		}else ;
+		
+		}*/
+			
+		//=ttobj.getEngines(); 
+		//ttobj.getFeatures(this.getApplicationCont)
+		// .addEarcon(earcon, packagename, resourceId)
+		// speakText(this.main);
+		
+		 /*  ttobj.addEarcon(earcon, packagename, resourceId) 
+		  Custom Earcon from ResourceId 
+		 Adds a mapping between a string of text and a sound resource in a package. Use this to add custom earcons.
+		 Parameters:
+		 earcon The name of the earcon. Example: "[tick]"
+
+		 packagename the package name of the application that contains the resource. This can for instance be the package name of your own application. Example: "com.google.marvin.compass"
+		 The package name can be found in the AndroidManifest.xml of the application containing the resource. 
+		 <manifest xmlns:android="..." package="com.google.marvin.compass"> 
+
+		 resourceId Example: R.raw.tick_snd
+		 Returns:
+		 Code indicating success or failure. See ERROR and SUCCESS.
+		 See Also:
+		 playEarcon(String, int, HashMap)
+		 */
 		 
 		 
 		 
@@ -1045,7 +1145,7 @@ return new ComponentName(pkg, cls);
 	      String toSpeak = "Coool   man, i'mSpeaking ";
 	      Toast.makeText(getApplicationContext(), toSpeak, 
 	      Toast.LENGTH_SHORT).show();
-	    //  ttobj.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
+	     ttobj.speak(toSpeak, TextToSpeech.QUEUE_FLUSH, null);
 
 	   }
 
@@ -1071,6 +1171,24 @@ return new ComponentName(pkg, cls);
 			return true;
 			
 	}
+	
+	//Write Data To keep Before orientationChange
+	//Or use SharedPref or DB or file
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+	    super.onSaveInstanceState(savedInstanceState);
+	    savedInstanceState.putInt("count", count);
+	    //savedInstanceState.putSerializable("locale", appLocale.).putInt("count", count);
+	    
+	}
+	
+	@Override
+	public void onRestoreInstanceState(Bundle savedInstanceState) {
+	    super.onRestoreInstanceState(savedInstanceState);
+	    count = savedInstanceState.getInt("count");
+	    
+	}
+	
 	@Override
 	public void onClick(View v) {
 		// super.o(v);
@@ -1347,8 +1465,9 @@ presence_online*/
 		// i.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
 		// Locale.US.toString());
 		try {
-			 ttobj.speak("allez y parlez", TextToSpeech.QUEUE_FLUSH, null);
+			 if(speakReadyToListen&&text2SpeechActivated)ttobj.speak("allez y parlez", TextToSpeech.QUEUE_FLUSH, null);
 			startActivityForResult(i, REQUEST_OK);//normal Mode
+			// ttobj.speak("Bonjour ceci est juste un test d'injection chocolat fraise tagada Bonjour ceci est juste un test d'injection chocolat fraise tagada bonjour ceci ", TextToSpeech.QUEUE_FLUSH, null);
 			
 		} catch (Exception e) {
 			Toast.makeText(this, "startActivityForResult error .",
@@ -1365,11 +1484,6 @@ presence_online*/
 
 	}
 
-	
-	
-	
-	
-	
 	public void onContentChanged() {
 		// Toast.makeText(this, "ContentChanged",Toast.LENGTH_SHORT).show();
 		Log.v("onContentChanged", " NOP");
@@ -1521,7 +1635,11 @@ presence_online*/
 
 	public boolean onMenuItemSelected(int featureId, MenuItem item) {
 		VideoView mVideoView = (VideoView) findViewById(R.id.videoView1);
-		
+		 ttobj.setPitch((float) 0.8);
+    	 ttobj.speak(item.getTitle().toString(), TextToSpeech.QUEUE_ADD, null);
+        
+    	 
+    	 
 		// View namebar = view.findViewById(R.id.namebar);
 		// ((LinearLayout)namebar.getParent()).removeView(namebar);
 
@@ -1538,14 +1656,8 @@ presence_online*/
 	 	   intent.putExtra("EXTRA_BUG_REPORT", " Vesperanto error report test");
 		}
 		
-	 ttobj.speak(item.toString(), TextToSpeech.QUEUE_FLUSH, null);
-		if (item.toString() == "English"){
-			languagePref = Locale.US.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
-		writeSharedPrefString("DisplayLanguage",languagePref);}
-		if (item.toString() == "Français"){
-			languagePref = Locale.FRENCH.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
-			writeSharedPrefString("DisplayLanguage",languagePref);
-		}
+		//if(text2SpeechActivated)ttobj.speak(item.toString(), TextToSpeech.QUEUE_ADD, null);
+		
 		if (item.toString() == "UserLanguage"){
 			languagePref = DisplayLanguage;// Locale.FRENCH.toString();
 		// Locale.getDefault().getDisplayLanguage();
@@ -1560,9 +1672,242 @@ presence_online*/
 		if (item.toString() == "DefaultLanguage"){
 			
 			languagePref = Locale.getDefault().getDisplayLanguage();// Locale.FRENCH.toString();
+			appLocale=Locale.getDefault();
+			 ttobj.setLanguage(appLocale);
 			writeSharedPrefString("DisplayLanguage",languagePref);
 		}
 		
+		if (item.toString() == "English"){
+			languagePref = Locale.US.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.ENGLISH;
+			ttobj.playSilence(1, TextToSpeech.QUEUE_FLUSH,null );
+			appLocale=Locale.ENGLISH;
+			appLocale=Locale.ENGLISH;
+			Locale.setDefault(appLocale);
+			//getPreferenceScreen().
+			Locale locale2 = new Locale("en"); 
+			Locale.setDefault(locale2);
+	        Configuration config2 = new Configuration();
+	        config2.locale = locale2;
+	        getBaseContext().getResources().updateConfiguration(
+	            config2, getBaseContext().getResources().getDisplayMetrics());
+	      
+	        
+	        // loading data ...
+	       // refresh();
+	        // refresh the tabs and their content
+	        //refresh_Tab ();   
+			
+			
+	        //((Application) getApplication()).getBaseContext()..getApplicationInfo()...setLocale();
+			this.recreate();
+          // lkhj
+          // setContentView(R.layout.activity_main);
+			//setContentView(this.);
+			
+           
+           //DisplayLanguage="en_US";
+			writeSharedPrefString("DisplayLanguage",languagePref);
+			//appLocale.setDefault(Locale.ENGLISH);
+			 //ttobj.stop();
+			ttobj.setSpeechRate((float)1.0)	;//0.5 is to slow()
+				ttobj.setLanguage(appLocale);
+				ttobj.setSpeechRate((float)1.0)	;//0.5 is to slow()
+				//ttobj.stop();
+				//ttobj.stop();
+			/*	ttobj.shutdown();
+				
+				ttobj=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+				      @Override
+				      public void onInit(int status) {
+				         if(status != TextToSpeech.ERROR){
+				        	
+				            }				
+				         }
+				      });*/
+				
+				/*Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+				ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+				
+				Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+				ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+						);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+				
+				Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+				ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+
+				Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+				ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+						);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+				
+				Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+				ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+				
+				Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+				ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+						);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+				
+				
+				
+				appLocale=Locale.ENGLISH;
+			 ttobj.setLanguage(Locale.ENGLISH);
+				Log.d("TTS",ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+			 ttobj.setLanguage(Locale.US);
+				Log.d("TTS", ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+			 
+				while (ttobj.isSpeaking()){
+					ttobj.setLanguage(Locale.ENGLISH);
+					ttobj.setSpeechRate((float)1.1)	;//0.5 is to slow()
+				}
+				*/
+				//languagePref = Locale.ENGLISH.toString();
+				//Google now have an english generic version but no voiceRec offline pack
+				//Set US or UK but not English alone
+				// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+				
+			 ttobj.setLanguage(Locale.ENGLISH);
+			
+			 ttobj.speak("English", TextToSpeech.QUEUE_FLUSH, null);
+			 
+			 Log.d("TTS", ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+			writeSharedPrefString("DisplayLanguage",languagePref);}
+		
+		if (item.toString() == "Français"){
+			Log.d("TTS","français set by appLocale"+appLocale.getLanguage()+ttobj.getLanguage().toString());
+			ttobj.playSilence(1, TextToSpeech.QUEUE_FLUSH,null );
+			
+			Locale locale2 = new Locale("fr"); 
+			Locale.setDefault(locale2);
+	        Configuration config2 = new Configuration();
+	        config2.locale = locale2;
+	        getBaseContext().getResources().updateConfiguration(
+	            config2, getBaseContext().getResources().getDisplayMetrics());
+	      
+			
+			/*
+			Log.d("TTS", ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+			languagePref = Locale.FRENCH.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			ttobj.playSilence(1, TextToSpeech.QUEUE_FLUSH,null );
+			appLocale=Locale.FRENCH;
+			appLocale=Locale.FRENCH;
+			appLocale=Locale.FRENCH;
+			
+			Log.d("TTS", ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+			ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+			//		);//appLocale.setDefault(DisplayLanguage));
+			ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+			Log.d("TTS", ttobj.getLanguage().toString()+"  appLocale"+ appLocale.getLanguage().toString());
+			ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+					);//appLocale.setDefault(DisplayLanguage));
+			ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+			Log.d("TTS",ttobj.getLanguage().toString()+"  "+ appLocale.getLanguage().toString());
+			
+			ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+			//		);//appLocale.setDefault(DisplayLanguage));
+			ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+			
+			Log.d("TTS",ttobj.getLanguage().toString()+"  "+ appLocale.getLanguage().toString());
+			ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+					);//appLocale.setDefault(DisplayLanguage));
+			ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+			
+			Log.d("TTS",ttobj.getLanguage().toString()+"  "+ appLocale.getLanguage().toString());
+			ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+			//		);//appLocale.setDefault(DisplayLanguage));
+			ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+			
+			Log.d("TTS",ttobj.getLanguage().toString()+"  "+ appLocale.getLanguage().toString());
+			ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+					);//appLocale.setDefault(DisplayLanguage));
+			ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+			//appLocale.setDefault(Locale.FRENCH);
+			//this.getApplicationContext().ge
+			//ttobj.setLanguage(appLocale);
+			ttobj.playSilence(1, TextToSpeech.QUEUE_FLUSH,null );
+			ttobj.speak("français set by appLocale"+appLocale.getLanguage()+" ttsL "+ttobj.getLanguage().toString(), TextToSpeech.QUEUE_ADD, null);
+			Log.d("TTS","français set by appLocale"+appLocale.getLanguage()+ttobj.getLanguage().toString());
+			
+			while (ttobj.isSpeaking()){
+				Log.d("TTS","while isSpeaking "+ttobj.getLanguage().toString());
+				ttobj.setLanguage(Locale.FRENCH);
+				
+				ttobj.setSpeechRate((float)1.1)	;//0.5 is to slow()
+				Log.d("TTS","while isSpeaking "+ttobj.getLanguage().toString());
+			}
+			ttobj.setLanguage(Locale.FRENCH);
+			
+			ttobj.speak("français after while ",
+					TextToSpeech.QUEUE_ADD, null);
+			Log.d("TTS","français after while "+ttobj.getLanguage().toString());
+			//ttobj.stop();
+			//ttobj.stop();
+			// ttobj.stop();
+			 */
+			languagePref = Locale.FRENCH.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			
+			ttobj.setLanguage(Locale.FRENCH);
+			ttobj.speak("français",
+					TextToSpeech.QUEUE_ADD, null);
+			appLocale=Locale.FRENCH;
+		 Log.d("TTS",ttobj.getLanguage().toString());
+			writeSharedPrefString("DisplayLanguage",languagePref);
+			
+			this.recreate();
+		}
+		if (item.toString() == "CHINESE"){
+			languagePref = Locale.CHINESE.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.CHINESE;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "SIMPLIFIED_CHINESE"){
+			languagePref = Locale.SIMPLIFIED_CHINESE.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.SIMPLIFIED_CHINESE;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "TRADITIONAL_CHINESE"){
+			languagePref = Locale.TRADITIONAL_CHINESE.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.TRADITIONAL_CHINESE;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "GERMAN"){
+			languagePref = Locale.GERMAN.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.GERMAN;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "ITALIAN"){
+			languagePref = Locale.ITALIAN.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.ITALIAN;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "JAPANESE"){
+			languagePref = Locale.JAPANESE.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.JAPANESE;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+		if (item.toString() == "KOREAN"){
+			languagePref = Locale.KOREAN.toString();// Locale.getDefault().getDisplayLanguage();//Locale.FRENCH.toString();
+			appLocale=Locale.KOREAN;
+			writeSharedPrefString("DisplayLanguage",languagePref);
+		}
+	
+		
+		
+		
+		
+		
+		
+		
+		
+	
 		
 		/*	"-"+localeList[i].getDisplayLanguage(localeList[i])
 				   +"-"+localeList[i].getDisplayCountry(localeList[i])
@@ -1700,7 +2045,11 @@ presence_online*/
 	
 		
 		
-		
+		if (item.toString() == getApplicationContext().getString(R.string.LearningMode)){
+			processRequest("play");
+			//appWish="toucher les images";
+			touchImages();
+		}
 		if (item.toString() == "ScrollR")
 			hscrollView1.fling(150);// velocityX);// ;
 		if (item.toString() == "Espagnol")
@@ -1793,7 +2142,7 @@ presence_online*/
 			File file = new File(Environment
 					.getExternalStorageDirectory()
 					+ File.separator
-					+ "hexasense/fr"
+					+ "hexasense/"+Locale.getDefault().getLanguage()//"hexasense/fr"
 					+ File.separator
 					+ lastOnMediaLongClick
 					+ ".jpg");
@@ -1816,6 +2165,40 @@ presence_online*/
 		  if  (file.exists())file.delete();
 		  processRequest(lastRequest);			
 		}
+		if (item.toString() == getApplicationContext().getString(R.string.DeleteImage)){
+			
+			File file = new File(Environment
+					.getExternalStorageDirectory()
+					+ File.separator
+					+ "hexasense/"+Locale.getDefault().getLanguage()//"hexasense/fr"
+					+ File.separator
+					+ lastOnMediaLongClick
+					+ ".jpg");
+			if (!file.exists()){
+				/* path = Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+"video"+ File.separator
+						 + File.separator
+						+ lastOnMediaLongClick + ".mp4";*/
+				 file=new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense/"
+							+ File.separator
+							+ lastOnMediaLongClick
+							+ ".jpg");
+				 }
+			
+		 // Erase the old File and do not reload it
+		  if  (file.exists())file.delete();
+		  //processRequest(lastRequest);			
+		}
+		
+		
+		
+		
+		
+		
 		
 		if (item.toString() == getApplicationContext().getString(R.string.ReloadVideo)){
 			File file = new File(lastOnVideoLongClick);/*Environment
@@ -1831,6 +2214,21 @@ presence_online*/
 			 // Erase the old File and reload it
 			  if  (file.exists())file.delete();
 			  processRequest(lastRequest);			
+			}
+		if (item.toString() == getApplicationContext().getString(R.string.DeleteVideo)){
+			File file = new File(lastOnVideoLongClick);/*Environment
+						.getExternalStorageDirectory()
+						+ File.separator
+						+ "hexasense"
+						+ File.separator
+						+ "video"
+						+ File.separator
+						+ lastOnVideoLongClick
+						+ ".mp4");*/
+			
+			 // Erase the old File 
+			  if  (file.exists())file.delete();
+			  //processRequest(lastRequest);			
 			}
 		
 		if (item.toString() == getApplicationContext().getString(R.string.HideVideo)){
@@ -1939,6 +2337,7 @@ presence_online*/
 			//commandModeActivated = readSharedPrefBoolean("DebugActivated",DebugActivated);
 			writeSharedPrefBool("DebugActivated",DebugActivated);
 			if (DebugActivated){
+				readPackageInfo("com.google.android.tts");//android.speech.tts");
 				
 				debug=1;
 						
@@ -1946,7 +2345,8 @@ presence_online*/
 			item.isChecked();
 			Log.d("After: DebugActivated", ""+DebugActivated);
 			Toast.makeText(getApplicationContext(), "DebugActivated "+DebugActivated,Toast.LENGTH_LONG);
-			processRequest("Debug "+DebugActivated +" "+debug);
+			//processRequest("Debug "+DebugActivated +" "+debug);
+			
 			lastRequest=("Debug "+DebugActivated+" "+debug );
 			
 			/*bWebActivated=!bWebActivated;
@@ -2019,7 +2419,7 @@ presence_online*/
 								+ File.separator
 								+ "hexasense/video"
 								+ File.separator
-								+ "fr"
+								+ DisplayLanguage.substring(0,2)// Locale.getDefault().getLanguage()//"fr"
 								);
 					  if (!validationPath.isDirectory())validationPath.mkdirs();
 					  
@@ -2030,7 +2430,7 @@ presence_online*/
 								+ File.separator
 								+ "hexasense/video"
 								+ File.separator
-								+ "fr"
+								+ DisplayLanguage.substring(0,2)//Locale.getDefault().getLanguage()//"fr"
 								+ File.separator
 								+ videoName//lastOnVideoLongClick
 								+ ".mp4");
@@ -2105,7 +2505,7 @@ presence_online*/
 								+ File.separator
 								+ "hexasense"
 								+ File.separator
-								+ "fr"
+								+ DisplayLanguage.substring(0,2)//Locale.getDefault().getLanguage()//"fr"
 								);
 					  if (!validationPath.isDirectory())validationPath.mkdirs();
 					  
@@ -2114,7 +2514,7 @@ presence_online*/
 								+ File.separator
 								+ "hexasense"
 								+ File.separator
-								+ "fr"
+								+Locale.getDefault().getLanguage()//"fr"
 								+ File.separator
 								+ lastOnMediaLongClick
 								+ ".jpg");
@@ -2162,7 +2562,8 @@ presence_online*/
 
 				String path= 
 						Environment.getExternalStorageDirectory()
-						+ File.separator + "hexasense/fr"
+						+ File.separator + "hexasense/"
+						+DisplayLanguage.substring(0,2)//Locale.getDefault().getLanguage()//fr"
 						+ File.separator
 						+ lastOnMediaLongClick + ".jpg";
 				File file= new File(path);
@@ -2484,6 +2885,7 @@ presence_online*/
 			
 		}
 		if (item.toString() == getApplicationContext().getString(R.string.ReadSMS)){
+			launchRingDialog(this.main);
 			if(telephonyAvailable)readContactSMS();}
 		if (item.toString() == getApplicationContext().getString(R.string.ReadLast_SMS)){if(telephonyAvailable)readSimSMS();}
 		if (item.toString() == "ReadLastPHoneSMS"){if(telephonyAvailable)readPhoneSMS();}
@@ -2498,7 +2900,21 @@ presence_online*/
 					findViewById(R.id.webView1).setVisibility(View.GONE);
 			
 		}
-		if (item.toString() == "loadList"){
+		if (item.toString() ==  getApplicationContext().getString(R.string.SendImageList)){
+			/*void sendFileByMail(String filelocation,String to[]){
+				//String filelocation="/mnt/sdcard/contacts_sid.vcf";    
+				Intent emailIntent = new Intent(Intent.ACTION_SEND);
+				// set the type to 'email'
+				emailIntent .setType("vnd.android.cursor.dir/email");
+				//String to[] = {"asd@gmail.com"};*/
+			String FILENAME="ImageList.txt";
+			Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory()+"/hexasense/fr", FILENAME));
+			String to[] = {"vesperanto.bugreport@gmail.com"};
+			sendFileByMail(uri,to);
+			
+		}
+		
+		if (item.toString() ==  getApplicationContext().getString(R.string.loadList)){
 			//processRequest("bonjour");
 			  
 			/*Handler handler = new Handler(); 
@@ -2536,6 +2952,7 @@ presence_online*/
 					//  InputStream fis = getResources().openRawResource(this.getBaseContext().getResources().getIdentifier(sonidoActual,"raw", this.getApplicationContext().getPackageName() ));
 				}
 				
+				loadList("");
 				}
 				
 			    chooseList();
@@ -2649,11 +3066,6 @@ presence_online*/
 	    writeSharedPrefBool("GoogleActivated",GoogleActivated);
 	}
 	
-	
-	
-	
-	
-	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		this.menu = menu;
 		String MenuList="";
@@ -2709,11 +3121,15 @@ presence_online*/
 		//menu.getItem(0).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);//.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 		//menu.getItem(menu.size()-1).setIcon(android.R.drawable.btn_dialog);
 		//((ImageButton)findViewById(R.id.button2)).setImageResource(android.R.drawable.stat_notify_call_mute)
+		
 		menu.add(getApplicationContext().getString(R.string.Reload)).setIcon(android.R.drawable.ic_popup_sync).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);;
 		//menu.add("loadList").setIcon(android.R.drawable.btn_dialog);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		//menu.add("pickContact");
 		//menu.add("getPhoto");
-		
+		SubMenu learningSubMenu;
+		learningSubMenu=menu.addSubMenu(R.string.LearningMode);
+		learningSubMenu.add(getApplicationContext().getString(R.string.LearningMode)).setIcon(android.R.drawable.ic_popup_sync).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);;
+		learningSubMenu.add(getApplicationContext().getString(R.string.ValidationMode)).setIcon(android.R.drawable.ic_popup_sync).setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);;
 		
 		
 		
@@ -2828,7 +3244,8 @@ presence_online*/
 		        	//String lastLanguage=languagePref;
 		        	language=title.substring(title.indexOf("/")+1,title.indexOf(">"));
 		        	if (title.length()>title.indexOf(">")+1)	language=language+"_"+title.substring(title.indexOf(">")+1);
-		        		        	
+		        	
+		        	
 		        	writeSharedPrefString("DisplayLanguage",language);
 		        	if (onclickProcessMenuActivated){
 		        	processRequest(item.getTitle().toString().substring(0,title.indexOf("/")).trim());
@@ -2892,7 +3309,7 @@ presence_online*/
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadImageList)).setEnabled(false);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadVideoList)).setEnabled(false);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendWordList)).setEnabled(false);
-		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendImageList)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendImageList)).setEnabled(true);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendVideoList)).setEnabled(false);		
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendImages)).setEnabled(false);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.sendVideos)).setEnabled(false);
@@ -3027,7 +3444,6 @@ presence_online*/
 	
 	}
 	
-	
 	public boolean onPrepareOptionsMenu(Menu menu) {
 	
 	/*	String menuString="";
@@ -3037,10 +3453,6 @@ presence_online*/
 		return super.onPrepareOptionsMenu(menu);
 		
 	}
-	
-	
-	
-	
 	
 	static final int PICK_CONTACT_REQUEST = 2; // The request code
 	static final int ACTION_CAMERA_BUTTON_REQUEST = 3; // The request code
@@ -3363,10 +3775,7 @@ presence_online*/
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-
-	
-	
-	
+	//fileTools
 	public void copyFile2File(File src, File dst) throws IOException {
 		InputStream in = new FileInputStream(src);
 		OutputStream out = new FileOutputStream(dst);
@@ -3405,6 +3814,56 @@ presence_online*/
 		//writeRef(newRef);
 		
 	}
+	
+	public void takeRefFromFile(Boolean append, String directory,
+			String fileName, String text2Find,  String outDirectory,
+			String outFileName,String text2Write) {
+		Log.d("TakeRefFromFile","directory"+directory
+				+"fileName"+fileName
+				+" find "+text2Find
+				+" outDirectory "+outDirectory);
+		text2Write=textRead(directory+fileName,text2Find,text2Find);
+		//text2Write=textRead(directory+fileName,text2Find,text2Find +" 2write"+text2Write);
+		//text2Write=directory+fileName +" text2Find " +text2Find +" 2write"+text2Write;
+
+		//textRead(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+		//textReadWrite(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+		//public  String textReadWrite(String fileInput,String item, String copyFromRef) {
+		// simplycreating a directory and a file inSDcar
+		// String filename
+		// =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/"+"mydirectory"+"/"+
+		// "myfile2.txt";//
+		
+		//File sdCard = Environment.getExternalStorageDirectory();
+		File dir = new File( outDirectory);// "/Hexasense");
+		dir.mkdirs();
+		File file1 = new File(dir, outFileName);// "hexasense.txt");
+
+		
+		
+		try {
+			FileOutputStream f = new FileOutputStream(file1, append);
+
+			f.write(text2Write.getBytes());
+			// f.write((InputStream)new
+			// URL("http://www.lsf-bordeaux.fr/images/video/alphabet/a.mp4").);
+			f.close();
+			
+			
+			
+			
+		} catch (FileNotFoundException e1) {
+			Log.e("FileNotFoundException",""+e1.toString());
+			e1.printStackTrace();
+		} catch (IOException e2) {
+			Log.e("IOException",""+e2.toString());
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+
+	}
+	
+	
 	
 	public void replaceRefInFile(Boolean append, String directory,
 			String fileName, String text2Find, String text2Write) {
@@ -3447,7 +3906,7 @@ presence_online*/
 
 	}
 	
-	
+	//Main part
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
@@ -3728,7 +4187,8 @@ presence_online*/
 					File file = new File(result);
 					String path = Environment.getExternalStorageDirectory()
 							+ File.separator + "hexasense" + File.separator
-							+"fr" + File.separator+ lastOnMediaLongClick + ".jpg";// +
+							+Locale.getDefault().getLanguage()//+"fr" 
+							+ File.separator+ lastOnMediaLongClick + ".jpg";// +
 					// "userPhoto"
 					// +
 					// ".jpg";//"userPhoto"
@@ -4126,10 +4586,12 @@ presence_online*/
 
 		if (requestCode == REQUEST_OK && resultCode == RESULT_OK) {
 			// needDownload = false;
-
-			ArrayList<String> thingsYouSaid = data
+	    	ArrayList<String> thingsYouSaid = data
 					.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
 			String thingYouSaid = thingsYouSaid.get(0);
+			 
+			ttobj.speak(thingYouSaid, TextToSpeech.QUEUE_ADD, null);
+				
 			Log.d("input", "" + thingYouSaid);
 			this.setProgressBarVisibility(true);
 
@@ -4245,6 +4707,301 @@ presence_online*/
 				makePhoneCall(pierre);		
 				
 			}
+			
+			wish="Bonjour";
+			
+			if (thingYouSaid.contains(wish)){
+				validation=false;
+				if (this.text2SpeechActivated);
+					//this.getApplicationContext().get
+					//ttobj.getDefaultEngine();
+					ttobj.speak("Cool content de jouer avec toi"+ "! Dit, touchez les images si tu veux jouez avec les images"+ttobj.getDefaultEngine().toString(), TextToSpeech.QUEUE_FLUSH, null);
+				Toast.makeText(getApplicationContext(), ">>> Cool content" + thingYouSaid,
+						Toast.LENGTH_LONG).show();
+				//makePhoneCall(
+						//thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+		wish="valider les images";
+       
+			if (thingYouSaid.contains(wish)||thingYouSaid.contains("validate")){
+				if (this.text2SpeechActivated);
+					//this.getApplicationContext().get
+					//ttobj.getDefaultEngine();
+				validation=true;
+				
+				wantedAnswer=getRandomFileName("hexasense");
+			//	wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+					ttobj.speak("le mot est "+ wantedAnswer +" trouve la bonne image ", TextToSpeech.QUEUE_FLUSH, null);
+					String request=""
+							+" "+getRandomFileName("hexasense")+" "+getRandomFileName("hexasense")
+							+" "+getRandomFileName("hexasense")+" "+getRandomFileName("hexasense")
+							+" "+ wantedAnswer +" "+getRandomFileName("hexasense")
+							+" "+getRandomFileName("hexasense")+" "+getRandomFileName("hexasense")
+							+" "+getRandomFileName("hexasense")+" "+getRandomFileName("hexasense")
+							;
+							
+						this.setTitle(wantedAnswer);
+					processRequest(request);//getRandomFileName()+ "salade lion voiture "+ wantedAnswer +" poisson oiseau crayon arbre zèbre");
+					lastRequest=(request);//"pastèque salade lion voiture +wantedAnswer+ poisson oiseau crayon arbre zèbre");
+					
+					Toast.makeText(getApplicationContext(), ">>> Cool content" + thingYouSaid,
+						Toast.LENGTH_LONG).show();
+					
+				//makePhoneCall(
+						//thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+			
+			
+			
+			wish="toucher les images";
+			
+			if (thingYouSaid.contains(wish)
+					||thingYouSaid.contains("finger") 
+					//||thingYouSaid.contains(appWish)
+					){
+				validation=false;
+				if (this.text2SpeechActivated);
+					//this.getApplicationContext().get
+					//ttobj.getDefaultEngine();
+				
+				String filePath ="Hexasense/"+appLocale.getLanguage().substring(0,2);
+				wantedAnswer=getRandomFileName(filePath);
+			//	wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+				ttobj.setSpeechRate((float)0.9)	;//0.5 is to slow()
+				
+				
+				
+			/*TextToSpeech ttobj2;
+			ttobj2=new TextToSpeech(this, new TextToSpeech.OnInitListener() {
+			      @Override
+			      public void onInit(int status) {
+			         if(status != TextToSpeech.ERROR){
+			        	// ttobj.speak("hello hello", TextToSpeech.QUEUE_FLUSH, null);
+			        	// ttobj.setPitch((float) 1.0);
+			        	// ttobj.speak( "Bonjour, je parle "+ttobj.getLanguage().getDisplayLanguage(), TextToSpeech.QUEUE_ADD, null);
+				        
+			        	// ttobj.speak(ttobj.getDefaultEngine(), TextToSpeech.QUEUE_ADD, null);
+			        	 
+			        	 //ttobj.setPitch((float) 0.5);
+			        	// ttobj.speak("Je parle " +ttobj.getLanguage().getDisplayLanguage()+"grâce à "+ttobj.getDefaultEngine(), TextToSpeech.QUEUE_ADD, null);
+				        
+			        	// ttobj.setPitch((float) 0.8);
+			        	// ttobj.speak("je parle plein d'autres langues", TextToSpeech.QUEUE_ADD, null);
+				        
+			        	
+			        	 
+			        	 //The TTS engine will try to use the closest match
+			        	 //to the specified language as represented by the Locale,
+			        	// but there is no guarantee that
+			        	// the exact same Locale will be used.
+			        	// Use isLanguageAvailable(Locale) to check the level
+			        	// of support before choosing the language to use for the next utterances.
+
+			        	 //Parameters:
+			        	// loc The locale describing the language to be used.
+			        	// Returns:
+			        	 //Code indicating the support status for the locale. See LANG_AVAILABLE, LANG_COUNTRY_AVAILABLE, LANG_COUNTRY_VAR_AVAILABLE, LANG_MISSING_DATA and LANG_NOT_SUPPORTED.
+			        	
+			        	// locale=Locale.getDefault();
+			        	// 
+			        	 if(TextToSpeech.LANG_AVAILABLE==ttobj.isLanguageAvailable( Locale.ENGLISH)//appLocale )
+			        			 ) ;//ttobj2.setLanguage(Locale.ENGLISH);//appLocale);
+			        	 else Log.d("tts error ",""+ttobj.isLanguageAvailable(Locale.ENGLISH));//appLocale ));
+			        	// ttobj.setLanguage(Locale.ENGLISH);
+			        	
+			           // ttobj.setLanguage(Locale.UK);
+			            }				
+			         }
+			      });
+			ttobj2.setLanguage(Locale.ENGLISH);*/
+			/*	
+			appLocale.setDefault(Locale.ENGLISH);
+				//ttobj.setLanguage(Locale.ENGLISH//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				//ttobj2.speak("vEsperanto is fantastic do you kno where you're "+ wantedAnswer +" trouve la bonne image ", TextToSpeech.QUEUE_FLUSH, null);
+				
+				//appLocale.setDefault(Locale.ENGLISH);
+				ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+				
+				ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+						);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+				
+				ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+				
+				ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+						);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+				
+				ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault()
+				//		);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("Vesperanto is wonderfull appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+				
+				ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+						);//appLocale.setDefault(DisplayLanguage));
+				ttobj.speak("français ", TextToSpeech.QUEUE_ADD, null);
+				*/
+
+					
+				ttobj.speak(
+						getApplicationContext().getString(R.string.TheWordIs)
+						+ wantedAnswer 
+						+getApplicationContext().getString(R.string.FindTheGoodPicture)
+						, TextToSpeech.QUEUE_ADD, null);
+				//ttobj.speak("le mot est "+ wantedAnswer +" trouve la bonne image ", TextToSpeech.QUEUE_FLUSH, null);
+					String request=""
+							+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+							+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+							+" "+ wantedAnswer +" "+getRandomFileName(filePath)
+							+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+							+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+							;
+							
+						this.setTitle(wantedAnswer);
+					processRequest(request);//getRandomFileName()+ "salade lion voiture "+ wantedAnswer +" poisson oiseau crayon arbre zèbre");
+					lastRequest=(request);//"pastèque salade lion voiture +wantedAnswer+ poisson oiseau crayon arbre zèbre");
+					
+					Toast.makeText(getApplicationContext(), wantedAnswer + " " + thingYouSaid,
+						Toast.LENGTH_LONG).show();
+				//	ttobj2.speak("appLocale "+ appLocale.getLanguage() +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+					
+				//makePhoneCall(
+						//thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+			wish="learn";
+			Boolean sayWordGameActivated=true;
+			
+			if (thingYouSaid.contains(wish)||thingYouSaid.contains("langue")){
+				validation=false;
+				if (this.text2SpeechActivated);
+					wantedAnswer=getRandomFileName("hexasense/en");
+					
+				// wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+					//this.getApplicationContext().get
+					//ttobj.getDefaultEngine();
+				//ttobj.speak(" ", TextToSpeech.QUEUE_FLUSH, null);
+					ttobj.speak(//"C'est parti!" +
+							getApplicationContext().getString(R.string.SayWords) +"  "+
+							getApplicationContext().getString(R.string.ImBeginning)
+							, TextToSpeech.QUEUE_FLUSH, null);
+					
+					
+					processRequest(wantedAnswer);
+					
+					lastRequest=(wantedAnswer);//"pastèque salade lion voiture cornichon poisson oiseau crayon arbre zèbre");
+					
+					//ttobj.setLanguage(Locale.ENGLISH);
+					ttobj.speak(
+						  wantedAnswer +"  " +wantedAnswer +" " +wantedAnswer
+						  +"  "	 +wantedAnswer , TextToSpeech.QUEUE_ADD, null);
+					
+					ttobj.setLanguage(appLocale);
+					ttobj.speak(
+							//" à toi de parler"
+							getApplicationContext().getString(R.string.YourTurnToSpeak)
+									+" ", TextToSpeech.QUEUE_ADD, null);
+					//ttobj.setLanguage(Locale.ENGLISH);
+					
+					
+					Toast.makeText(getApplicationContext(),
+							getApplicationContext().getString(R.string.SayWords)
+							+ thingYouSaid,
+						Toast.LENGTH_LONG).show();
+					
+				//makePhoneCall(
+						//thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+		
+			wish="dire les mot";
+		//	Boolean sayWordGameActivated=true;
+			if (thingYouSaid.contains(wish)||thingYouSaid.contains("play")){
+				validation=false;
+				if (this.text2SpeechActivated);
+				String filePath ="Hexasense/"+appLocale.getLanguage().substring(0,2);
+				 
+				wantedAnswer=getRandomFileName(filePath);
+				// wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+					//this.getApplicationContext().get
+					//ttobj.getDefaultEngine();
+				//ttobj.speak(" ", TextToSpeech.QUEUE_FLUSH, null);
+					ttobj.speak(//"C'est parti! " +
+							getApplicationContext().getString( R.string.SayWords ) +
+							getApplicationContext().getString(R.string.ImBeginning) +wantedAnswer +"   " +wantedAnswer +"   " +wantedAnswer +"  "+
+							getApplicationContext().getString(R.string.YourTurnToSpeak)
+							+wantedAnswer , TextToSpeech.QUEUE_ADD, null);
+					
+					processRequest(wantedAnswer);
+					
+					lastRequest=(wantedAnswer);//"pastèque salade lion voiture cornichon poisson oiseau crayon arbre zèbre");
+					
+					Toast.makeText(getApplicationContext(), getApplicationContext().getString( R.string.SayWords) + thingYouSaid,
+						Toast.LENGTH_LONG).show();
+					
+				//makePhoneCall(
+						//thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+			
+			
+			wish="cornichon";
+			
+			if (
+					thingYouSaid.contains(wish)||thingYouSaid.contains("école")
+					//||thingYouSaid.contains(wantedAnswer)
+					){
+				validation=false;
+				if (thingYouSaid.contains(wish))
+				if (this.text2SpeechActivated);
+					//this.getApplicationContext().get
+					//ttobj.getDefaultEngine();
+					ttobj.speak(getApplicationContext().getString( R.string.PerfectYouHaveSaid)+thingYouSaid+" "+ getApplicationContext().getString( R.string.Congratulations) , TextToSpeech.QUEUE_FLUSH, null);
+						
+					wantedAnswer=getRandomFileName();
+				//	wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+					
+					ttobj.speak((getApplicationContext().getString( R.string.TryTheWord)) + wantedAnswer + "    " + wantedAnswer+ "    " + wantedAnswer  , TextToSpeech.QUEUE_ADD, null); 
+								
+					processRequest(wantedAnswer);
+					
+					lastRequest=(wantedAnswer);//"pastèque salade lion voiture cornichon poisson oiseau crayon arbre zèbre");
+					
+					
+					Toast.makeText(getApplicationContext(),getApplicationContext().getString( R.string.SayWords)//"Jouons à dire les mots"
+							+ wantedAnswer+" " + thingYouSaid,
+						Toast.LENGTH_LONG).show();
+					
+				//makePhoneCall(
+						//thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+								//,thingYouSaid.indexOf(wish)+wish.length()+20)
+						
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
 
 			}
 			
@@ -4405,12 +5162,14 @@ presence_online*/
 	}// onresult
 
 	void processRequest(String thingYouSaid) {
-		try {
+		/*
+		 //if (this.text2SpeechActivated)* 
+		 try {
 			if((null!=		thingYouSaid) && (thingYouSaid!="")) ttobj.speak(thingYouSaid, TextToSpeech.QUEUE_FLUSH, null);
 		} catch (Exception e2) {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
-		}
+		}*/
 
 		lastLinkInside = "";// http://www.elix-lsf.fr/spip.php?page=recherche_definitions&recherche=tu";
 		//((TextView) findViewById(R.id.text1)).setText(thingYouSaid);
@@ -4968,7 +5727,8 @@ presence_online*/
 			
 			String fileFullPathString=Environment.getExternalStorageDirectory()
 					+ File.separator + "hexasense" + File.separator
-					+ "fr" + File.separator
+					+Locale.getDefault().getLanguage()//+ "fr" 
+					+ File.separator
 					+ wordsYouSaid[foundWord] + ".jpg";
 			
 			File file = new File(fileFullPathString);
@@ -5049,12 +5809,126 @@ presence_online*/
 							// "clickon Image"+hscrollLayout5.getChildCount(),
 							// Toast.LENGTH_SHORT).setView(v);
 							 ttobj.speak( v.getContentDescription().toString(), TextToSpeech.QUEUE_FLUSH, null);
-							Toast.makeText(
+							
+							 if (validation){
+								 if (v.getContentDescription().toString().contains(wantedAnswer)){
+										//if (this.text2SpeechActivated);
+											//this.getApplicationContext().get
+											//ttobj.getDefaultEngine();
+										
+									//	wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+											ttobj.speak(getApplicationContext().getString(R.string.Validation)+ wantedAnswer +" ", TextToSpeech.QUEUE_FLUSH, null);
+											validate(v.getContentDescription()+".jpg");
+											takeRefFromFile(true,						
+													Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/image/",
+													"ImageList.txt",wantedAnswer,
+													Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/fr",
+													"ImageList.txt",
+													"azertyujhxfcg");
+
+											
+											
+											
+											String filePath ="Hexasense";//"+appLocale.getLanguage().substring(0,2);
+											wantedAnswer=getRandomFileName(filePath);
+											String request=""
+													+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+													+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+													+" "+ wantedAnswer +" "+getRandomFileName(filePath)
+													+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+													+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+													;
+													
+											ttobj.speak(
+													getApplicationContext().getString(R.string.Touch)
+													+ wantedAnswer +"  ", TextToSpeech.QUEUE_ADD, null);
+											
+											
+												setTitle(wantedAnswer);
+											processRequest(request);//getRandomFileName()+ "salade lion voiture "+ wantedAnswer +" poisson oiseau crayon arbre zèbre");
+											lastRequest=(request);//"pastèque salade lion voiture +wantedAnswer+ poisson oiseau crayon arbre zèbre");
+											
+											
+									
+									}else {
+										
+										//ttobj.speak(v.getContentDescription().toString(), TextToSpeech.QUEUE_FLUSH, null);
+										//ttobj.speak(getApplicationContext().getString(R.string.Validate)+" "+ wantedAnswer +" ", TextToSpeech.QUEUE_FLUSH, null);
+										//validate(v.getContentDescription()+".jpg");
+										
+										
+										
+										
+										String filePath ="Hexasense";//+/"+appLocale.getLanguage().substring(0,2);
+										wantedAnswer=getRandomFileName(filePath);
+										String request=""
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												+" "+ wantedAnswer +" "+getRandomFileName(filePath)
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												;
+												
+										ttobj.speak(
+												getApplicationContext().getString(R.string.Touch)
+												+ wantedAnswer +"  ", TextToSpeech.QUEUE_ADD, null);
+										
+											setTitle(wantedAnswer);
+										processRequest(request);//getRandomFileName()+ "salade lion voiture "+ wantedAnswer +" poisson oiseau crayon arbre zèbre");
+										lastRequest=(request);//"pastèque salade lion voiture +wantedAnswer+ poisson oiseau crayon arbre zèbre");
+										
+										
+										
+										
+										
+										
+										
+									}
+							
+							}
+						else{
+							 if (v.getContentDescription().toString().contains(wantedAnswer)){
+									//if (this.text2SpeechActivated);
+										//this.getApplicationContext().get
+										//ttobj.getDefaultEngine();
+									
+								//	wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+										ttobj.speak(getApplicationContext().getString(R.string.YesItWas)+ wantedAnswer +" ", TextToSpeech.QUEUE_FLUSH, null);
+										String filePath ="Hexasense/"+appLocale.getLanguage().substring(0,2);
+										
+										wantedAnswer=getRandomFileName(filePath);
+										String request=""
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												+" "+ wantedAnswer +" "+getRandomFileName(filePath)
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												+" "+getRandomFileName(filePath)+" "+getRandomFileName(filePath)
+												;
+												
+										ttobj.speak(
+												getApplicationContext().getString(R.string.Touch)
+												+ wantedAnswer +"  ", TextToSpeech.QUEUE_ADD, null);
+										
+											setTitle(wantedAnswer);
+										processRequest(request);//getRandomFileName()+ "salade lion voiture "+ wantedAnswer +" poisson oiseau crayon arbre zèbre");
+										lastRequest=(request);//"pastèque salade lion voiture +wantedAnswer+ poisson oiseau crayon arbre zèbre");
+										
+										
+								
+								}else ttobj.speak(v.getContentDescription().toString(), TextToSpeech.QUEUE_FLUSH, null);
+							
+						}
+								//ttobj.speak(v.getContentDescription().toString()+" n\'est pas "+wantedAnswer, TextToSpeech.QUEUE_FLUSH, null);
+								
+								
+							 
+							 Toast.makeText(
 									getApplicationContext(),
-									"clickon Image" + v.getContentDescription()
+									"_clickon Image" + v.getContentDescription()
 											+ " " + v.toString(),
 									Toast.LENGTH_SHORT).show();
 							Log.d("clickon Image" + v.getContentDescription(),"isMenuRequest " +isMenuRequest+" "+v.getContentDescription());
+						
 							if (isMenuRequest&&onclickProcessMenuActivated){
 								isMenuRequest=false;
 								for (int i=0;i<menu.size();i++){
@@ -5979,6 +6853,8 @@ presence_online*/
 	  if (v.getId()==videoLayout.getId())menu.add(0, v.getId(), 26, getApplicationContext().getString(R.string.ReloadVideo)).setIcon(android.R.drawable.ic_menu_revert);
 	  else menu.add(0, v.getId(), 26, getApplicationContext().getString(R.string.ReloadImage)).setIcon(android.R.drawable.ic_menu_revert);
 	  
+	 
+	  
 	  if (v.getId()==videoLayout.getId());
 	  else{//menu.add(0, v.getId(), 26, "ReloadVideo");
 	  subMenu.add(0, v.getId(), 27, getApplicationContext().getString(R.string.NormalSize)).setIcon(android.R.drawable.ic_menu_zoom);//.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);;
@@ -5987,6 +6863,12 @@ presence_online*/
 		 	 
 	  
 	  }
+	  
+	  
+	  if (v.getId()==videoLayout.getId())menu.add(0, v.getId(), 28, getApplicationContext().getString(R.string.DeleteVideo)).setIcon(android.R.drawable.ic_menu_revert);
+	  else menu.add(0, v.getId(), 28, getApplicationContext().getString(R.string.DeleteImage)).setIcon(android.R.drawable.ic_menu_revert);
+	  
+	  
 	 }
 	
 	
@@ -8042,12 +8924,6 @@ presence_online*/
 			ioe.printStackTrace();
 		}
 	}
-	
-	
-	
-	
-	
-	
 	public  String textReadWrite(String fileInput,String item, String copyFromRef) {
 		// read a file...
 
@@ -8346,21 +9222,21 @@ presence_online*/
             int lineIndex2=0;
 			while ( ((receiveString = bufferedReader.readLine()) != null )&&((lineIndex==0)||(lineIndex2==0))) {//&&lineIndex==0
 				if (receiveString.contains(item)){
-					
-					stringBuilder.append(item +" "+ oldItem);
+					stringBuilder.append(receiveString);
+					//stringBuilder.append(item +" "+ oldItem);
 					Log.d("TextRead","receiveString contain item"+receiveString+ "item "+item+ "at "+ lineIndex+" "+line);
 					lineIndex=line;
 				}
-				if (receiveString.contains(copyFromRef)){
+				/*if (receiveString.contains(copyFromRef)){
 					oldItem=receiveString.substring(receiveString.indexOf(" ")+1);
 					stringBuilder.append(item +" "+ oldItem);
 					//stringBuilder.append(item +" "+ writeIn);
 					Log.d("TextRead","receiveString contain copyFromRef"+copyFromRef+"     "+receiveString+ "item "+item+ "at "+ lineIndex+" "+line);
 					lineIndex2=line;
 				}
-				
+			*/	
 			Log.d("TextRead","receiveString"+receiveString+ "item "+item+ "at "+ lineIndex+" "+line);
-				stringBuilder.append(receiveString);
+				//stringBuilder.append(receiveString);
 				line++;
             }
 		
@@ -8419,7 +9295,7 @@ presence_online*/
 			//boolean isTheSame = TESTSTRING.equals(readString);
 
 			Log.i("File Reading stuff", "success = " );
-			return ("ret");
+			return (ret);
 		} catch (IOException ioe) {
 			
 			ioe.printStackTrace();
@@ -8428,8 +9304,6 @@ presence_online*/
 		}
 	}
 
-	
-	
 	public static Bitmap getBitmapFromURL(String link) {
 
 		Object bmp;
@@ -8495,14 +9369,13 @@ presence_online*/
 		return (Bitmap) bmp;
 	}
 	
-	
 	void rotateFromEXIF(ImageView imageView,String fileName){
 	
 		ExifInterface exif;
 		// btnImageView4.setRotation(90);
 		String path= 
 				Environment.getExternalStorageDirectory()
-				+ File.separator + "hexasense/fr"
+				+ File.separator + "hexasense/"+Locale.getDefault().getLanguage()//+"fr"
 				+ File.separator
 				+ fileName + ".jpg";
 		File file= new File(path);
@@ -9003,7 +9876,6 @@ presence_online*/
 	    public void onEndOfSpeech() {
 	        Log.d("VoiceRecog", "onEndOfSpeech");
 	    }
-
 		@Override
 		public void onError(int error) {
 			((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.RED);
@@ -9062,12 +9934,10 @@ presence_online*/
 			 }
 	        
 	    }
-
 		@Override
 		public void onEvent(int eventType, Bundle params) {
 	        Log.d("VoiceRecog", "onEvent");
 	    }
-
 		@Override
 	    public void onPartialResults(Bundle partialResults) {
 			 // This is supported (only?) by Google Voice Search.
@@ -9138,14 +10008,11 @@ presence_online*/
 	        ((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.GREEN);
 	        vibrateReady();
 	    }
-
-
-	    
 		@Override
 	    public void onResults(Bundle results) {
-	        Log.d("leapkh", "onResults");
+	        Log.d("VoiceRecog", "onResults");
 	        startAutoScrolling(hscrollView5);
-	        hscrollView5.fullScroll(hscrollView5.FOCUS_RIGHT);
+	        hscrollView5.fullScroll(android.view.View.FOCUS_RIGHT);
 	       
 	        vibrate(400);
 	        ((ImageButton)findViewById(R.id.button2)).setBackgroundColor(Color.RED);
@@ -9161,10 +10028,11 @@ presence_online*/
 			 // TODO: we just  the first result for the time being
 			 // TODO: confidence scores support is in API 14
 			 String result = matches.iterator().next();
-			 Log.d("leapkh", "---------------onResults"+result);
+			 Log.d("VoiceRecog", "---------------onResults"+result);
 			 if (result!=null){
 				 
-				 
+					ttobj.speak(result, TextToSpeech.QUEUE_ADD, null);
+					
 				 
 				     // mainActivity.setTitle;
 					startLongRunningOperation();
@@ -9193,11 +10061,9 @@ presence_online*/
 	    float oldRmsdB=0;
 	    @Override
 	    public void onRmsChanged(float rmsdB) {
-	      if (rmsdB!=oldRmsdB) Log.d("leapkh", "onRmsChanged"+rmsdB);oldRmsdB=rmsdB;
+	      if (rmsdB!=oldRmsdB) Log.d("VoiceRecog", "onRmsChanged"+rmsdB);oldRmsdB=rmsdB;
 	    }
 	}
-	
-	
 	private static final int WORDLIST_SELECT_CODE =9;
 	void selectWordList (){
 		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -9217,25 +10083,21 @@ presence_online*/
 					Toast.LENGTH_SHORT).show();
 		}
 	}
-	
 	void chooseList(){
-		
 		showTextFileChooser();
-		
-		
 	}
 	void loadList(String fileName){
 		
 	//showFileChooser();
 
-		getWindow().requestFeature(Window.FEATURE_PROGRESS);
+		//getWindow().requestFeature(Window.FEATURE_PROGRESS); //mustBedone before oncreate
 
 		//this.showFileChooser();
 		File file;
 		if (fileName==""){
 			file=new File(Environment.getExternalStorageDirectory()+"/" + "hexasense/"+"wordList","EtienneBrunetWordList.txt");
 		//*Don't* hardcode "/sdcard"
-		/*File sdcard = Environment.getExternalStorageDirectory();
+		  File sdcard = Environment.getExternalStorageDirectory();
 		
 		//Get the text file
 		
@@ -9253,7 +10115,7 @@ presence_online*/
 			
 			//getResources().openRawResource();
 			//  InputStream fis = getResources().openRawResource(this.getBaseContext().getResources().getIdentifier(sonidoActual,"raw", this.getApplicationContext().getPackageName() ));
-		}*/
+		}
 		
 		}else file=new File(fileName);
 		//showAlertDialog();
@@ -9390,10 +10252,7 @@ presence_online*/
     }
     */
 }
-	
-	
-	
-	
+
 	/*
 	public void showMenu(View v) {
 	    PopupMenu popup = new PopupMenu(this, v);
@@ -9435,6 +10294,15 @@ presence_online*/
 	 *      In this case, the system immediately calls onDestroy()
 	 *       without calling any of the other lifecycle methods.
 	 */
+	
+	@Override
+	   public void onPause(){
+	      if(ttobj !=null){
+	         ttobj.stop();
+	        // ttobj.shutdown();
+	      }
+	      super.onPause();
+	   }
 	@Override
 	protected void onStop() {
 	    super.onStop();  // Always call the superclass method first
@@ -9445,7 +10313,8 @@ presence_online*/
 	    //values.put(NotePad.Notes.COLUMN_NAME_NOTE, getCurrentNoteText());
 	    //values.put(NotePad.Notes.COLUMN_NAME_TITLE, getCurrentNoteTitle());
 	    
-	    
+	   // ttobj.stop();
+	    //ttobj.shutdown();
 	    /*getContentResolver().update(
 	            mUri,    // The URI for the note to update.
 	            values,  // The map of column names and new values to apply to them.
@@ -9454,21 +10323,52 @@ presence_online*/
 	            );
 	     */
 	}
-	
-	
-	
-	
 	@Override
 	public void onDestroy() {
-	    super.onDestroy();  // Alwayscall the superclass
-	    
+		
+		Log.d("vEsperanto","onDestroy");
+		try {
+			tempFileCleaning();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		super.onDestroy();  // Alwayscall the superclass
+	    Log.d("vEsperanto","After SuperDestroy");
 	    // Stop method tracing that the activity started during onCreate()
 	   // android.os.Debug.stopMethodTracing();
+	   // ttobj.stop();
+	    
+	    if (ttobj!=null){
+	    ttobj.shutdown();
+	    appLocale=null;//if applocale= null the n reload at startup phoneLocale
 	    
 	    
+	    
+	    
+	    
+	    Log.v("vEsperanto","TTS shutdown");
+	    }
+	    
+	
+	    //am.stopBluetoothSco();
+	  //  sdg
 	    //TODO remove autoscrollTimer_Tick.
 	    if (scrollTimer!=null){ scrollTimer.purge(); scrollTimer.cancel();}
-	    if (speechRecognizer  !=null){ 	    speechRecognizer.cancel(); speechRecognizer.destroy();}}
+	    if (speechRecognizer  !=null){ 	  
+	    	speechRecognizer.cancel(); speechRecognizer.destroy();
+	    	}
+	    
+	    unregisterReceiver(btBroadCastReceiver);
+	    btBroadCastReceiver=null;
+	    //?? maybe
+	    mHandler.removeCallbacks(Timer_Tick);
+	    mHandler.removeCallbacks(mUpdateResults);
+	    mHandler.removeCallbacks(scrollerSchedule);
+	    mHandler.removeCallbacks(mDownloadFinish);
+	    mHandler.removeCallbacksAndMessages(null);
+	    Log.d("vEsperanto","onDestroyEnd");
+	   }
 
 	
 	   protected void showAbout() {
@@ -9528,7 +10428,7 @@ presence_online*/
 	    	
 	    	File [] files= path.listFiles(); //	path.list(fFilter);
 	    	
-			for (int foundWord = 0; foundWord <  500; foundWord++) {//files.length; foundWord++) {//
+			for (int foundWord = 0; foundWord < files.length &&foundWord <  500; foundWord++) {//files.length; foundWord++) {//
 				//wordsYouSaidCounter; foundWord++) {
 				File file=files[foundWord];
 				//String fileName=
@@ -9540,9 +10440,11 @@ presence_online*/
 				//android.speech.embedded.Greeco3RecognitionEngine
 				 //android.speech.RecognitionService   speechembedded;
 				 //speechembedded.
-				String filename=file.getName().substring(0, file.getName().length()-4);
+				String filename=file.getName();
 				if (file.getName().endsWith(".txt")) {//.toLowerCase()
+					
 					if (file.exists()) {
+						filename=file.getName().substring(0, file.getName().length()-4);
 						// advancedDownload(wordsYouSaid[foundWord]);
 						file.delete();
 					}}
@@ -9551,6 +10453,9 @@ presence_online*/
 				
 				if (file.getName().endsWith(".jpg")) {//remove .toLowerCase() Lower Case for locale Errors
 					if (file.exists()) {
+						filename=file.getName().substring(0, file.getName().length()-4);
+						builder.setTitle(getBaseContext().getString(R.string.Validate)//"Delete:"
+								+file.getName());
 						// advancedDownload(wordsYouSaid[foundWord]);
 						
 						//lparams.height = LayoutParams.MATCH_PARENT;
@@ -9643,10 +10548,14 @@ presence_online*/
 								// "clickon Image"+hscrollLayout5.getChildCount(),
 								// Toast.LENGTH_SHORT).setView(v);
 
+							
+								
+								validate(v.getContentDescription()+".jpg");
+								
 								Toast.makeText(
 										getApplicationContext(),
 										getBaseContext().getString(R.string.ClickOnImage)//"clickOn Image" 
-										+ v.getContentDescription()
+										+"?! "+ v.getContentDescription()
 												+ " " + v.toString(),
 										Toast.LENGTH_SHORT).show();
 
@@ -9884,8 +10793,7 @@ presence_online*/
 		        builder.create().show();
 			 
 		 }
-	   
-	 protected void showValidation3(){//RealName Showimage
+	   protected void showValidation3(){//RealName Showimage
 		  ImageView image = new ImageView(this);
 	       // image.setImageResource(R.drawable.virolo);
 	        File file = new File(Environment.getExternalStorageDirectory()
@@ -9917,6 +10825,59 @@ presence_online*/
 	        builder.create().show();
 		 
 	 }
+	   protected void tempFileCleaning() {//cleanTxtFile related to images
+	        // Inflate the about message contents
+	        View messageView = getLayoutInflater().inflate(R.layout.validation, null, false);
+	 
+	        // When linking text, force to always use default color. This works
+	        // around a pressed color state bug.
+	        TextView textView = (TextView) messageView.findViewById(R.id.about_credits);
+	        int defaultColor = textView.getTextColors().getDefaultColor();
+	        textView.setTextColor(defaultColor);
+	        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setIcon(R.drawable.ic_launcher);
+	        builder.setTitle(R.string.app_name);
+	        //builder.setView(messageView);
+	        //builder.create();
+	       // builder.show();
+       
+	      
+	        
+	    	LayoutParams lparams = new LayoutParams(LayoutParams.WRAP_CONTENT,
+					LayoutParams.WRAP_CONTENT);
+
+	    	File path =new File(Environment.getExternalStorageDirectory()
+					+ File.separator + "hexasense");
+	    	//FileFilter fFilter;
+	    	//fFilter.accept(path);
+	    	
+	    	File [] files= path.listFiles(); //	path.list(fFilter);
+	    	
+			for (int foundWord = 0; foundWord < files.length; foundWord++) {
+				//wordsYouSaidCounter; foundWord++) {
+				File file=files[foundWord];
+				//String fileName=
+				/*File file = new File(Environment.getExternalStorageDirectory()
+						+ File.separator + "hexasense" + File.separator
+						+ wordsYouSaid[foundWord] + ".jpg");
+				*/
+				//at com.google.android.speech.embedded.Greco3RecognitionEngine.startRecognition(Greco3RecognitionEngine.java:118)
+				//android.speech.embedded.Greeco3RecognitionEngine
+				 //android.speech.RecognitionService   speechembedded;
+				 //speechembedded.
+				String filename=file.getName();
+				if (file.getName().endsWith(".txt")) {//.toLowerCase()
+					if (file.exists()) {
+						filename=file.getName().substring(0, file.getName().length()-4);
+						// advancedDownload(wordsYouSaid[foundWord]);
+						file.delete();
+					}}
+			}
+	   }
+	   
+	   
+	   
+	   
 	   protected void showValidation2() {//cleanTxtFile related to images
 	        // Inflate the about message contents
 	        View messageView = getLayoutInflater().inflate(R.layout.validation, null, false);
@@ -10052,9 +11013,13 @@ presence_online*/
 								// "clickon Image"+hscrollLayout5.getChildCount(),
 								// Toast.LENGTH_SHORT).setView(v);
 
+
+								
+								
+								
 								Toast.makeText(
 										getApplicationContext(),
-										"clickon Image" + v.getContentDescription()
+										"  ???clickon Image" + v.getContentDescription()
 												+ " " + v.toString(),
 										Toast.LENGTH_SHORT).show();
 
@@ -10364,9 +11329,6 @@ presence_online*/
 	        //findViewById(R.id.toggleButton1).setOnClickListener(this);
 	    }
 	   
-	   
-	   
-	   
 	   void raw2SD (int raw,String out){
 	  // String baseDir = Environment.getExternalStorageDirectory().getAbsolutePath();
 	   String fileName = out;//+".mp3";
@@ -10393,9 +11355,6 @@ presence_online*/
 	   } catch (IOException io) {
 	   }
 	   }
-	
-	   
-	   
 	   public void showAlertDialog() {
 		    new AlertDialog.Builder(this)
 		        .setIcon(android.R.drawable.ic_dialog_alert)
@@ -10474,7 +11433,7 @@ presence_online*/
 		   	                try {
 		   	                    // Here you should write your time consuming task...
 		   	                    // Let the progress ring for 10 seconds...
-		   	                    Thread.sleep(10000);
+		   	                    Thread.sleep(4000);
 		   	                } catch (Exception e) {
 		   	 
 		   	                }
@@ -10507,12 +11466,15 @@ presence_online*/
 	   
 	   void blueTooth(String string){
 		   AudioManager am;
+		   BroadcastReceiver bR;
+		   
 		   am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 		   if (am.isBluetoothScoAvailableOffCall()){
 		    	am.setBluetoothScoOn(true);
 		  
-		    registerReceiver(new BroadcastReceiver() {
-
+		    
+		    btBroadCastReceiver=new BroadcastReceiver() {
+		    	
 		        @Override
 		        public void onReceive(Context context, Intent intent) {
 		            int state = intent.getIntExtra(AudioManager.EXTRA_SCO_AUDIO_STATE, -1);
@@ -10528,12 +11490,13 @@ presence_online*/
 		                 * After finishing, don't forget to unregister this receiver and
 		                 * to stop the bluetooth connection with am.stopBluetoothSco();
 		                 */
+		            	
 		                unregisterReceiver(this);
 		            }
 
 		        }
-		    }, new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED));
-
+		    };
+		    registerReceiver(btBroadCastReceiver, new IntentFilter(AudioManager.ACTION_SCO_AUDIO_STATE_CHANGED));
 		    Log.d("BlueTooth", "starting bluetooth");
 		    am.startBluetoothSco();
 		   
@@ -10768,10 +11731,6 @@ public void readPhoneSMS (){
 	cursor.close();
 }
 
-
-
-
-
 public void readContactSMS(){
 	//Cursor cursor = getContentResolver().query(Uri.parse("content://sms/inbox"), null, null, null, null);
 	Uri mSmsinboxQueryUri = Uri.parse("content://sms/inbox");
@@ -10831,7 +11790,7 @@ public void sendMail(){
 	*/
 	
 	Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
-            "mailto","pierre.capdepuy@gmail.com", null));
+            "mailto","vesperanto.bugReport@gmail.com", null));
 	emailIntent.putExtra(Intent.EXTRA_SUBJECT, "About vEsperanto");
 	
 	emailIntent.putExtra(Intent.EXTRA_TEXT, "Vesperanto may help you!"+lastRequest);
@@ -10892,5 +11851,432 @@ void makePhoneCall(String phoneNumber){
 
 
 
-}// EOF
+public   String	CODENAME;//	The current development codename, or the string "REL" if this is a release build.
+public   String	INCREMENTAL	;//The internal value used by the underlying source control to represent this build.
+public   String	RELEASE;//	The user-visible version string.
+public   String	SDK;//	This field was deprecated in API level 4. Use SDK_INT to easily get this as an integer.
+public   int	SDK_INT;
+
+	void readPackageInfo(String packageName){
+		String request="Package not found";
+		try {
+			if (((packageName==null)|packageName=="")){
+			 packageName = this.getPackageManager()
+				    .getPackageInfo(this.getPackageName(), 0).packageName;
+			}
+			request="Package: ";
+			
+			String packageString = this.getPackageManager()
+				    .getPackageInfo(packageName, 0).toString();
+			String sharedUserId = this.getPackageManager()
+				    .getPackageInfo(packageName, 0).sharedUserId;
+			String versionName = this.getPackageManager()
+				    .getPackageInfo(packageName, 0).versionName;
+			ConfigurationInfo[] configurationInfo= this.getPackageManager()
+				    .getPackageInfo(packageName, 0).configPreferences;
+			String configInfoStr=" >";
+			
+			if ((configurationInfo!=null)&&(configurationInfo.length>0)){
+				for (int i=0;i<configurationInfo.length;i++){
+					configInfoStr+=" "+configurationInfo[i];
+					
+				}
+			}
+			request=packageName+" Version "+versionName+ " :  "+ packageString+" sharedUserId "+ sharedUserId+" "+configInfoStr;
+				//configurationInfo.length;
+			
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		processRequest(request);
+		lastRequest=(request);
+	}
+	
+	String getRandomFileName(){
+		//this.languagePref;7
+		 //Note that Java uses several deprecated two-letter codes. 
+		//The Hebrew ("he") language code is rewritten as "iw", 
+		//Indonesian ("id") as "in", and Yiddish ("yi") as "ji". 
+		//This rewriting happens even if you construct your own Locale object,
+		//not just for instances returned by the various lookup methods. 
+		return getRandomFileName("hexasense/"
+				+DisplayLanguage.substring(0,2)
+				//Locale.getDefault().getLanguage().toString()
+				);
+		//Locale.getAvailableLocales to get a list of all the locales available on the device you're running on. 
+	}
+	
+	String getRandomFileName(String dir){
+		File path;
+		
+		path= new File(Environment
+				.getExternalStorageDirectory()
+				+ File.separator
+				+ dir//"hexasense/fr"
+				 );	
+		if(path.isDirectory()){
+		/*File file;
+		file = new File(Environment
+				.getExternalStorageDirectory()
+				+ File.separator
+				+ "hexasense"
+				+ File.separator
+				+ lastOnVideoLongClick
+				+"video"
+				+ ".mp4");
+		*/
+		
+		FilenameFilter filenameFilter = new FilenameFilter() {
+			public boolean accept(File dir, String name) {
+				String lowercaseName = name.toLowerCase();
+				if (lowercaseName.endsWith(".jpg")) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		};
+		
+		
+	//filenameFilter.accept(getFilesDir(), "");
+		Log.d("vEsperanto","path"+path.toString());
+		
+		 File[] fileList=path.listFiles(filenameFilter);
+		 Log.d("vEsperanto",fileList.length +" path"+path.toString());
+		// File[] fileList=path.listFiles();
+		 if (fileList.length>0){
+		Random randomGenerator = new Random();
+		
+		 int randomInt = randomGenerator.nextInt(fileList.length) ;
+		// wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
+		 return (fileList[randomInt].getName().toString().substring(0,fileList[randomInt].getName().toString().lastIndexOf(".")));
+		 }
+		 else return("FileNotFound");
+		}
+		else {
+			Log.d("vEsperanto","path"+path.toString());
+			return("DirNotFound");
+		
+		}
+		
+		
+	}
+	
+	void touchImages(){
+	if (this.text2SpeechActivated);
+	//this.getApplicationContext().get
+	//ttobj.getDefaultEngine();
+
+		String filePath = "Hexasense/"
+				+ appLocale.getLanguage().substring(0, 2);
+		wantedAnswer = getRandomFileName(filePath);
+		// wantedAnswer=wantedAnswer.substring(0,
+		// wantedAnswer.lastIndexOf("."));
+		ttobj.setSpeechRate((float) 0.9);// 0.5 is to slow()
+
+		/*
+		 * TextToSpeech ttobj2; ttobj2=new TextToSpeech(this, new
+		 * TextToSpeech.OnInitListener() {
+		 * 
+		 * @Override public void onInit(int status) { if(status !=
+		 * TextToSpeech.ERROR){ // ttobj.speak("hello hello",
+		 * TextToSpeech.QUEUE_FLUSH, null); // ttobj.setPitch((float) 1.0); //
+		 * ttobj.speak(
+		 * "Bonjour, je parle "+ttobj.getLanguage().getDisplayLanguage(),
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * // ttobj.speak(ttobj.getDefaultEngine(), TextToSpeech.QUEUE_ADD,
+		 * null);
+		 * 
+		 * //ttobj.setPitch((float) 0.5); // ttobj.speak("Je parle "
+		 * +ttobj.getLanguage
+		 * ().getDisplayLanguage()+"grâce à "+ttobj.getDefaultEngine(),
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * // ttobj.setPitch((float) 0.8); //
+		 * ttobj.speak("je parle plein d'autres langues",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * 
+		 * 
+		 * //The TTS engine will try to use the closest match //to the specified
+		 * language as represented by the Locale, // but there is no guarantee
+		 * that // the exact same Locale will be used. // Use
+		 * isLanguageAvailable(Locale) to check the level // of support before
+		 * choosing the language to use for the next utterances.
+		 * 
+		 * //Parameters: // loc The locale describing the language to be used.
+		 * // Returns: //Code indicating the support status for the locale. See
+		 * LANG_AVAILABLE, LANG_COUNTRY_AVAILABLE, LANG_COUNTRY_VAR_AVAILABLE,
+		 * LANG_MISSING_DATA and LANG_NOT_SUPPORTED.
+		 * 
+		 * // locale=Locale.getDefault(); //
+		 * if(TextToSpeech.LANG_AVAILABLE==ttobj.isLanguageAvailable(
+		 * Locale.ENGLISH)//appLocale ) )
+		 * ;//ttobj2.setLanguage(Locale.ENGLISH);//appLocale); else
+		 * Log.d("tts error "
+		 * ,""+ttobj.isLanguageAvailable(Locale.ENGLISH));//appLocale )); //
+		 * ttobj.setLanguage(Locale.ENGLISH);
+		 * 
+		 * // ttobj.setLanguage(Locale.UK); } } });
+		 * ttobj2.setLanguage(Locale.ENGLISH);
+		 */
+		/*
+		 * appLocale.setDefault(Locale.ENGLISH);
+		 * //ttobj.setLanguage(Locale.ENGLISH//appLocale.getDefault() //
+		 * );//appLocale.setDefault(DisplayLanguage));
+		 * //ttobj2.speak("vEsperanto is fantastic do you kno where you're "+
+		 * wantedAnswer +" trouve la bonne image ", TextToSpeech.QUEUE_FLUSH,
+		 * null);
+		 * 
+		 * //appLocale.setDefault(Locale.ENGLISH);
+		 * ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault() //
+		 * );//appLocale.setDefault(DisplayLanguage));
+		 * ttobj.speak("Vesperanto is wonderfull appLocale "+
+		 * appLocale.getLanguage() +" trouve la bonne image ",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+		 * );//appLocale.setDefault(DisplayLanguage)); ttobj.speak("français ",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault() //
+		 * );//appLocale.setDefault(DisplayLanguage));
+		 * ttobj.speak("Vesperanto is wonderfull appLocale "+
+		 * appLocale.getLanguage() +" trouve la bonne image ",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+		 * );//appLocale.setDefault(DisplayLanguage)); ttobj.speak("français ",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * ttobj.setLanguage(Locale.ENGLISH);//appLocale.getDefault() //
+		 * );//appLocale.setDefault(DisplayLanguage));
+		 * ttobj.speak("Vesperanto is wonderfull appLocale "+
+		 * appLocale.getLanguage() +" trouve la bonne image ",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 * 
+		 * ttobj.setLanguage(Locale.FRENCH//appLocale.getDefault()
+		 * );//appLocale.setDefault(DisplayLanguage)); ttobj.speak("français ",
+		 * TextToSpeech.QUEUE_ADD, null);
+		 */
+
+		ttobj.speak(
+				getApplicationContext().getString(R.string.TheWordIs)
+						+ wantedAnswer
+						+ getApplicationContext().getString(
+								R.string.FindTheGoodPicture),
+				TextToSpeech.QUEUE_ADD, null);
+		// ttobj.speak("le mot est "+ wantedAnswer +" trouve la bonne image ",
+		// TextToSpeech.QUEUE_FLUSH, null);
+		String request = "" + " " + getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath) + " " + wantedAnswer + " "
+				+ getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath) + " "
+				+ getRandomFileName(filePath);
+
+		this.setTitle(wantedAnswer);
+		processRequest(request);// getRandomFileName()+ "salade lion voiture "+
+								// wantedAnswer
+								// +" poisson oiseau crayon arbre zèbre");
+		lastRequest = (request);// "pastèque salade lion voiture +wantedAnswer+ poisson oiseau crayon arbre zèbre");
+
+		Toast.makeText(getApplicationContext(),
+				wantedAnswer + " " , Toast.LENGTH_LONG).show();
+		// ttobj2.speak("appLocale "+ appLocale.getLanguage()
+		// +" trouve la bonne image ", TextToSpeech.QUEUE_ADD, null);
+
+		// makePhoneCall(
+		// thingYouSaid.substring(thingYouSaid.indexOf(wish)+wish.length()));
+		// ,thingYouSaid.indexOf(wish)+wish.length()+20)
+
+	}	
+	
+	void validate(String filename){
+		 File file;
+		 
+			// AlertDialog.Builder alertDialogBuilder;
+			// alertDialogBuilder=new AlertDialog.Builder(MainActivity.);
+			// alertDialogBuilder.show();
+			// AlertDialog alertDialog;
+			 
+			// alertDialog.show();
+			 //alertDialog=new AlertDialog();
+			 
+				/*file = new File(Environment
+						.getExternalStorageDirectory()
+						+ File.separator
+						+ "hexasense"
+						+ File.separator
+						+ v.getContentDescription()
+						+ ".jpg");
+				*/
+
+			 Log.d("validate Picture",Environment
+						.getExternalStorageDirectory()
+						+ File.separator
+						+ "hexasense"
+						+ File.separator
+						+ filename);
+			 
+				file = new File(Environment
+						.getExternalStorageDirectory()
+						+ File.separator
+						+ "hexasense"
+						+ File.separator
+						+ filename);
+			
+			 // Erase the old File and make a photo to replace it
+			  if  (file.exists()){
+				  File validationPath=new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense"
+							+ File.separator
+							+ DisplayLanguage.substring(0,2)//Locale.getDefault().getLanguage()//"fr"
+							);
+				  if (!validationPath.isDirectory())validationPath.mkdirs();
+				  
+				 File newPath=new File(Environment
+							.getExternalStorageDirectory()
+							+ File.separator
+							+ "hexasense"
+							+ File.separator
+							+Locale.getDefault().getLanguage()//"fr"
+							+ File.separator
+							+ filename);
+				  
+				  if (file.renameTo(newPath)) file.delete();
+				 
+			  
+			  
+			  
+			  }
+			  
+			 /* getPhoto(Environment
+			  .getExternalStorageDirectory() +
+			  File.separator + "hexasense" +
+			  File.separator
+			  +lastOnMediaLongClick+".jpg");*/
+			  			 
+			  if(debug>1)Toast.makeText(getApplicationContext(),
+			 "Long click on Image:For Validation "
+			  +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick,
+			 Toast.LENGTH_SHORT).show();
+			 
+			
+	}
+	
+	void sendFileByMail(Uri filelocation,String to[]){
+		//String filelocation="/mnt/sdcard/contacts_sid.vcf";  
+		String pathname= Environment.getExternalStorageDirectory().getAbsolutePath();
+
+	//	Create a new file by
+
+		File myfile=new File(pathname+"/hexasense/fr","ImageList.txt");//"vache.jpg");//"ImageList.txt");
+		Intent emailIntent = new Intent(Intent.ACTION_SEND);
+		// set the type to 'email'
+		emailIntent .setType("vnd.android.cursor.dir/email");
+		//String to[] = {"asd@gmail.com"};
+		emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
+		// the attachment
+		emailIntent .putExtra(Intent.EXTRA_STREAM, filelocation);
+		
+		emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(myfile));
+		// the mail subject
+		emailIntent .putExtra(Intent.EXTRA_SUBJECT, "vEsperanto Validated Image List");
+		/*<IMG SRC="url_de_l_image"
+				 ALT="Texte remplaçant l'image"
+				 TITLE="Texte à afficher">
+				 https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp
+				
+				 <IMG SRC="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp"
+				 ALT="Texte remplaçant l'image"
+				 TITLE="Texte à afficher">
+				 "<html><head></head><body>";
+$message .= "<img src='link-image.jpg' alt='' /></body></html>";
+				 
+				 
+				 */
+		emailIntent .putExtra(Intent.EXTRA_TEXT,"image gj");// +"<html><head></head><body><IMG SRC=\"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"/></body></html>");
+		emailIntent .putExtra(Intent.EXTRA_HTML_TEXT,"image " +"<IMG SRC=\"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\">");
+		String body = "azert"+  "<html><head></head>" +
+				"<body>ool raoul c" +
+				"<IMG SRC=\"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"" +
+				" ALT=\"trerterte\" " + " TITLE=\"Texte à afficher\" "+
+				">" 
+				+"    dfghjk "
+				+"</body></html>";//"<html>something</html>";
+		//emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
+		
+		startActivity(Intent.createChooser(emailIntent , "Send email..."));
+	}
+	
+	
+	void readPhoneBuild(){
+	String BOARD	=Build.BOARD;	//Build.VERSION();
+		String BOOTLOADER	=Build.BOOTLOADER;
+		String BRAND	=Build.BRAND;
+		String CPU_ABI	=Build.CPU_ABI;
+		String CPU_ABI2	=Build.CPU_ABI2;
+		String DEVICE	=Build.DEVICE;
+		String DISPLAY	=Build.DISPLAY;
+		String FINGERPRINT	=Build.FINGERPRINT;
+		String HARDWARE	=Build.HARDWARE;
+		String HOST	=Build.HOST;
+		String ID	=Build.ID;
+		String MANUFACTURER	=Build.MANUFACTURER;
+		String MODEL	=Build.MODEL;
+		String PRODUCT	=Build.PRODUCT;
+		//String BOARD	=Build.RADIO;//deprecated
+		//String RADIO    =Build.getRadioVersion();//api 14
+		String SERIAL	=Build.SERIAL;
+		String TAGS	=Build.TAGS;
+		String TYPE	=Build.TYPE;
+		String UNKNOWN	=Build.UNKNOWN;
+		String USER	=Build.USER;
+		
+	
+	
+	
+	}
+
+}// EOC
+
+
+
+
+/*
+ Build Version
+ SDK_INT value        Build.VERSION_CODES        Human Version Name       
+    1                  BASE                      Android 1.0 (no codename)
+    2                  BASE_1_1                  Android 1.1 Petit Four
+    3                  CUPCAKE                   Android 1.5 Cupcake
+    4                  DONUT                     Android 1.6 Donut
+    5                  ECLAIR                    Android 2.0 Eclair
+    6                  ECLAIR_0_1                Android 2.0.1 Eclair                  
+    7                  ECLAIR_MR1                Android 2.1 Eclair
+    8                  FROYO                     Android 2.2 Froyo
+    9                  GINGERBREAD               Android 2.3 Gingerbread
+   10                  GINGERBREAD_MR1           Android 2.3.3 Gingerbread
+   11                  HONEYCOMB                 Android 3.0 Honeycomb
+   12                  HONEYCOMB_MR1             Android 3.1 Honeycomb
+   13                  HONEYCOMB_MR2             Android 3.2 Honeycomb
+   14                  ICE_CREAM_SANDWICH        Android 4.0 Ice Cream Sandwich
+   15                  ICE_CREAM_SANDWICH_MR1    Android 4.0.3 Ice Cream Sandwich
+   16                  JELLY_BEAN                Android 4.1 Jellybean
+   17                  JELLY_BEAN_MR1            Android 4.2 Jellybean
+   18                  JELLY_BEAN_MR2            Android 4.3 Jellybean
+   19                  KITKAT                    Android 4.4 KitKat
+   20                  KITKAT_WATCH              Android 4.4 KitKat Watch
+   21                  LOLLIPOP                  Android 5.0 Lollipop
+  10000                CUR_DEVELOPMENT           Current Development Build 
+ */
+
+
 
