@@ -9779,21 +9779,23 @@ presence_online*/
 
 	public class Downloader extends Intent {
 	
-		public Object downloadFromUrl(String imageURL, String fileName) { // this
+		/*public Object downloadFromUrl(String imageURL, String fileName) { // this
 			String dirName="";
 			downloadFromUrl(imageURL,dirName,fileName);
 			return null;
-		}
+		}*/
 		
 		
-		public Object downloadFromUrl(String imageURL,String dirName, String fileName) { // this
+		public Object downloadFromUrl(String imageURL, String fileName) { // this
 																			// is
-			 if (dirName!="") dirName="/"+dirName ;								// t
+			// if (dirName!="") dirName="/"+dirName ;								// t
 																			// downloader
 																			// method
 
 			File sdCard = Environment.getExternalStorageDirectory();
-			File dir = new File(sdCard.getAbsolutePath() + "/" + "hexasense"+dirName);// "/Hexasense");
+			File dir = new File(sdCard.getAbsolutePath() + "/" + "hexasense"
+			//+dirName
+					);// "/Hexasense");
 			dir.mkdirs();
 			File file = new File(dir, fileName);// "hexasense.mp4");//
 												// "hexasense.txt");
@@ -12441,7 +12443,7 @@ $message .= "<img src='link-image.jpg' alt='' /></body></html>";
 			fStr="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"";
 			downloader = new Downloader();			
 			downloader.downloadFromUrl(fStr, "maison.jpg");
-			downloader.downloadFromUrl(fStr,"fr", "maisonsonson.jpg");
+			//downloader.downloadFromUrl(fStr,"fr", "maisonsonson.jpg");
 			
 			/*FileOutputStream f = new FileOutputStream(file1, append);
 			f.write(html.getBytes());
