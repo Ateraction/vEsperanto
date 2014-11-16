@@ -403,7 +403,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 import android.widget.VideoView;
-import com.ateraction.vesperanto.R;
+import com.ateraction.vesperanto20141108.R;
 
 public class MainActivity extends Activity implements OnClickListener,
 		OnCompletionListener,OnPreparedListener, OnLongClickListener {
@@ -2053,9 +2053,11 @@ presence_online*/
 		if (item.toString() == "ScrollR")
 			hscrollView1.fling(150);// velocityX);// ;
 		if (item.toString() == "Espagnol")
-			((LinearLayout) mVideoView.getParent()).removeView(mVideoView);// if
+			((LinearLayout) mVideoView.getParent()).removeView(
+					mVideoView);// if
 		
-		if (item.toString() == getApplicationContext().getString(R.string.Change)){
+		if (item.toString() == getApplicationContext().getString(
+				R.string.Change)){
 			// View v;
 		  // v=this.getCurrentFocus();
 		   File file;
@@ -2521,7 +2523,7 @@ presence_online*/
 					  
 					  if (file.renameTo(newPath)) file.delete();
 					 
-				  
+				  validate(lastOnMediaLongClick);
 				  
 				  
 				  }
@@ -2907,14 +2909,31 @@ presence_online*/
 				// set the type to 'email'
 				emailIntent .setType("vnd.android.cursor.dir/email");
 				//String to[] = {"asd@gmail.com"};*/
-			String FILENAME="ImageList.txt";
+			//String FILENAME="ImageList.txt";
+			String FILENAME="ImageList.htm";
 			Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory()+"/hexasense/fr", FILENAME));
 			String to[] = {"vesperanto.bugreport@gmail.com"};
-			sendFileByMail(uri,to);
+			//sendFileByMail(uri,to);
+			//text2HtmlClose(true,						
+				//	Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/image/",
+				//	"ImageList.htm");
+			sendFileByMail(uri,to,"ImageList.html");
 			
 		}
 		
-		if (item.toString() ==  getApplicationContext().getString(R.string.loadList)){
+		if (item.toString() ==getApplicationContext().getString(
+				R.string.LoadImageList)){
+			
+			showFileChooser();
+			
+			//loadImageList(String imageListDir,String ImagListName, String outputDir);
+			loadImageList("fr","ImageList.txt", "");
+			
+		}
+		
+		
+		if (item.toString() ==  getApplicationContext().getString(
+				R.string.loadList)){
 			//processRequest("bonjour");
 			  
 			/*Handler handler = new Handler(); 
@@ -3306,7 +3325,7 @@ presence_online*/
 		.setCheckable(true)
 		.setChecked(false);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.loadList));
-		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadImageList)).setEnabled(false);
+		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadImageList)).setEnabled(true);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.LoadVideoList)).setEnabled(false);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendWordList)).setEnabled(false);
 		exchangeSubMenu.add(getApplicationContext().getString(R.string.SendImageList)).setEnabled(true);
@@ -3775,6 +3794,28 @@ presence_online*/
 					Toast.LENGTH_SHORT).show();
 		}
 	}
+	
+	
+	private static final int IMAGELIST_TEXT_FILE_SELECT_CODE =9;
+
+	private void showImageListTextFileChooser() {
+		Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+		intent.setType("text/plain");
+		intent.addCategory(Intent.CATEGORY_OPENABLE);
+		// intent.putExtra("", Uri.fromFile(new File(string)));//+
+		// wordsYouSaid[foundWord] + ".jpg")));
+
+		try {
+			startActivityForResult(Intent.createChooser(intent,
+					"Select a text file to import media"),
+					IMAGELIST_TEXT_FILE_SELECT_CODE);
+
+		} catch (android.content.ActivityNotFoundException ex) {
+			// Potentially direct the user to the Market with a Dialog
+			Toast.makeText(this, "Please install a File Manager.",
+					Toast.LENGTH_SHORT).show();
+		}
+	}
 	//fileTools
 	public void copyFile2File(File src, File dst) throws IOException {
 		InputStream in = new FileInputStream(src);
@@ -3823,6 +3864,10 @@ presence_online*/
 				+" find "+text2Find
 				+" outDirectory "+outDirectory);
 		text2Write=textRead(directory+fileName,text2Find,text2Find);
+		Log.d("TakeRefFromFile", "text2Write "+text2Write +" //////" +"directory"+directory
+				+"fileName"+fileName
+				+" find "+text2Find
+				+" outDirectory "+outDirectory);
 		//text2Write=textRead(directory+fileName,text2Find,text2Find +" 2write"+text2Write);
 		//text2Write=directory+fileName +" text2Find " +text2Find +" 2write"+text2Write;
 
@@ -3922,6 +3967,18 @@ presence_online*/
 				String result = null;
 				Uri uri = data.getData();
 				Log.d("WORDLIST_SELECT_CODE", "File Uri: " + uri.toString());
+				
+			}
+		}
+		if (requestCode == IMAGELIST_TEXT_FILE_SELECT_CODE) {
+			//loading a txt file
+			if (resultCode == RESULT_OK) {
+				// Uri mUri = data.getData();
+				// replacing selected Media by a an existing media
+				String result = null;
+				Uri uri = data.getData();
+				Log.d("WORDLIST_SELECT_CODE", "File Uri: " + uri.toString());
+				loadList(uri.getPath());
 				
 			}
 		}
@@ -5161,7 +5218,16 @@ presence_online*/
 
 	}// onresult
 
+	
 	void processRequest(String thingYouSaid) {
+		
+		processRequest(thingYouSaid,"erzer");
+		
+	}
+		
+	
+	void processRequest(String thingYouSaid,String dirName) {
+		
 		/*
 		 //if (this.text2SpeechActivated)* 
 		 try {
@@ -5819,12 +5885,12 @@ presence_online*/
 									//	wantedAnswer=wantedAnswer.substring(0, wantedAnswer.lastIndexOf("."));
 											ttobj.speak(getApplicationContext().getString(R.string.Validation)+ wantedAnswer +" ", TextToSpeech.QUEUE_FLUSH, null);
 											validate(v.getContentDescription()+".jpg");
-											takeRefFromFile(true,						
+											/*takeRefFromFile(true,						
 													Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/image/",
 													"ImageList.txt",wantedAnswer,
 													Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/fr",
 													"ImageList.txt",
-													"azertyujhxfcg");
+													"azertyujhxfcg");*/
 
 											
 											
@@ -7503,7 +7569,9 @@ presence_online*/
 			f.write(text2Write.getBytes());
 			// f.write((InputStream)new
 			// URL("http://www.lsf-bordeaux.fr/images/video/alphabet/a.mp4").);
+			f.flush();
 			f.close();
+			
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -9222,10 +9290,12 @@ presence_online*/
             int lineIndex2=0;
 			while ( ((receiveString = bufferedReader.readLine()) != null )&&((lineIndex==0)||(lineIndex2==0))) {//&&lineIndex==0
 				if (receiveString.contains(item)){
-					stringBuilder.append(receiveString);
+					
+					stringBuilder.append(" "+ receiveString);
 					//stringBuilder.append(item +" "+ oldItem);
 					Log.d("TextRead","receiveString contain item"+receiveString+ "item "+item+ "at "+ lineIndex+" "+line);
 					lineIndex=line;
+					break;
 				}
 				/*if (receiveString.contains(copyFromRef)){
 					oldItem=receiveString.substring(receiveString.indexOf(" ")+1);
@@ -9708,14 +9778,22 @@ presence_online*/
 	}
 
 	public class Downloader extends Intent {
+	
 		public Object downloadFromUrl(String imageURL, String fileName) { // this
+			String dirName="";
+			downloadFromUrl(imageURL,dirName,fileName);
+			return null;
+		}
+		
+		
+		public Object downloadFromUrl(String imageURL,String dirName, String fileName) { // this
 																			// is
-														// the
+			 if (dirName!="") dirName="/"+dirName ;								// t
 																			// downloader
 																			// method
 
 			File sdCard = Environment.getExternalStorageDirectory();
-			File dir = new File(sdCard.getAbsolutePath() + "/" + "hexasense");// "/Hexasense");
+			File dir = new File(sdCard.getAbsolutePath() + "/" + "hexasense"+dirName);// "/Hexasense");
 			dir.mkdirs();
 			File file = new File(dir, fileName);// "hexasense.mp4");//
 												// "hexasense.txt");
@@ -10477,7 +10555,35 @@ presence_online*/
 						image.setScaleType(ScaleType.FIT_CENTER);//FIT_XY);// FIT_CENTER);//.CENTER_CROP);//.CENTER_INSIDE);//.FIT_XY);
 						// btnImageView4.setBackgroundResource(
 						// words2ImageResult[i].imageID);
+						TextView text= new TextView(this);
+						text.setText(filename);
+						text.setOnClickListener(new OnClickListener() {
+
+							@Override
+							public void onClick(View v) {
+								// TODO Auto-generated method stub
+								// Toast.makeText(getApplicationContext(),
+								// "clickon Image"+hscrollLayout5.getChildCount(),
+								// Toast.LENGTH_SHORT).setView(v);
+
+							
+								
+								validate(v.getContentDescription()+".jpg");
+								
+								Toast.makeText(
+										getApplicationContext(),
+										//getBaseContext().getString(text.getText())//R.string.ClickOnImage)//"clickOn Image" 
+										"clickOn text"+"?! "+ v.getContentDescription()
+												+ " " + v.toString(),
+										Toast.LENGTH_SHORT).show();
+
+							}
+						});
 						
+						registerForContextMenu(text);
+						
+						
+						linearLayout.addView(text);
 						//rotateFromEXIF(btnImageView4,file.getName().toLowerCase());//wordsYouSaid[foundWord]);
 						
 						/////////////////////////////////
@@ -11857,7 +11963,7 @@ public   String	RELEASE;//	The user-visible version string.
 public   String	SDK;//	This field was deprecated in API level 4. Use SDK_INT to easily get this as an integer.
 public   int	SDK_INT;
 
-	void readPackageInfo(String packageName){
+	String readPackageInfo(String packageName){
 		String request="Package not found";
 		try {
 			if (((packageName==null)|packageName=="")){
@@ -11889,8 +11995,9 @@ public   int	SDK_INT;
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		processRequest(request);
-		lastRequest=(request);
+		//processRequest(request);
+		//lastRequest=(request);
+		return request;
 	}
 	
 	String getRandomFileName(){
@@ -12168,24 +12275,46 @@ public   int	SDK_INT;
 			 "Long click on Image:For Validation "
 			  +lastOnMediaLongClick+"    toString "+lastOnMediaLongClick,
 			 Toast.LENGTH_SHORT).show();
+			  
+			  takeRefFromFile(true,						
+						Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/image/",
+						"ImageList.txt",filename.substring(0, filename.length()-4),//wantedAnswer,
+						Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/fr",
+						"ImageList.txt",
+						"azertyujhxfcg");
 			 
-			
+			  text2Html(true,						
+						Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/image/",
+						"ImageList.txt",filename.substring(0, filename.length()-4),//wantedAnswer,
+						Environment.getExternalStorageDirectory().getAbsolutePath() + "/" +"hexasense/fr",
+						"ImageList.html",
+						"azertyujhxfcg");
 	}
 	
-	void sendFileByMail(Uri filelocation,String to[]){
+	void sendFileByMail(Uri filelocation,String to[]){ 
+		String pathname= Environment.getExternalStorageDirectory().getAbsolutePath();
+		String fileOut= "ImageList.txt";
+
+		//	Create a new file by
+		//File myfile=new File(pathname+"/hexasense/fr","ImageList.txt");
+		sendFileByMail( filelocation,to,fileOut); 
+	}
+
+	void sendFileByMail(Uri filelocation,String to[],String fileOut){
 		//String filelocation="/mnt/sdcard/contacts_sid.vcf";  
 		String pathname= Environment.getExternalStorageDirectory().getAbsolutePath();
 
 	//	Create a new file by
 
-		File myfile=new File(pathname+"/hexasense/fr","ImageList.txt");//"vache.jpg");//"ImageList.txt");
+		File myfile=new File(pathname+"/hexasense/fr",fileOut);//"ImageList.txt");//"vache.jpg");//"ImageList.txt");
+		
 		Intent emailIntent = new Intent(Intent.ACTION_SEND);
 		// set the type to 'email'
 		emailIntent .setType("vnd.android.cursor.dir/email");
 		//String to[] = {"asd@gmail.com"};
 		emailIntent .putExtra(Intent.EXTRA_EMAIL, to);
 		// the attachment
-		emailIntent .putExtra(Intent.EXTRA_STREAM, filelocation);
+		//emailIntent .putExtra(Intent.EXTRA_STREAM, filelocation);
 		
 		emailIntent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(myfile));
 		// the mail subject
@@ -12204,6 +12333,7 @@ $message .= "<img src='link-image.jpg' alt='' /></body></html>";
 				 
 				 */
 		emailIntent .putExtra(Intent.EXTRA_TEXT,"image gj");// +"<html><head></head><body><IMG SRC=\"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"/></body></html>");
+		
 		emailIntent .putExtra(Intent.EXTRA_HTML_TEXT,"image " +"<IMG SRC=\"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\">");
 		String body = "azert"+  "<html><head></head>" +
 				"<body>ool raoul c" +
@@ -12213,12 +12343,296 @@ $message .= "<img src='link-image.jpg' alt='' /></body></html>";
 				+"    dfghjk "
 				+"</body></html>";//"<html>something</html>";
 		//emailIntent.putExtra(Intent.EXTRA_TEXT, Html.fromHtml(body));
-		
+		body=body+"     " +
+				"Send from phone build"+readPhoneBuild() +" \n "+ readPackageInfo("com.google.android.tts")
+				+" \n "+ readPackageInfo("");
+		emailIntent .putExtra(Intent.EXTRA_TEXT,"image gj"+body);
 		startActivity(Intent.createChooser(emailIntent , "Send email..."));
 	}
 	
 	
-	void readPhoneBuild(){
+	
+	//loadImageList(String imageListDir,String ImagListName, String outputDir);
+	//loadImageList("fr","ImageList.txt", "");
+	String loadImageList(//Boolean append, 
+			String directory,
+			String fileName, 
+		//	String text2Find,
+			String outDirectory//,
+			//String outFileName,
+			//String text2Write
+			)
+	{
+		Log.d("loadImageList","directory"+directory
+				+"fileName"+fileName
+				//+" find "+text2Find
+				+" outDirectory "+outDirectory);
+		
+		
+		
+		
+		
+		//text2Write=textRead(directory+fileName,text2Find,text2Find);
+		//Log.d("text2HtmlTakeRefFromFile", "text2write " 
+			//	+text2Write+ " directory "+directory);
+		//text2Write=textRead(directory+fileName,text2Find,text2Find +" 2write"+text2Write);
+		//text2Write=directory+fileName +" text2Find " +text2Find +" 2write"+text2Write;
+
+		//textRead(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+		//textReadWrite(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+		//public  String textReadWrite(String fileInput,String item, String copyFromRef) {
+		// simplycreating a directory and a file inSDcar
+		// String filename
+		// =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/"+"mydirectory"+"/"+
+		// "myfile2.txt";//
+		
+		//File sdCard = Environment.getExternalStorageDirectory();
+		File dir = new File( outDirectory);// "/Hexasense");
+		dir.mkdirs();
+		File file1 = new File(dir, "outFileName" //outFileName
+				);// "hexasense.txt");
+		
+		
+		
+		
+		String html="";
+		/*	html=	 "<html><head></head>" +
+			"<body>text2html " +
+			
+			"<IMG SRC=\""+text2Write.substring(text2Write.indexOf("https"))+"\""+//"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"" +
+			" ALT=\"" +text2Write+"\" "+
+			//"trerterte\" " 
+			 " TITLE=\""+ text2Write+"\" "+
+			//Texte à afficher\" "+ 
+			">" 
+			+text2Write+"    julie "
+			+"</body></html>";//"<html>something</html>";
+			*/
+		if (!file1.exists()){
+			try {
+				file1.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			
+			html=	 "<html><head></head>"+"<body>   text2html:  Vesperanto Image List  <br>" ;
+		}
+		/*if(true){
+	
+			html=html +	
+			
+			"<IMG SRC=\""+text2Write.substring(text2Write.indexOf("https"))+"\""+
+			//"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"" +
+			" ALT=\"" +text2Write.substring(0,text2Write.indexOf("https"))+"\" "+
+			//"trerterte\" " 
+			 " TITLE=\""+ text2Write.substring(0,text2Write.indexOf("https"))+"\" "+
+			//Texte à afficher\" "+ 
+			">" 
+			+ "  "+ text2Write.substring(0,text2Write.indexOf("https")) +"  <br>    injected from Vesperanto <br>"
+			//+"</body></html>"
+			;//"<html>something</html>";
+			}*/
+		
+		try {
+			Downloader downloader;
+			String fStr;
+			fStr="https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"";
+			downloader = new Downloader();			
+			downloader.downloadFromUrl(fStr, "maison.jpg");
+			downloader.downloadFromUrl(fStr,"fr", "maisonsonson.jpg");
+			
+			/*FileOutputStream f = new FileOutputStream(file1, append);
+			f.write(html.getBytes());
+			//f.write(text2Write.getBytes());
+			// f.write((InputStream)new
+			// URL("http://www.lsf-bordeaux.fr/images/video/alphabet/a.mp4").);
+			f.close();
+			*/
+			
+			
+			
+		/*} catch (FileNotFoundException e1) {
+			Log.e("FileNotFoundException",""+e1.toString());
+			e1.printStackTrace();
+		} catch (IOException e2) {
+			Log.e("IOException",""+e2.toString());
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}*/
+		
+	} catch (Exception e) {
+		Log.e("LoadingImageList Exception",""+e.toString());
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	
+	return " ";
+}
+
+	
+	String text2Html(Boolean append, String directory,
+				String fileName, String text2Find,  String outDirectory,
+				String outFileName,String text2Write) {
+			Log.d("text2HtmlTakeRefFromFile","directory"+directory
+					+"fileName"+fileName
+					+" find "+text2Find
+					+" outDirectory "+outDirectory);
+			text2Write=textRead(directory+fileName,text2Find,text2Find);
+			Log.d("text2HtmlTakeRefFromFile", "text2write " 
+					+text2Write+ " directory "+directory);
+			//text2Write=textRead(directory+fileName,text2Find,text2Find +" 2write"+text2Write);
+			//text2Write=directory+fileName +" text2Find " +text2Find +" 2write"+text2Write;
+
+			//textRead(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+			//textReadWrite(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+			//public  String textReadWrite(String fileInput,String item, String copyFromRef) {
+			// simplycreating a directory and a file inSDcar
+			// String filename
+			// =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/"+"mydirectory"+"/"+
+			// "myfile2.txt";//
+			
+			//File sdCard = Environment.getExternalStorageDirectory();
+			File dir = new File( outDirectory);// "/Hexasense");
+			dir.mkdirs();
+			File file1 = new File(dir, outFileName);// "hexasense.txt");
+			 String html="";
+			/*	html=	 "<html><head></head>" +
+				"<body>text2html " +
+				
+				"<IMG SRC=\""+text2Write.substring(text2Write.indexOf("https"))+"\""+//"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"" +
+				" ALT=\"" +text2Write+"\" "+
+				//"trerterte\" " 
+				 " TITLE=\""+ text2Write+"\" "+
+				//Texte à afficher\" "+ 
+				">" 
+				+text2Write+"    julie "
+				+"</body></html>";//"<html>something</html>";
+				*/
+			if (!file1.exists()){
+				try {
+					file1.createNewFile();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				html=	 "<html><head></head>"+"<body>   text2html:  Vesperanto Image List  <br>" ;
+			}
+			if(true){
+		
+				html=html +	
+				
+				"<IMG SRC=\""+text2Write.substring(text2Write.indexOf("https"))+"\""+
+				//"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"" +
+				" ALT=\"" +text2Write.substring(0,text2Write.indexOf("https"))+"\" "+
+				//"trerterte\" " 
+				 " TITLE=\""+ text2Write.substring(0,text2Write.indexOf("https"))+"\" "+
+				//Texte à afficher\" "+ 
+				">" 
+				+ "  "+ text2Write.substring(0,text2Write.indexOf("https")) +"  <br>    injected from Vesperanto <br>"
+				//+"</body></html>"
+				;//"<html>something</html>";
+				}
+			
+			try {
+				FileOutputStream f = new FileOutputStream(file1, append);
+				f.write(html.getBytes());
+				//f.write(text2Write.getBytes());
+				// f.write((InputStream)new
+				// URL("http://www.lsf-bordeaux.fr/images/video/alphabet/a.mp4").);
+				f.close();
+				
+				
+				
+				
+			} catch (FileNotFoundException e1) {
+				Log.e("FileNotFoundException",""+e1.toString());
+				e1.printStackTrace();
+			} catch (IOException e2) {
+				Log.e("IOException",""+e2.toString());
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			}
+		
+		return " ";
+	}
+	String text2HtmlClose(Boolean append, String dir,
+			String outFileName) {
+		Log.d("text2HtmlTakeRefFromFile","directory"+dir
+				+"fileName"+outFileName
+				);
+	//	text2Write=textRead(directory+fileName,text2Find,text2Find);
+		//text2Write=textRead(directory+fileName,text2Find,text2Find +" 2write"+text2Write);
+		//text2Write=directory+fileName +" text2Find " +text2Find +" 2write"+text2Write;
+
+		//textRead(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+		//textReadWrite(directory+fileName,text2Find,text2Write);//(String fileInput,String item, String writeIn)
+		//public  String textReadWrite(String fileInput,String item, String copyFromRef) {
+		// simplycreating a directory and a file inSDcar
+		// String filename
+		// =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)+"/"+"mydirectory"+"/"+
+		// "myfile2.txt";//
+		
+		//File sdCard = Environment.getExternalStorageDirectory();
+	//	File dir = new File( outDirectory);// "/Hexasense");
+		//dir.mkdirs();
+		File file1 = new File(dir, outFileName);// "hexasense.txt");
+		 String html="";
+			html=	 
+				"</body></html>";//"<html>something</html>";
+		if (!file1.exists()){
+			try {
+				file1.createNewFile();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			html=	 "<html><head></head>"+"<body>text2html Not Exist"+"</body></html>"; ;
+		}
+		else{
+	
+			html=	
+			
+			//"<IMG SRC=\""+text2Write.substring(text2Write.indexOf("https"))+"\""+
+			//"https://encrypted-tbn1.gstatic.com/images?q=tbn:ANd9GcS-wGMynDn2HkOTHUGgcyRLVHYbtiuzt0m8ziNT5P9ZELTyQewYehKWtJyp\"" +
+			//" ALT=\"" +text2Write+"\" "+
+			//"trerterte\" " 
+			// " TITLE=\""+ text2Write+"\" "+
+			//Texte à afficher\" "+ 
+			//">" 
+			//+text2Write+"    julie "
+			"</body></html>"
+			;//"<html>something</html>";
+			}
+		
+		try {
+			FileOutputStream f = new FileOutputStream(file1, append);
+			f.write(html.getBytes());
+			//f.write(text2Write.getBytes());
+			// f.write((InputStream)new
+			// URL("http://www.lsf-bordeaux.fr/images/video/alphabet/a.mp4").);
+			f.close();
+			
+			
+			
+			
+		} catch (FileNotFoundException e1) {
+			Log.e("FileNotFoundException",""+e1.toString());
+			e1.printStackTrace();
+		} catch (IOException e2) {
+			Log.e("IOException",""+e2.toString());
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+	
+	return " ";
+}
+	
+	
+	
+	
+	String readPhoneBuild(){
 	String BOARD	=Build.BOARD;	//Build.VERSION();
 		String BOOTLOADER	=Build.BOOTLOADER;
 		String BRAND	=Build.BRAND;
@@ -12240,8 +12654,54 @@ $message .= "<img src='link-image.jpg' alt='' /></body></html>";
 		String TYPE	=Build.TYPE;
 		String UNKNOWN	=Build.UNKNOWN;
 		String USER	=Build.USER;
+		String ret="";
+		ret=
+				"BOOTLOADER" +" "+
+				BOOTLOADER +" "+
+				"BRAND" +" "+
+				BRAND +" "+
+				"CPU_ABI" +" "+
+				CPU_ABI +" "+
+				"CPU_ABI2"+" "+
+				
+				CPU_ABI2+" "+
+				"DEVICE"+ " "+
+
+				DEVICE +" "+
+				"DISPLAY" +" "+
+				DISPLAY +" "+
+				"FINGERPRINT" +" "+
+				FINGERPRINT +" "+
+				"HARDWARE" +" "+
+				HARDWARE +" "+
+				"HOST" +" "+
+				HOST +" "+
+				"ID" +" "+ID +" "+
+				"MANUFACTURER" +" "+
+				MANUFACTURER +" "+
+				
+				"MODEL" +" "+
+				MODEL +" "+
+				"PRODUCT" +" "+
+				PRODUCT +" "+
+				"SERIAL" +" "+
+				SERIAL +" "+
+				"DISPLAY" +" "+
+				DISPLAY +" "+
+				"TAGS" +" "+
+				TAGS +" "+
+				"TYPE" +" "+
+				TYPE +" "+
+				"UNKNOWN" +" "+
+				UNKNOWN +" "+
+				"USER" +" "+
+				USER +" "
+			
+				
+				
+				;
 		
-	
+	    return ret;
 	
 	
 	}

@@ -5,7 +5,7 @@
  * should not be modified by hand.
  */
 
-package com.ateraction.vesperanto;
+package com.ateraction.vesperanto20141108;
 
 public final class R {
     public static final class array {
